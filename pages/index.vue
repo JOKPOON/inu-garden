@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import Hero from '@/components/course/Hero.vue';
+import Hero from "@/components/course/Hero.vue";
 const { t } = useI18n();
 
 useHead({

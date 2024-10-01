@@ -11,11 +11,8 @@
         />
       </button>
       <div
-      class="h-full bg-white rounded-xl p-6 flex flex-col justify-between items-center shadow-sm"
-        :class="{
-          'w-28 transition-all duration-300': smallNav,
-          'w-80': !smallNav,
-        }"
+        class="h-full bg-white rounded-xl p-6 flex flex-col justify-between items-center shadow-sm "
+        :class="{ 'w-28  transition-all duration-300': smallNav, 'w-80': !smallNav }"
       >
         <div class="flex flex-col gap-6 w-full">
           <button
@@ -217,7 +214,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter, useRoute } from "vue-router";
 import Course from "@/components/icons/Course.vue";
@@ -253,17 +250,6 @@ function handleClick(action) {
 const toggleNav = () => {
   smallNav.value = !smallNav.value;
 };
-
-watch(smallNav, (newValue) => {
-  localStorage.setItem("smallNav", newValue);
-});
-
-onMounted(() => {
-  const smallNavValue = localStorage.getItem("smallNav");
-  if (smallNavValue) {
-    smallNav.value = JSON.parse(smallNavValue);
-  }
-});
 
 const stylePath = (path) => {
   return path
