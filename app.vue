@@ -23,5 +23,22 @@ useHead({
 </script>
 
 <style lang="scss">
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+html,
+body {
+  min-height: 100vh;
+  line-height: 1.6;
+  font-family: "Inter", "Noto Sans Thai", sans-serif;
+  font-size: 16px;
+}
 </style>

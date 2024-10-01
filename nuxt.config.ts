@@ -4,6 +4,7 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "@nuxt/fonts",
     "@nuxtjs/sitemap",
+    "@nuxtjs/seo",
   ],
   tailwindcss: { exposeConfig: true },
   i18n: {
@@ -22,5 +23,9 @@ export default defineNuxtConfig({
     autoI18n: true,
     debug: true,
     sitemaps: false,
+  },
+  seo: {
+    fallbackTitle: false,
+    automaticDefaults: false,
   },
 });
