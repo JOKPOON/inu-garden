@@ -1,0 +1,10 @@
+{
+    "courses": "รายวิชา",
+    "students": "นักศึกษา",
+    "lecturers": "อาจารย์",
+    "graduation":"ประสบการณ์การศึกษา",
+    "prediction":"ตัดสินใจ",
+    "criteria":"เกณฑ์",
+    "profile":"โปรไฟล์",
+    "logout":"ออกจากระบบ"
+}

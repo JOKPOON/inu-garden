@@ -31,7 +31,6 @@ useHead({
 *::before,
 *::after {
   box-sizing: border-box;
-  margin: 0;
 }
 
 html,
