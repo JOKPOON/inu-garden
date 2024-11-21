@@ -1,6 +1,6 @@
 <template>
-     <div class="">
-        Hello from courses
+    <div>
+        Logout
     </div>
 </template>
 
@@ -17,4 +17,6 @@ definePageMeta({
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+
+</style>

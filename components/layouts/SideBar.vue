@@ -1,64 +1,154 @@
 <template>
   <div class="flex flex-row">
-    <div class="p-6 h-screen bg-[#F6F8F8]">
+    <div class="p-6 h-screen bg-[#F6F8F8] relative">
+      <button
+        @click="backButton"
+        class="absolute z-10 flex items-center justify-center top-16 right-2 w-10 h-10 rounded-full bg-white border border-grey-secondary"
+      >
+        <ArrowRight class="rotate-180 w-6 h-6" />
+      </button>
       <div
-        class="w-80 h-full bg-white rounded-xl p-6 flex flex-col justify-between items-center"
+        class="w-80 h-full bg-white rounded-xl p-6 flex flex-col justify-between items-center shadow-sm"
       >
         <div class="flex flex-col gap-6 w-full">
-          <div class="flex flex-row gap-4 items-center">
+          <button class="flex flex-row gap-4 items-center"
+          @click="handleClick('/profile')">
             <div class="w-16 h-16 rounded-full bg-slate-200"></div>
             <div class="flex flex-col">
               <div
-                class="text-base 3xl:text-lg font-semibold text-black-primary"
+                class="text-base 3xl:text-lg font-semibold text-black-primary text-start"
               >
                 Username
               </div>
-              <div class="text-sm 3xl:text-base text-grey-primary">Role</div>
+              <div class="text-sm 3xl:text-base text-grey-primary text-start">Role</div>
             </div>
-          </div>
+          </button>
           <div class="flex flex-col gap-3 text-sm 3xl:text-base">
             <button
-              class="flex flex-row items-center gap-2 p-2 rounded-xl bg-black-primary"
+              class="flex flex-row items-center gap-2 p-2 rounded-xl hover:translate-x-1 transition-transform"
+              :class="{
+                'bg-black-primary text-white': route.path === '/',
+                'bg-grey-light text-black-primary': route.path !== '/',
+              }"
+              @click="handleClick('/')"
             >
-              <Course />
-              <div class="font-medium text-white">
+              <Course
+                :class="{
+                  'text-white': route.path === '/',
+                  'text-black-primary': route.path !== '/',
+                }"
+              />
+              <div class="font-medium">
                 {{ t("layout.courses") }}
               </div>
             </button>
-            <button class="flex flex-row items-center gap-2 p-2 rounded-xl">
-              <Student />
-              <div class="font-medium text-black-primary">
+            <button
+              class="flex flex-row items-center gap-2 p-2 rounded-xl hover:translate-x-1 transition-transform"
+              :class="{
+                'bg-black-primary text-white': route.path === '/students',
+                'bg-grey-light text-black-primary': route.path !== '/students',
+              }"
+              @click="handleClick('/students')"
+            >
+              <Student
+                :class="{
+                  'text-white': route.path === '/students',
+                  'text-black-primary': route.path !== '/students',
+                }"
+              />
+              <div class="font-medium">
                 {{ t("layout.students") }}
               </div>
             </button>
-            <button class="flex flex-row items-center gap-2 p-2 rounded-xl">
-              <Student />
-              <div class="font-medium text-black-primary">
+            <button
+              class="flex flex-row items-center gap-2 p-2 rounded-xl hover:translate-x-1 transition-transform"
+              :class="{
+                'bg-black-primary text-white': route.path === '/lecturers',
+                'bg-grey-light text-black-primary': route.path !== '/lecturers',
+              }"
+              @click="handleClick('/lecturers')"
+            >
+              <Lecturer
+                :class="{
+                  'text-white': route.path === '/lecturers',
+                  'text-black-primary': route.path !== '/lecturers',
+                }"
+              />
+              <div class="font-medium">
                 {{ t("layout.lecturers") }}
               </div>
             </button>
-            <button class="flex flex-row items-center gap-2 p-2 rounded-xl">
-              <Student />
-              <div class="font-medium text-black-primary">
+            <button
+              class="flex flex-row items-center gap-2 p-2 rounded-xl hover:translate-x-1 transition-transform"
+              :class="{
+                'bg-black-primary text-white': route.path === '/graduation',
+                'bg-grey-light text-black-primary':
+                  route.path !== '/graduation',
+              }"
+              @click="handleClick('/graduation')"
+            >
+              <Graduation
+                :class="{
+                  'text-white': route.path === '/graduation',
+                  'text-black-primary': route.path !== '/graduation',
+                }"
+              />
+              <div class="font-medium">
                 {{ t("layout.graduation") }}
               </div>
             </button>
-            <button class="flex flex-row items-center gap-2 p-2 rounded-xl">
-              <Student />
-              <div class="font-medium text-black-primary">
+            <button
+              class="flex flex-row items-center gap-2 p-2 rounded-xl hover:translate-x-1 transition-transform"
+              :class="{
+                'bg-black-primary text-white': route.path === '/criteria',
+                'bg-grey-light text-black-primary': route.path !== '/criteria',
+              }"
+              @click="handleClick('/criteria')"
+            >
+              <Criteria
+                :class="{
+                  'text-white': route.path === '/criteria',
+                  'text-black-primary': route.path !== '/criteria',
+                }"
+              />
+              <div class="font-medium">
                 {{ t("layout.criteria") }}
               </div>
             </button>
             <div class="h-[1px] bg-grey-secondary w-full"></div>
-            <button class="flex flex-row items-center gap-2 p-2 rounded-xl">
-              <Student />
-              <div class="font-medium text-black-primary">
+            <button
+              class="flex flex-row items-center gap-2 p-2 rounded-xl hover:translate-x-1 transition-transform"
+              :class="{
+                'bg-black-primary text-white': route.path === '/profile',
+                'bg-grey-light text-black-primary': route.path !== '/profile',
+              }"
+              @click="handleClick('/profile')"
+            >
+              <Profile
+                :class="{
+                  'text-white': route.path === '/profile',
+                  'text-black-primary': route.path !== '/profile',
+                }"
+              />
+              <div class="font-medium">
                 {{ t("layout.profile") }}
               </div>
             </button>
-            <button class="flex flex-row items-center gap-2 p-2 rounded-xl">
-              <Student />
-              <div class="font-medium text-black-primary">
+            <button
+              class="flex flex-row items-center gap-2 p-2 rounded-xl hover:translate-x-1 transition-transform"
+              :class="{
+                'bg-black-primary text-white': route.path === '/logout',
+                'bg-grey-light text-black-primary': route.path !== '/logout',
+              }"
+              @click="handleClick('/logout')"
+            >
+              <Logout
+                :class="{
+                  'text-white': route.path === '/logout',
+                  'text-black-primary': route.path !== '/logout',
+                }"
+              />
+              <div class="font-medium">
                 {{ t("layout.logout") }}
               </div>
             </button>
@@ -68,15 +158,24 @@
       </div>
     </div>
     <div class="w-full flex flex-col bg-[#F6F8F8] p-6 pl-0 gap-6">
-      <div class="rounded-xl px-6">
-        <div class="w-full flex flex-row justify-between h-18 items-center">
-          <div></div>
-          <div class="h-8">
-            <component :is="LanguageToggler" :force-open="showLangOptions" />
+      <div class="rounded-xl">
+        <div class="w-full flex flex-row justify-between items-center">
+          <div
+            class="px-4 py-3 bg-white border border-grey-secondary rounded-xl flex flex-row gap-1 items-center"
+          >
+            <div class="text-base 3xl:text-lg font-[500] text-black-primary">
+              <span v-for="(segment, index) in routeSegments" :key="index">
+                {{ segment }}
+                <ArrowRight
+                  v-if="index < routeSegments.length - 1"
+                  class="w-4 h-4"
+                />
+              </span>
+            </div>
           </div>
         </div>
       </div>
-      <div class="w-full h-full p-6 rounded-xl">
+      <div class="w-full h-full p-4 bg-white shadow-sm rounded-xl">
         <slot class="w-full h-full" />
       </div>
     </div>
@@ -84,11 +183,23 @@
 </template>
 
 <script setup>
+import { ref, computed } from "vue";
+import { useI18n } from "vue-i18n";
+import { useRouter, useRoute } from "vue-router";
 import Course from "@/components/icons/Course.vue";
 import Student from "@/components/icons/Student.vue";
+import Lecturer from "@/components/icons/Lecturer.vue";
+import Graduation from "@/components/icons/Graduation.vue";
+import Criteria from "@/components/icons/Criteria.vue";
+import Profile from "@/components/icons/Profile.vue";
+import Logout from "@/components/icons/Logout.vue";
+import ArrowRight from "@/components/icons/ArrowRight.vue";
 import LogoSidebar from "@/components/icons/LogoSidebar.png";
 import LanguageToggler from "@/components/accordians/LanguageToggler.vue";
+
 const { t } = useI18n();
+const router = useRouter();
+const route = useRoute();
 const props = defineProps({
   showLangOptions: {
     type: Boolean,
@@ -97,6 +208,29 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["open-lang-options", "close-lang-options"]);
+
+function handleClick(action) {
+  router.push(action);
+}
+
+function backButton() {
+  router.back();
+}
+
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+const routeSegments = computed(() => {
+  const segments = route.path
+    .split("/")
+    .filter((segment) => segment)
+    .map((segment) => capitalizeFirstLetter(segment));
+  if (route.path === "/") {
+    segments.unshift("Courses");
+  }
+  return segments;
+});
 </script>
 
 <style lang="scss" scoped></style>
