@@ -11,8 +11,10 @@
         class="w-80 h-full bg-white rounded-xl p-6 flex flex-col justify-between items-center shadow-sm"
       >
         <div class="flex flex-col gap-6 w-full">
-          <button class="flex flex-row gap-4 items-center"
-          @click="handleClick('/profile')">
+          <button
+            class="flex flex-row gap-4 items-center"
+            @click="handleClick('/profile')"
+          >
             <div class="w-16 h-16 rounded-full bg-slate-200"></div>
             <div class="flex flex-col">
               <div
@@ -20,22 +22,24 @@
               >
                 Username
               </div>
-              <div class="text-sm 3xl:text-base text-grey-primary text-start">Role</div>
+              <div class="text-sm  text-grey-primary text-start">
+                Role
+              </div>
             </div>
           </button>
-          <div class="flex flex-col gap-3 text-sm 3xl:text-base">
+          <div class="flex flex-col gap-3 text-sm">
             <button
               class="flex flex-row items-center gap-2 p-2 rounded-xl hover:translate-x-1 transition-transform"
               :class="{
-                'bg-black-primary text-white': route.path === '/',
-                'bg-grey-light text-black-primary': route.path !== '/',
+                'bg-black-primary text-white':  route.path === '/' || route.path.startsWith('/courses'), 
+                'bg-grey-light text-black-primary': route.path !== '/' && !route.path.startsWith('/courses'),
               }"
               @click="handleClick('/')"
             >
               <Course
                 :class="{
-                  'text-white': route.path === '/',
-                  'text-black-primary': route.path !== '/',
+                  'text-white': route.path === '/'  || route.path.startsWith('/courses'),
+                  'text-black-primary': route.path !== '/'    && !route.path.startsWith('/courses'),
                 }"
               />
               <div class="font-medium">
@@ -45,14 +49,14 @@
             <button
               class="flex flex-row items-center gap-2 p-2 rounded-xl hover:translate-x-1 transition-transform"
               :class="{
-                'bg-black-primary text-white': route.path === '/students',
+                'bg-black-primary text-white': route.path.startsWith('/students'),
                 'bg-grey-light text-black-primary': route.path !== '/students',
               }"
               @click="handleClick('/students')"
             >
               <Student
                 :class="{
-                  'text-white': route.path === '/students',
+                  'text-white': route.path.startsWith('/students'),
                   'text-black-primary': route.path !== '/students',
                 }"
               />
@@ -63,14 +67,14 @@
             <button
               class="flex flex-row items-center gap-2 p-2 rounded-xl hover:translate-x-1 transition-transform"
               :class="{
-                'bg-black-primary text-white': route.path === '/lecturers',
+                'bg-black-primary text-white': route.path.startsWith('/lecturers'),
                 'bg-grey-light text-black-primary': route.path !== '/lecturers',
               }"
               @click="handleClick('/lecturers')"
             >
               <Lecturer
                 :class="{
-                  'text-white': route.path === '/lecturers',
+                  'text-white': route.path.startsWith('/lecturers'),
                   'text-black-primary': route.path !== '/lecturers',
                 }"
               />
@@ -81,7 +85,7 @@
             <button
               class="flex flex-row items-center gap-2 p-2 rounded-xl hover:translate-x-1 transition-transform"
               :class="{
-                'bg-black-primary text-white': route.path === '/graduation',
+                'bg-black-primary text-white': route.path.startsWith('/graduation'),
                 'bg-grey-light text-black-primary':
                   route.path !== '/graduation',
               }"
@@ -89,7 +93,7 @@
             >
               <Graduation
                 :class="{
-                  'text-white': route.path === '/graduation',
+                  'text-white': route.path.startsWith('/graduation'),
                   'text-black-primary': route.path !== '/graduation',
                 }"
               />
@@ -100,14 +104,14 @@
             <button
               class="flex flex-row items-center gap-2 p-2 rounded-xl hover:translate-x-1 transition-transform"
               :class="{
-                'bg-black-primary text-white': route.path === '/criteria',
+                'bg-black-primary text-white': route.path.startsWith('/criteria'),
                 'bg-grey-light text-black-primary': route.path !== '/criteria',
               }"
               @click="handleClick('/criteria')"
             >
               <Criteria
                 :class="{
-                  'text-white': route.path === '/criteria',
+                  'text-white': route.path.startsWith('/criteria'),
                   'text-black-primary': route.path !== '/criteria',
                 }"
               />
@@ -119,14 +123,14 @@
             <button
               class="flex flex-row items-center gap-2 p-2 rounded-xl hover:translate-x-1 transition-transform"
               :class="{
-                'bg-black-primary text-white': route.path === '/profile',
+                'bg-black-primary text-white': route.path.startsWith('/profile'),
                 'bg-grey-light text-black-primary': route.path !== '/profile',
               }"
               @click="handleClick('/profile')"
             >
               <Profile
                 :class="{
-                  'text-white': route.path === '/profile',
+                  'text-white': route.path.startsWith('/profile'),
                   'text-black-primary': route.path !== '/profile',
                 }"
               />
@@ -137,14 +141,14 @@
             <button
               class="flex flex-row items-center gap-2 p-2 rounded-xl hover:translate-x-1 transition-transform"
               :class="{
-                'bg-black-primary text-white': route.path === '/logout',
+                'bg-black-primary text-white': route.path.startsWith('/logout'),
                 'bg-grey-light text-black-primary': route.path !== '/logout',
               }"
               @click="handleClick('/logout')"
             >
               <Logout
                 :class="{
-                  'text-white': route.path === '/logout',
+                  'text-white': route.path.startsWith('/logout'),
                   'text-black-primary': route.path !== '/logout',
                 }"
               />
@@ -161,21 +165,22 @@
       <div class="rounded-xl">
         <div class="w-full flex flex-row justify-between items-center">
           <div
-            class="px-4 py-3 bg-white border border-grey-secondary rounded-xl flex flex-row gap-1 items-center"
+            class="px-4 py-3 bg-white border border-grey-secondary rounded-xl "
           >
-            <div class="text-base 3xl:text-lg font-[500] text-black-primary">
-              <span v-for="(segment, index) in routeSegments" :key="index">
-                {{ segment }}
-                <ArrowRight
-                  v-if="index < routeSegments.length - 1"
-                  class="w-4 h-4"
-                />
-              </span>
+            <div
+              class="text-base 3xl:text-lg font-[500] text-black-primary flex flex-row gap-1 items-center"
+            >
+              <template v-for="(segment, index) in routeSegments">
+                <span>{{ segment }}</span>
+                <span v-if="index !== routeSegments.length - 1">
+                  <ArrowRight class="w-4 h-4" />
+                </span>
+              </template>
             </div>
           </div>
         </div>
       </div>
-      <div class="w-full h-full p-4 bg-white shadow-sm rounded-xl">
+      <div class="w-full h-full p-6 bg-white shadow-sm rounded-xl">
         <slot class="w-full h-full" />
       </div>
     </div>
@@ -217,15 +222,19 @@ function backButton() {
   router.back();
 }
 
-function capitalizeFirstLetter(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
+const stylePath = (path) => {
+  //create-course -> Create Course
+  return path
+    .split("-")
+    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
+    .join(" ");
 }
 
 const routeSegments = computed(() => {
   const segments = route.path
     .split("/")
     .filter((segment) => segment)
-    .map((segment) => capitalizeFirstLetter(segment));
+    .map((segment) => stylePath(segment));
   if (route.path === "/") {
     segments.unshift("Courses");
   }
