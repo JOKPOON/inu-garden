@@ -16,7 +16,6 @@
     "@nuxtjs/sitemap": "^6.1.1",
     "@vueuse/core": "^11.1.0",
     "@vueuse/head": "^2.0.0",
-    "consola": "^2.15.3",
     "moment": "^2.30.1",
     "nuxt": "^3.13.2",
     "vue": "latest",
