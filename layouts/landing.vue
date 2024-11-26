@@ -1,17 +1,16 @@
 <template>
-  <SideBar
-    :show-lang-options="openLangOptions"
-    @open-lang-options="openLangOptions = true"
-    @close-lang-options="openLangOptions = false"
-  >
+  <div>
+    <LandingNavbar
+      :show-lang-options="openLangOptions"
+      @open-lang-options="openLangOptions = true"
+      @close-lang-options="openLangOptions = false"
+    />
     <slot />
-  </SideBar>
+  </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import SideBar from "@/components/layouts/SideBar.vue";
-
+import LandingNavbar from "@/components/layouts/LandingNavbar.vue";
 const openLangOptions = ref(true);
 </script>
 
