@@ -1,13 +1,14 @@
 export default defineNuxtConfig({
   modules: [
-    "@nuxtjs/tailwindcss",
     "@nuxtjs/i18n",
+    "@nuxtjs/tailwindcss",
     "@nuxt/fonts",
     "@nuxtjs/sitemap",
     "@nuxtjs/seo",
   ],
 
   tailwindcss: { exposeConfig: true },
+
   i18n: {
     defaultLocale: "en",
     strategy: "prefix_and_default",
