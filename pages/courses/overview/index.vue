@@ -1,6 +1,6 @@
 <template>
   <div
-    class="grid grid-cols-2 grid-flex-media gap-4 mt-6 max-h-[65vh] overflow-y-scroll hide-scrollbar"
+    class="grid grid-cols-2 grid-flex-media gap-4 mt-6 max-h-[calc(100vh-270px)] overflow-y-scroll hide-scrollbar"
   >
     <div class="flex flex-col gap-6">
       <div
@@ -57,21 +57,11 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="cols-span-init flex flex-col gap-6">
-      <div
-        class="shadow-sm rounded-xl p-6 bg-white border border-grey-tertiary flex flex-col gap-4"
-      >
-        <div class="text-base text-black-primary font-medium">
-          Course Introduction & Description
-        </div>
-        <div class="text-base text-grey-primary">
-          {{ course.description }}
-        </div>
-      </div>
-      <div
-        class="grid grid-cols-2 rounded-xl  gap-4"
-      >
+      <CourseChart
+        :activeButton="activeButton"
+        @update:activeButton="setActiveButton"
+      />
+      <div class="grid grid-cols-2 rounded-xl gap-4">
         <div
           v-for="(value, key) in statistics"
           :key="key"
@@ -91,8 +81,24 @@
           </div>
         </div>
       </div>
-      <ScoreRange />
-      <CourseChart />
+    </div>
+    <div class="cols-span-init flex flex-col gap-6">
+      <div
+        class="shadow-sm rounded-xl p-6 bg-white border border-grey-tertiary flex flex-col gap-4"
+      >
+        <div class="text-base text-black-primary font-medium">
+          Course Introduction & Description
+        </div>
+        <div class="text-base text-grey-primary">
+          {{ course.description }}
+        </div>
+      </div>
+      <div v-if="activeButton === 'Overview'">
+        <ScoreRange />
+      </div>
+      <div v-else-if="activeButton === 'Grade Overview'">
+        <GradeRange />
+      </div>
     </div>
   </div>
 </template>
@@ -101,6 +107,7 @@
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import ScoreRange from "@/components/course/ScoreRange.vue";
+import GradeRange from "@/components/course/GradeRange.vue";
 import CourseChart from "@/components/course/CourseChart.vue";
 import Edit from "@/components/icons/Edit.vue";
 import AddCourseButton from "@/components/button/AddCourseButton.vue";
@@ -117,6 +124,12 @@ useHead({
 definePageMeta({
   layout: "landing",
 });
+
+const buttons = ["Overview", "Grade Overview"];
+const activeButton = ref(buttons[0]);
+const setActiveButton = (button) => {
+  activeButton.value = button;
+};
 
 const course = ref({
   id: "CPE123",

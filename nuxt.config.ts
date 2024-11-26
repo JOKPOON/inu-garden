@@ -4,7 +4,11 @@ export default defineNuxtConfig({
     "@nuxtjs/i18n",
     "@nuxt/fonts",
     "@nuxtjs/sitemap",
-    "@nuxtjs/seo",
+    "@nuxtjs/seo"
+  ],
+
+  plugins: [
+    '@/plugins/vue-chartjs.js'
   ],
 
   tailwindcss: { exposeConfig: true },

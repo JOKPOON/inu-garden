@@ -16,11 +16,15 @@
     "@nuxtjs/tailwindcss": "^6.12.2",
     "@vueuse/core": "^11.1.0",
     "@vueuse/head": "^2.0.0",
+    "apexcharts": "^4.1.0",
+    "chart.js": "^4.4.6",
     "consola": "^3.2.3",
     "moment": "^2.30.1",
     "nuxt": "^3.13.2",
     "vue": "latest",
-    "vue-router": "latest"
+    "vue-chartjs": "^5.3.2",
+    "vue-router": "latest",
+    "vue3-apexcharts": "^1.8.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",
