@@ -16,6 +16,12 @@ export default {
     fontFamily: {},
     extend: {
       colors: {
+        "orange-primary": "#F04E23",
+        "yellow-primary": "#FEC232",
+        "yellow-secondary": "#F8D600",
+        "black-primary": "#161616",
+        "grey-primary": "#929292",
+        "grey-secondary": "#D8D8D8",
       },
       screens: {
         xs: "400px",

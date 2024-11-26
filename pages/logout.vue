@@ -1,9 +1,10 @@
 <template>
-  <Hero />
+    <div>
+        Logout
+    </div>
 </template>
 
 <script setup>
-import Hero from '@/components/course/Hero.vue';
 const { t } = useI18n();
 
 useHead({
@@ -16,4 +17,6 @@ definePageMeta({
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+
+</style>
