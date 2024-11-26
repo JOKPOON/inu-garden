@@ -1,6 +1,3 @@
-import { _purple } from "#tailwind-config/theme/accentColor";
-import plugin from "tailwindcss/plugin";
-
 /** @type {import('tailwindcss').Config} */
 export default {
   exposeConfig: true,
@@ -22,6 +19,7 @@ export default {
         "black-primary": "#161616",
         "grey-primary": "#929292",
         "grey-secondary": "#D8D8D8",
+        "grey-tertiary": "#F2F2F2",
       },
       screens: {
         xs: "400px",
@@ -90,4 +88,5 @@ export default {
       },
     },
   },
+  plugins: [],
 };

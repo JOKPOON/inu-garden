@@ -158,7 +158,7 @@
             </button>
           </div>
         </div>
-        <img :src="LogoSidebar" class="w-20" />
+        <img  @click="handleClick('/')" :src="LogoSidebar" class="w-20 hover:cursor-pointer" />
       </div>
     </div>
     <div class="w-full flex flex-col bg-[#F6F8F8] p-6 pl-0 gap-6">

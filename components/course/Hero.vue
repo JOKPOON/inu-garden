@@ -61,7 +61,7 @@
     <div
       v-for="course in courses"
       :key="course.semester_id"
-      class="bg-white border border-grey-secondary shadow-sm rounded-xl p-4"
+      class="bg-white border border-grey-secondary shadow-sm rounded-xl p-6"
     >
       <div class="flex flex-row justify-between gap-6 items-center">
         <button @click="overviewCourse(course.code)">
