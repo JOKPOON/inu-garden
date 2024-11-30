@@ -1,16 +1,17 @@
 <template>
   <div class="flex flex-col gap-4">
     <div class="flex flex-row">
-      <CourseNav :currentRouteName="'Overview'" />
+      <CourseNav :currentRouteName="'Feedback'" />
     </div>
-    <Overview />
+    <Feedback />
   </div>
 </template>
 
 <script setup>
 import { useI18n } from "vue-i18n";
 import CourseNav from "@/components/course/CourseNav.vue";
-import Overview from "@/components/course/Overview.vue";
+import Feedback from "@/components/course/Feedback.vue";
+
 const { t } = useI18n();
 
 useHead({
