@@ -1,18 +1,18 @@
 <template>
   <div class="flex flex-col gap-4">
     <div class="flex flex-row">
-      <CourseNav :currentRouteName="'Overview'" />
+      <CourseNav :currentRouteName="'Assessments'" />
     </div>
-    <Overview />
+    <Assessments />
   </div>
 </template>
 
 <script setup>
 import { useI18n } from "vue-i18n";
 import CourseNav from "@/components/course/CourseNav.vue";
-import Overview from "@/components/course/Overview.vue";
-const { t } = useI18n();
+import Assessments from "@/components/course/Assessments.vue";
 
+const { t } = useI18n();
 useHead({
   title: t("seo.title"),
   description: t("seo.desc"),
