@@ -2,21 +2,28 @@
   <div class="flex flex-row">
     <div class="p-6 h-screen bg-[#F6F8F8] relative">
       <button
-        @click="backButton"
-        class="absolute z-10 flex items-center justify-center top-16 right-2 w-10 h-10 rounded-full bg-white border border-grey-secondary"
+        @click="toggleNav"
+        class="absolute z-10 flex items-center justify-center top-[100px] right-2 w-10 h-10 rounded-full bg-white border border-grey-secondary"
       >
-        <ArrowRight class="rotate-180 w-6 h-6" />
+        <ArrowRight
+          class="w-6 h-6 transition-transform duration-300"
+          :class="{ 'rotate-180': !smallNav, 'rotate-0': smallNav }"
+        />
       </button>
       <div
-        class="w-80 h-full bg-white rounded-xl p-6 flex flex-col justify-between items-center shadow-sm"
+        class="h-full bg-white rounded-xl p-6 flex flex-col justify-between items-center shadow-sm"
+        :class="{
+          'w-28  transition-all duration-300': smallNav,
+          'w-80': !smallNav,
+        }"
       >
         <div class="flex flex-col gap-6 w-full">
           <button
-            class="flex flex-row gap-4 items-center"
+            class="w-full flex flex-row gap-4 items-center"
             @click="handleClick('/profile')"
           >
-            <div class="w-16 h-16 rounded-full bg-slate-200"></div>
-            <div class="flex flex-col">
+            <div class="rounded-full bg-black-primary h-16 w-16"></div>
+            <div v-if="!smallNav" class="flex flex-col">
               <div
                 class="text-base 3xl:text-lg font-semibold text-black-primary text-start"
               >
@@ -27,10 +34,17 @@
               </div>
             </div>
           </button>
-          <div class="flex flex-col gap-3 text-sm">
+          <div
+            class="flex flex-col gap-3 text-sm"
+            :class="{ 'items-center': smallNav, '': !smallNav }"
+          >
             <button
               class="flex flex-row items-center gap-2 p-2 rounded-xl hover:translate-x-1 transition-transform"
               :class="{
+                'bg-black-primary text-white':
+                  route.path === '/' || route.path.startsWith('/courses'),
+                'bg-grey-light text-black-primary':
+                  route.path !== '/' && !route.path.startsWith('/courses'),
                 'bg-black-primary text-white':
                   route.path === '/' || route.path.startsWith('/courses'),
                 'bg-grey-light text-black-primary':
@@ -44,9 +58,13 @@
                     route.path === '/' || route.path.startsWith('/courses'),
                   'text-black-primary':
                     route.path !== '/' && !route.path.startsWith('/courses'),
+                  'text-white':
+                    route.path === '/' || route.path.startsWith('/courses'),
+                  'text-black-primary':
+                    route.path !== '/' && !route.path.startsWith('/courses'),
                 }"
               />
-              <div class="font-medium">
+              <div v-if="!smallNav" class="font-medium">
                 {{ t("layout.courses") }}
               </div>
             </button>
@@ -65,7 +83,7 @@
                   'text-black-primary': route.path !== '/students',
                 }"
               />
-              <div class="font-medium">
+              <div v-if="!smallNav" class="font-medium">
                 {{ t("layout.students") }}
               </div>
             </button>
@@ -84,7 +102,7 @@
                   'text-black-primary': route.path !== '/lecturers',
                 }"
               />
-              <div class="font-medium">
+              <div v-if="!smallNav" class="font-medium">
                 {{ t("layout.lecturers") }}
               </div>
             </button>
@@ -104,7 +122,7 @@
                   'text-black-primary': route.path !== '/graduation',
                 }"
               />
-              <div class="font-medium">
+              <div v-if="!smallNav" class="font-medium">
                 {{ t("layout.graduation") }}
               </div>
             </button>
@@ -123,7 +141,7 @@
                   'text-black-primary': route.path !== '/criteria',
                 }"
               />
-              <div class="font-medium">
+              <div v-if="!smallNav" class="font-medium">
                 {{ t("layout.criteria") }}
               </div>
             </button>
@@ -143,7 +161,7 @@
                   'text-black-primary': route.path !== '/profile',
                 }"
               />
-              <div class="font-medium">
+              <div v-if="!smallNav" class="font-medium">
                 {{ t("layout.profile") }}
               </div>
             </button>
@@ -161,16 +179,22 @@
                   'text-black-primary': route.path !== '/logout',
                 }"
               />
-              <div class="font-medium">
+              <div v-if="!smallNav" class="font-medium">
                 {{ t("layout.logout") }}
               </div>
             </button>
           </div>
         </div>
         <img
+          v-if="!smallNav"
           @click="handleClick('/')"
           :src="LogoSidebar"
           class="w-20 hover:cursor-pointer"
+        />
+        <LoginLogo
+          v-else
+          @click="handleClick('/')"
+          class="w-12 h-12 hover:cursor-pointer"
         />
       </div>
     </div>
@@ -178,6 +202,7 @@
       <div class="rounded-xl">
         <div class="w-full flex flex-row justify-between items-center">
           <div
+            class="px-4 py-3 bg-white border border-grey-secondary rounded-xl"
             class="px-4 py-3 bg-white border border-grey-secondary rounded-xl"
           >
             <div
@@ -213,6 +238,7 @@ import Profile from "@/components/icons/Profile.vue";
 import Logout from "@/components/icons/Logout.vue";
 import ArrowRight from "@/components/icons/ArrowRight.vue";
 import LogoSidebar from "@/components/icons/LogoSidebar.png";
+import LoginLogo from "@/components/icons/LoginLogo.vue";
 import LanguageToggler from "@/components/accordians/LanguageToggler.vue";
 
 const { t } = useI18n();
@@ -224,6 +250,8 @@ const props = defineProps({
     default: true,
   },
 });
+
+const smallNav = ref(false);
 
 const emit = defineEmits(["open-lang-options", "close-lang-options"]);
 
@@ -256,9 +284,9 @@ function handleClick(action) {
   router.push(action);
 }
 
-function backButton() {
-  router.back();
-}
+const toggleNav = () => {
+  smallNav.value = !smallNav.value;
+};
 
 const stylePath = (path) => {
   return path
