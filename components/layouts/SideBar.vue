@@ -223,7 +223,6 @@ function backButton() {
 }
 
 const stylePath = (path) => {
-  //create-course -> Create Course
   return path
     .split("-")
     .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
