@@ -282,7 +282,7 @@ function handleSearch() {
 </script>
 
 <style lang="scss" scoped>
-.grid-flex-media{
+.grid-flex-media {
   @media screen and (min-width: 2000px) {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }

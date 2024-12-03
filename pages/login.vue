@@ -28,7 +28,8 @@
               <EmailLogin class="w-6 h-6" />
             </div>
             <input
-              type="text"
+              id="email"
+              type="email"
               v-model="Email"
               class="bg-transparent focus:ring-0 outline-none text-base w-72 pr-3"
               placeholder="Email"
@@ -49,6 +50,7 @@
               <PasswordLogin class="w-6 h-6" />
             </div>
             <input
+              id="password"
               type="password"
               v-model="Password"
               class="bg-transparent focus:ring-0 outline-none text-base w-72 pr-3"
@@ -100,10 +102,35 @@ const checkPassword = ref(false);
 const handleLogin = () => {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   checkEmail.value = !emailPattern.test(Email.value);
-  checkPassword.value = Password.value.length < 6;
+  checkPassword.value = Password.value.length < 0;
 
   if (!checkEmail.value && !checkPassword.value) {
-    router.push("/");
+    fetch("http://localhost:3001/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        email: Email.value,
+        password: Password.value,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          router.push("/");
+        } else {
+          console.log(data.error.message);
+          if (data.error.message === "password or email is incorrect") {
+            checkEmail.value = true;
+            checkPassword.value = true;
+          } else if (data.error.message === "password is incorrect") {
+            console.log("password is incorrect");
+            checkPassword.value = true;
+          }
+        }
+      });
   }
 };
 
@@ -116,7 +143,7 @@ watch(Email, () => {
 
 watch(Password, () => {
   if (checkPassword.value) {
-    checkPassword.value = Password.value.length < 6;
+    checkPassword.value = Password.value.length < 0;
   }
 });
 

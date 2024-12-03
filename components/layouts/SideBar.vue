@@ -20,10 +20,10 @@
               <div
                 class="text-base 3xl:text-lg font-semibold text-black-primary text-start"
               >
-                Username
+                {{ me ? me.first_name + " " + me.last_name : "Username" }}
               </div>
-              <div class="text-sm  text-grey-primary text-start">
-                Role
+              <div class="text-sm text-grey-primary text-start">
+                {{ me ? me.role : "Role" }}
               </div>
             </div>
           </button>
@@ -31,15 +31,19 @@
             <button
               class="flex flex-row items-center gap-2 p-2 rounded-xl hover:translate-x-1 transition-transform"
               :class="{
-                'bg-black-primary text-white':  route.path === '/' || route.path.startsWith('/courses'), 
-                'bg-grey-light text-black-primary': route.path !== '/' && !route.path.startsWith('/courses'),
+                'bg-black-primary text-white':
+                  route.path === '/' || route.path.startsWith('/courses'),
+                'bg-grey-light text-black-primary':
+                  route.path !== '/' && !route.path.startsWith('/courses'),
               }"
               @click="handleClick('/')"
             >
               <Course
                 :class="{
-                  'text-white': route.path === '/'  || route.path.startsWith('/courses'),
-                  'text-black-primary': route.path !== '/'    && !route.path.startsWith('/courses'),
+                  'text-white':
+                    route.path === '/' || route.path.startsWith('/courses'),
+                  'text-black-primary':
+                    route.path !== '/' && !route.path.startsWith('/courses'),
                 }"
               />
               <div class="font-medium">
@@ -49,7 +53,8 @@
             <button
               class="flex flex-row items-center gap-2 p-2 rounded-xl hover:translate-x-1 transition-transform"
               :class="{
-                'bg-black-primary text-white': route.path.startsWith('/students'),
+                'bg-black-primary text-white':
+                  route.path.startsWith('/students'),
                 'bg-grey-light text-black-primary': route.path !== '/students',
               }"
               @click="handleClick('/students')"
@@ -67,7 +72,8 @@
             <button
               class="flex flex-row items-center gap-2 p-2 rounded-xl hover:translate-x-1 transition-transform"
               :class="{
-                'bg-black-primary text-white': route.path.startsWith('/lecturers'),
+                'bg-black-primary text-white':
+                  route.path.startsWith('/lecturers'),
                 'bg-grey-light text-black-primary': route.path !== '/lecturers',
               }"
               @click="handleClick('/lecturers')"
@@ -85,7 +91,8 @@
             <button
               class="flex flex-row items-center gap-2 p-2 rounded-xl hover:translate-x-1 transition-transform"
               :class="{
-                'bg-black-primary text-white': route.path.startsWith('/graduation'),
+                'bg-black-primary text-white':
+                  route.path.startsWith('/graduation'),
                 'bg-grey-light text-black-primary':
                   route.path !== '/graduation',
               }"
@@ -104,7 +111,8 @@
             <button
               class="flex flex-row items-center gap-2 p-2 rounded-xl hover:translate-x-1 transition-transform"
               :class="{
-                'bg-black-primary text-white': route.path.startsWith('/criteria'),
+                'bg-black-primary text-white':
+                  route.path.startsWith('/criteria'),
                 'bg-grey-light text-black-primary': route.path !== '/criteria',
               }"
               @click="handleClick('/criteria')"
@@ -123,7 +131,8 @@
             <button
               class="flex flex-row items-center gap-2 p-2 rounded-xl hover:translate-x-1 transition-transform"
               :class="{
-                'bg-black-primary text-white': route.path.startsWith('/profile'),
+                'bg-black-primary text-white':
+                  route.path.startsWith('/profile'),
                 'bg-grey-light text-black-primary': route.path !== '/profile',
               }"
               @click="handleClick('/profile')"
@@ -158,14 +167,18 @@
             </button>
           </div>
         </div>
-        <img  @click="handleClick('/')" :src="LogoSidebar" class="w-20 hover:cursor-pointer" />
+        <img
+          @click="handleClick('/')"
+          :src="LogoSidebar"
+          class="w-20 hover:cursor-pointer"
+        />
       </div>
     </div>
     <div class="w-full flex flex-col bg-[#F6F8F8] p-6 pl-0 gap-6">
       <div class="rounded-xl">
         <div class="w-full flex flex-row justify-between items-center">
           <div
-            class="px-4 py-3 bg-white border border-grey-secondary rounded-xl "
+            class="px-4 py-3 bg-white border border-grey-secondary rounded-xl"
           >
             <div
               class="text-base 3xl:text-lg font-[500] text-black-primary flex flex-row gap-1 items-center"
@@ -214,6 +227,31 @@ const props = defineProps({
 
 const emit = defineEmits(["open-lang-options", "close-lang-options"]);
 
+const me = ref(null);
+const GetMe = async () => {
+  try {
+    const res = await fetch("http://localhost:3001/auth/me", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    const data = await res.json();
+    if (data.success) {
+      me.value = data.data;
+    } else {
+      router.push("/login");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+onMounted(() => {
+  GetMe();
+});
+
 function handleClick(action) {
   router.push(action);
 }
@@ -227,7 +265,7 @@ const stylePath = (path) => {
     .split("-")
     .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
     .join(" ");
-}
+};
 
 const routeSegments = computed(() => {
   const segments = route.path
