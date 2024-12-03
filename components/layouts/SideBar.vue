@@ -214,7 +214,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter, useRoute } from "vue-router";
 import Course from "@/components/icons/Course.vue";
@@ -250,6 +250,17 @@ function handleClick(action) {
 const toggleNav = () => {
   smallNav.value = !smallNav.value;
 };
+
+watch(smallNav, (newValue) => {
+  localStorage.setItem("smallNav", newValue);
+});
+
+onMounted(() => {
+  const smallNavValue = localStorage.getItem("smallNav");
+  if (smallNavValue) {
+    smallNav.value = JSON.parse(smallNavValue);
+  }
+});
 
 const stylePath = (path) => {
   return path
