@@ -31,7 +31,9 @@ export default defineNuxtConfig({
     debug: true,
     sitemaps: false,
   },
-  devtools: false,
+  devtools: {
+    enabled: false,
+  },
   seo: {
     fallbackTitle: false,
     automaticDefaults: false,
