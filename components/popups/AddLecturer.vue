@@ -279,6 +279,8 @@ const handleFileChange = (event) => {
 };
 
 const confirm = () => {
+  user.value.role = user.value.role.filter((role) => role !== "");
+  user.value.degree = user.value.degree.filter((degree) => degree !== "");
   console.log(user.value);
   invalidPicture.value = false;
   emit("close");

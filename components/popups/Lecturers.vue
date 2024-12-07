@@ -613,8 +613,8 @@ const handleDelete = () => {
 
 const handleSaveEdit = () => {
   console.log("Save Edit");
-  user.value.role = user.value.role.filter(role => role !== "");
-    user.value.degree = user.value.degree.filter(degree => degree !== "");
+  user.value.role = user.value.role.filter((role) => role !== "");
+  user.value.degree = user.value.degree.filter((degree) => degree !== "");
 
   Users.value = Users.value.map((u) => {
     if (u.id === selectedUser.value.id) {
