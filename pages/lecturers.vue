@@ -53,6 +53,7 @@
           >
         </TemplateButton>
         <Import
+          @click="importUser"
           class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
         >
           <span class="text-black-primary font-semibold text-base">Import</span>
@@ -159,6 +160,7 @@
     @close="showUserPopup = false"
   />
   <AddLecturer v-if="showAddUserPopup" @close="showAddUserPopup = false" />
+  <ImportUser v-if="showImportUserPopup" @close="showImportUserPopup = false" />
 </template>
 
 <script setup>
@@ -166,6 +168,7 @@ import { ref, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import Lecturers from "@/components/popups/Lecturers.vue";
 import AddLecturer from "@/components/popups/AddLecturer.vue";
+import ImportUser from "@/components/popups/ImportUser.vue";
 import AddUserButton from "@/components/button/AddUserButton.vue";
 import TemplateButton from "@/components/button/TemplateButton.vue";
 import Import from "@/components/button/ImportButton.vue";
@@ -180,11 +183,17 @@ const currentPage = ref(1);
 const itemsPerPage = 20;
 const showUserPopup = ref(false);
 const showAddUserPopup = ref(false);
+const showImportUserPopup = ref(false);
 const selectedUserId = ref(null);
 
 const addUser = () => {
   showAddUserPopup.value = true;
 };
+
+const importUser = () => {
+  showImportUserPopup.value = true;
+};
+
 
 const UsersPage1 = ref([
   {

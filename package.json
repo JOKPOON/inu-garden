@@ -25,7 +25,8 @@
     "vue": "latest",
     "vue-chartjs": "^5.3.2",
     "vue-router": "latest",
-    "vue3-apexcharts": "^1.8.0"
+    "vue3-apexcharts": "^1.8.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",

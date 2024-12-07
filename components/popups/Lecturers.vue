@@ -256,9 +256,9 @@
                     <option value="Lecturer">Lecturer</option>
                     <option value="Moderator">Moderator</option>
                     <option value="Criteria Manager">Criteria Manager</option>
-                    <option value="TABE manager">TABE manager</option>
-                    <option value="ABET manager">ABET manager</option>
-                    <option value="AUN-QA manager">AUN-QA manager</option>
+                    <option value="TABEE Managerr">TABEE Managerr</option>
+                    <option value="ABET Manager">ABET Manager</option>
+                    <option value="AUN-QA Manager">AUN-QA Manager</option>
                     <option value="Head of Curriculumn">
                       Head of Curriculumn
                     </option>
