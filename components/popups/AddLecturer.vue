@@ -164,7 +164,7 @@
                 </div>
                 <button
                   @click="addRole"
-                  class="flex items-center justify-center rounded-xl p-2 border hover:bg-black-primary hover:text-white"
+                  class="flex items-center justify-center rounded-xl p-3 border hover:bg-black-primary hover:text-white"
                 >
                   Add Role
                 </button>
@@ -194,7 +194,7 @@
                 </div>
                 <button
                   @click="addDegree"
-                  class="flex items-center justify-center rounded-xl p-2 border hover:bg-black-primary hover:text-white"
+                  class="flex items-center justify-center rounded-xl p-3 border hover:bg-black-primary hover:text-white"
                 >
                   Add Degree
                 </button>
