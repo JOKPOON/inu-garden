@@ -22,6 +22,7 @@
               <div
                 class="text-lg 3xl:text-lg font-semibold text-black-primary text-start"
               >
+                {{ selectedUser.academic_position_eng }}
                 {{ selectedUser.first_name }} {{ selectedUser.last_name }}
               </div>
               <div
