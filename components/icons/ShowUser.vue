@@ -8,30 +8,34 @@
   >
     <path
       opacity="0.4"
-      d="M16.8395 20.1642V6.54639"
-      stroke="currentColor"
+      d="M11 17.5H4"
+      stroke="black"
       stroke-width="1.5"
       stroke-linecap="round"
       stroke-linejoin="round"
     />
     <path
-      d="M20.9173 16.068L16.8395 20.1647L12.7617 16.068"
-      stroke="currentColor"
+      fill-rule="evenodd"
+      clip-rule="evenodd"
+      d="M20 17.5C20 18.8807 18.8807 20 17.5 20C16.1193 20 15 18.8807 15 17.5C15 16.1183 16.1193 15 17.5 15C18.8807 15 20 16.1183 20 17.5Z"
+      stroke="black"
       stroke-width="1.5"
       stroke-linecap="round"
       stroke-linejoin="round"
     />
     <path
       opacity="0.4"
-      d="M6.91127 3.83289V17.4507"
-      stroke="currentColor"
+      d="M13 6.5H20"
+      stroke="black"
       stroke-width="1.5"
       stroke-linecap="round"
       stroke-linejoin="round"
     />
     <path
-      d="M2.8335 7.92894L6.91127 3.83228L10.9891 7.92894"
-      stroke="currentColor"
+      fill-rule="evenodd"
+      clip-rule="evenodd"
+      d="M4 6.5C4 7.88174 5.11928 9 6.5 9C7.88072 9 9 7.88174 9 6.5C9 5.11928 7.88072 4 6.5 4C5.11928 4 4 5.11928 4 6.5Z"
+      stroke="black"
       stroke-width="1.5"
       stroke-linecap="round"
       stroke-linejoin="round"

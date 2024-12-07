@@ -5,7 +5,9 @@
     >
       <div class="flex flex-row gap-10 justify-center items-center">
         <div class="text-2xl text-black-primary rounded-xl w-[450px]">
-          <div class="rounded-2xl flex items-center justify-center"></div>
+          <div class="rounded-2xl flex items-center justify-center relative">
+            <img :src="BannerLogin" alt="Banner Login" class="absolute h-[445px] w-[450px] rounded-2xl object-cover" />
+          </div>
         </div>
         <div class="flex flex-col">
           <LoginLogo class="w-20 object-left" />
@@ -67,8 +69,8 @@
               >Invalid Email and Password</span
             >
           </div>
-          <a href="#" class="text-sm text-grey-primary hover:underline"
-            >Forgot Password?</a
+          <button @click="forgetPassword" class="text-sm text-start w-full text-grey-primary hover:underline"
+            >Forgot Password?</button
           >
           <div class="flex items-center justify-center w-full pt-10">
             <LoginButton
@@ -87,6 +89,7 @@
 <script setup>
 import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
+import BannerLogin from "@/components/images/BannerLogin.png";
 import LoginLogo from "@/components/icons/LoginLogo.vue";
 import EmailLogin from "@/components/icons/EmailLogin.vue";
 import PasswordLogin from "@/components/icons/PasswordLogin.vue";
@@ -132,6 +135,10 @@ const handleLogin = () => {
         }
       });
   }
+};
+
+const forgetPassword = () => {
+  router.push("/forget-password");
 };
 
 watch(Email, () => {

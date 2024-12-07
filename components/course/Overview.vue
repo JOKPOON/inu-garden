@@ -46,7 +46,7 @@
             <div class="flex flex-row gap-2">
               <Course class="w-6 h-6" />
               <p class="text-sm text-grey-primary">
-                Academic Year : {{ course.academic_year }}
+                academic_year Year : {{ course.academic_year }}
               </p>
             </div>
             <div class="flex flex-row gap-2 items-center">

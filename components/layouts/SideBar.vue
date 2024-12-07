@@ -160,7 +160,7 @@
                 'bg-black-primary text-white': route.path.startsWith('/logout'),
                 'bg-grey-light text-black-primary': route.path !== '/logout',
               }"
-              @click="handleClick('/logout')"
+              @click="showLogoutPopup = true"
             >
               <Logout
                 :class="{
@@ -210,6 +210,7 @@
         <slot class="w-full h-full" />
       </div>
     </div>
+    <LogoutPopup v-if="showLogoutPopup" @close="showLogoutPopup = false" />
   </div>
 </template>
 
@@ -227,7 +228,7 @@ import Logout from "@/components/icons/Logout.vue";
 import ArrowRight from "@/components/icons/ArrowRight.vue";
 import LogoSidebar from "@/components/icons/LogoSidebar.png";
 import LoginLogo from "@/components/icons/LoginLogo.vue";
-import LanguageToggler from "@/components/accordians/LanguageToggler.vue";
+import LogoutPopup from "@/components/popups/Logout.vue";
 
 const { t } = useI18n();
 const router = useRouter();
@@ -240,6 +241,7 @@ const props = defineProps({
 });
 
 const smallNav = ref(false);
+const showLogoutPopup = ref(false);
 
 const emit = defineEmits(["open-lang-options", "close-lang-options"]);
 
