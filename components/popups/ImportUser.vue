@@ -63,7 +63,7 @@
           </button>
           <button
             @click="$emit('close')"
-            class="font-medium text-center py-3 bg-grey-secondary rounded-lg w-full hover:bg-black-primary hover:text-white"
+            class="font-medium text-center py-3 bg-grey-secondary rounded-lg w-full"
           >
             Cancel
           </button>
