@@ -9,13 +9,13 @@
         <div class="flex justify-between gap-4">
           <button
             @click="handleLogout"
-            class="w-full font-medium py-2 text-white rounded-xl bg-red-600"
+            class="w-full font-medium py-3 text-white rounded-xl bg-red-600"
           >
             Confirm
           </button>
           <button
             @click="$emit('close')"
-            class="w-full font-medium py-2 bg-gray-300 rounded-xl hover:grey-secondary"
+            class="w-full font-medium py-3 bg-gray-300 rounded-xl hover:grey-secondary"
           >
             Cancel
           </button>
