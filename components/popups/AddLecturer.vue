@@ -143,6 +143,7 @@
                     v-model="user.role[index]"
                     class="w-full text-black rounded-xl outline-none"
                   >
+                    <option value="" disabled selected>Select Role</option>
                     <option value="Lecturer">Lecturer</option>
                     <option value="Moderator">Moderator</option>
                     <option value="Criteria Manager">Criteria Manager</option>

@@ -1,7 +1,7 @@
 <template>
-  <div class=" w-full h-[100vh] bg-[#F6F8F8] flex items-center justify-center">
+  <div class="w-full h-[100vh] bg-[#F6F8F8] flex items-center justify-center">
     <div
-      class="p-6  pl-0 rounded-3xl bg-white border border-grey-tertiary shadow-setting flex flex-col gap-4 items-center"
+      class="p-6 pl-0 rounded-3xl bg-white border border-grey-tertiary shadow-setting flex flex-col gap-4 items-center"
     >
       <div class="flex flex-row justify-center items-center">
         <div class="text-2xl text-black-primary rounded-xl w-[450px]">
@@ -9,13 +9,12 @@
             <img
               :src="BannerLogin"
               alt="Banner Login"
-              class=" h-[405px] object-cover rounded-2xl"
+              class="h-[405px] object-cover rounded-2xl"
             />
           </div>
         </div>
         <div class="flex flex-col">
-          <div class="w-16 h-16 object-left" >
-          </div>
+          <div class="w-16 h-16 object-left"></div>
           <div class="text-2xl text-black-primary -mt-4">Hello 👋</div>
           <div class="text-3xl text-black-primary font-semibold mb-4">
             Welcome!
@@ -74,9 +73,12 @@
               >Invalid Email and Password</span
             >
           </div>
-          <button @click="forgetPassword" class="text-sm text-start w-full text-grey-primary hover:underline"
-            >Forgot Password?</button
+          <button
+            @click="forgetPassword"
+            class="text-sm text-start w-full text-grey-primary hover:underline"
           >
+            Forgot Password?
+          </button>
           <div class="flex items-center justify-center w-full pt-10">
             <LoginButton
               @click="handleLogin"
@@ -167,6 +169,6 @@ useHead({
 
 <style lang="scss" scoped>
 .shadow-setting {
-  box-shadow:  0px 25px 25px rgba(0, 0, 0, 0.05);
+  box-shadow: 0px 25px 25px rgba(0, 0, 0, 0.05);
 }
 </style>

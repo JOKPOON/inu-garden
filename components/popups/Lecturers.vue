@@ -252,6 +252,7 @@
                     v-model="user.role[index]"
                     class="w-full text-black rounded-xl outline-none"
                   >
+                    <option value="" disabled selected>Select Role</option>
                     <option value="Lecturer">Lecturer</option>
                     <option value="Moderator">Moderator</option>
                     <option value="Criteria Manager">Criteria Manager</option>
@@ -556,7 +557,6 @@ const deleteRole = (index) => {
   user.value.role.splice(index, 1);
 };
 
-
 const editMode = ref(false);
 const deleteMode = ref(false);
 
@@ -613,6 +613,9 @@ const handleDelete = () => {
 
 const handleSaveEdit = () => {
   console.log("Save Edit");
+  user.value.role = user.value.role.filter(role => role !== "");
+    user.value.degree = user.value.degree.filter(degree => degree !== "");
+
   Users.value = Users.value.map((u) => {
     if (u.id === selectedUser.value.id) {
       return {

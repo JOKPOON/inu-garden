@@ -32,7 +32,7 @@
         </History>
       </div>
     </div>
-    <div class="max-h-[calc(100vh-270px)] overflow-y-scroll hide-scrollbar">
+    <div class="max-h-[calc(100vh-365px)] overflow-y-scroll hide-scrollbar">
       <div class="mt-6 grid grid-cols-3 gap-4 w-full">
         <div class="w-full flex flex-col gap-2">
           <div class="text-base text-black-primary font-semibold">Name</div>
@@ -280,7 +280,8 @@
           </div>
         </div>
       </div>
-      <div class="w-full flex justify-end gap-4 mt-16">
+   
+    </div>   <div class="w-full flex justify-end gap-4 mt-6">
         <button
           @click="createCourse"
           class="flex items-center flex-row justify-center bg-yellow-primary rounded-xl px-4 py-3 gap-2"
@@ -296,7 +297,6 @@
           Cancel
         </button>
       </div>
-    </div>
   </div>
 </template>
 

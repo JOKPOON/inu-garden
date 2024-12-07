@@ -86,11 +86,12 @@
         class="max-h-[calc(100vh-450px)] overflow-y-scroll scrollbar-set mt-2"
       >
         <div v-for="user in paginatedUsers" :key="user.id" class="contents">
-          <div class="grid grid-cols-5 gap-4 py-2"
-          :class="[
-            'border-b',
-            { 'border-grey-tertiary': index !== paginatedUsers.length - 1 },
-          ]"
+          <div
+            class="grid grid-cols-5 gap-4 py-2"
+            :class="[
+              'border-b',
+              { 'border-grey-tertiary': index !== paginatedUsers.length - 1 },
+            ]"
           >
             <div
               class="col-span-1 text-sm text-black-primary flex items-center justify-center"

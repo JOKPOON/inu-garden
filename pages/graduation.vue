@@ -1,7 +1,5 @@
 <template>
-    <div>
-        hello from Graduation
-    </div>
+  <div>hello from Graduation</div>
 </template>
 
 <script setup>
@@ -17,6 +15,4 @@ definePageMeta({
 });
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>
