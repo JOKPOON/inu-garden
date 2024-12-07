@@ -1,7 +1,7 @@
 <template>
-  <div class="w-full h-[100vh]  flex items-center justify-center">
+  <div class=" w-full h-[100vh] bg-[#F6F8F8] flex items-center justify-center">
     <div
-      class="p-6  pl-0 rounded-3xl bg-white border border-yellow-secondary shadow-setting flex flex-col gap-4 items-center"
+      class="p-6  pl-0 rounded-3xl bg-white border border-grey-tertiary shadow-setting flex flex-col gap-4 items-center"
     >
       <div class="flex flex-row justify-center items-center">
         <div class="text-2xl text-black-primary rounded-xl w-[450px]">
