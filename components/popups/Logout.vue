@@ -4,7 +4,7 @@
       class="w-full h-full fixed inset-0 flex items-center justify-center bg-black-primary bg-opacity-50 z-50"
     >
       <div class="bg-white p-6 rounded-2xl shadow-lg">
-        <h2 class="text-xl font-semibold mb-4 w-full text-center">Log Out</h2>
+        <h2 class="text-xl font-semibold mb-4 w-full text-center pb-2 border-b">Log Out</h2>
         <p class="mb-6 px-10">Click "Confirm" to log out</p>
         <div class="flex justify-between gap-4">
           <button
@@ -26,20 +26,14 @@
 </template>
 
 <script setup>
-import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
-
-const { t } = useI18n();
 const router = useRouter();
+const emit = defineEmits(["close"]);
 
 const handleLogout = () => {
   router.push("/login");
 };
 
-useHead({
-  title: t("seo.title"),
-  description: t("seo.desc"),
-});
 </script>
 
 <style lang="scss" scoped></style>

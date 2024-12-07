@@ -20,7 +20,9 @@
             @click="handleClick('/profile')"
           >
             <div class="rounded-full bg-black-primary h-16 w-16">
-              
+              <div class="rounded-full bg-grey-primary h-16 w-16">
+                <img :src=" 'https://thumbs.dreamstime.com/b/arabic-business-man-traditional-muslim-hat-placeholder-102337208.jpg'" alt="Profile Picture" class="h-full w-full object-cover rounded-full" />
+              </div>
             </div>
             <div v-if="!smallNav" class="flex flex-col">
               <div

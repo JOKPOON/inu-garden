@@ -1,17 +1,22 @@
 <template>
-  <div class="w-full h-[100vh] flex items-center justify-center">
+  <div class="w-full h-[100vh]  flex items-center justify-center">
     <div
-      class="p-6 rounded-2xl bg-white border border-grey-tertiary shadow-sm flex flex-col gap-4 items-center"
+      class="p-6  pl-0 rounded-3xl bg-white border border-yellow-secondary shadow-setting flex flex-col gap-4 items-center"
     >
-      <div class="flex flex-row gap-10 justify-center items-center">
+      <div class="flex flex-row justify-center items-center">
         <div class="text-2xl text-black-primary rounded-xl w-[450px]">
           <div class="rounded-2xl flex items-center justify-center relative">
-            <img :src="BannerLogin" alt="Banner Login" class="absolute h-[445px] w-[450px] rounded-2xl object-cover" />
+            <img
+              :src="BannerLogin"
+              alt="Banner Login"
+              class=" h-[405px] object-cover rounded-2xl"
+            />
           </div>
         </div>
         <div class="flex flex-col">
-          <LoginLogo class="w-20 object-left" />
-          <div class="text-2xl text-black-primary -mt-4">Hello,</div>
+          <div class="w-16 h-16 object-left" >
+          </div>
+          <div class="text-2xl text-black-primary -mt-4">Hello 👋</div>
           <div class="text-3xl text-black-primary font-semibold mb-4">
             Welcome!
           </div>
@@ -89,7 +94,7 @@
 <script setup>
 import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
-import BannerLogin from "@/components/images/BannerLogin.png";
+import BannerLogin from "@/components/images/BannerLogin.jpg";
 import LoginLogo from "@/components/icons/LoginLogo.vue";
 import EmailLogin from "@/components/icons/EmailLogin.vue";
 import PasswordLogin from "@/components/icons/PasswordLogin.vue";
@@ -160,4 +165,8 @@ useHead({
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.shadow-setting {
+  box-shadow:  0px 25px 25px rgba(0, 0, 0, 0.05);
+}
+</style>

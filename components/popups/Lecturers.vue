@@ -7,16 +7,73 @@
         <div
           class="flex flex-row justify-between items-center gap-12 pb-2 border-b"
         >
-          <div class="w-full flex flex-row gap-4 items-center">
-            <div class="rounded-full bg-black-primary h-16 w-16"></div>
+          <div v-if="!editMode" class="w-full flex flex-row gap-4 items-center">
+            <div class="rounded-full bg-grey-primary h-16 w-16">
+              <img
+                :src="
+                  user.picture ||
+                  'https://thumbs.dreamstime.com/b/arabic-business-man-traditional-muslim-hat-placeholder-102337208.jpg'
+                "
+                alt="Profile Picture"
+                class="h-full w-full object-cover rounded-full"
+              />
+            </div>
             <div class="flex flex-col">
               <div
                 class="text-lg 3xl:text-lg font-semibold text-black-primary text-start"
               >
                 {{ selectedUser.first_name }} {{ selectedUser.last_name }}
               </div>
-              <div class="text-base text-black-primary text-start">
-                {{ selectedUser.role }}
+              <div
+                class="text-sm text-black-primary text-start mt-1 flex flex-row gap-2"
+              >
+                <role v-for="(role, index) in selectedUser.role" :key="index">
+                  <div class="p-1 px-3 bg-grey-tertiary rounded-lg border">
+                    {{ role }}
+                  </div>
+                </role>
+              </div>
+            </div>
+          </div>
+
+          <div v-if="editMode" class="w-full flex flex-row gap-4 items-center">
+            <div class="rounded-full bg-grey-primary h-16 w-16">
+              <img
+                :src="
+                  user.picture ||
+                  'https://thumbs.dreamstime.com/b/arabic-business-man-traditional-muslim-hat-placeholder-102337208.jpg'
+                "
+                alt="Profile Picture"
+                class="h-full w-full object-cover rounded-full"
+              />
+            </div>
+            <div class="flex flex-col">
+              <div class="flex flex-row border border-grey-primary rounded-xl">
+                <div class="text-base px-4 py-2 text-grey-primary rounded-xl">
+                  {{ user.pictureName || "file name" }}
+                </div>
+                <button
+                  @click="triggerFileInput"
+                  class="text-base font-semibold px-4 py-2 bg-black-primary text-white rounded-xl"
+                >
+                  Upload Picture
+                </button>
+                <input
+                  type="file"
+                  ref="fileInput"
+                  @change="handleFileChange"
+                  class="hidden"
+                  accept="image/jpeg, image/png"
+                />
+              </div>
+              <div class="text-sm text-start mt-1 text-grey-primary">
+                File type : JPG, PNG (max 10 MB.)
+              </div>
+              <div
+                v-if="invalidPicture"
+                class="text-sm text-red-500 text-start mt-1"
+              >
+                Invalid Picture Format or Size
               </div>
             </div>
           </div>
@@ -54,7 +111,7 @@
                 </div>
                 <input
                   v-if="editMode"
-                  v-model="userAcademicEng"
+                  v-model="user.academic_position_eng"
                   class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                   type="text"
                   :placeholder="selectedUser.academic_position_eng"
@@ -72,7 +129,7 @@
                 </div>
                 <input
                   v-if="editMode"
-                  v-model="userAcademicThai"
+                  v-model="user.academic_position_thai"
                   class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                   type="text"
                   :placeholder="selectedUser.academic_position_thai"
@@ -92,7 +149,7 @@
                 </div>
                 <input
                   v-if="editMode"
-                  v-model="userFirstname"
+                  v-model="user.first_name"
                   class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                   type="text"
                   :placeholder="selectedUser.first_name"
@@ -110,7 +167,7 @@
                 </div>
                 <input
                   v-if="editMode"
-                  v-model="userLastname"
+                  v-model="user.last_name"
                   class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                   type="text"
                   :placeholder="selectedUser.last_name"
@@ -130,7 +187,7 @@
                 </div>
                 <input
                   v-if="editMode"
-                  v-model="userFirstnameThai"
+                  v-model="user.first_name_thai"
                   class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                   type="text"
                   :placeholder="selectedUser.first_name_thai"
@@ -148,7 +205,7 @@
                 </div>
                 <input
                   v-if="editMode"
-                  v-model="userLastnameThai"
+                  v-model="user.last_name_thai"
                   class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                   type="text"
                   :placeholder="selectedUser.last_name_thai"
@@ -156,38 +213,69 @@
               </div>
             </div>
           </div>
-          <div class="grid grid-cols-2 gap-4 mt-2">
-            <div class="flex flex-col gap-1 min-w-64">
-              <div class="col-span-1 text-grey-primary text-sm">Email</div>
-              <div
-                v-if="!editMode"
-                class="col-span-2 border text-black border-grey-tertiary rounded-xl p-3"
-              >
-                {{ selectedUser.email }}
-              </div>
-              <input
-                v-if="editMode"
-                v-model="userEmail"
-                class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
-                type="text"
-                :placeholder="selectedUser.email"
-              />
+          <div class="flex flex-col gap-1 min-w-64 mt-2">
+            <div class="text-grey-primary text-sm">Email</div>
+            <div
+              v-if="!editMode"
+              class="border text-black border-grey-tertiary rounded-xl p-3"
+            >
+              {{ selectedUser.email }}
             </div>
-            <div class="flex flex-col gap-1 min-w-64">
-              <div class="col-span-1 text-grey-primary text-sm">Role</div>
+            <input
+              v-if="editMode"
+              v-model="user.email"
+              class="w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
+              type="text"
+              placeholder="Email"
+            />
+          </div>
+          <div class="flex flex-col gap-1 min-w-64 mt-2">
+            <div class="text-grey-primary text-sm">Role</div>
+            <div
+              v-if="!editMode"
+              class="border text-black border-grey-tertiary rounded-xl p-3"
+            >
+              <ul>
+                <li v-for="(role, index) in selectedUser.role" :key="index">
+                  {{ role }}
+                </li>
+              </ul>
+            </div>
+            <div v-if="editMode" class="flex flex-col gap-2">
               <div
-                v-if="!editMode"
-                class="col-span-2 border text-black border-grey-tertiary rounded-xl p-3"
+                v-for="(role, index) in user.role"
+                :key="index"
+                class="flex items-center gap-2 w-full"
               >
-                {{ selectedUser.role }}
+                <div class="p-3 border border-grey-tertiary rounded-xl w-full">
+                  <select
+                    v-model="user.role[index]"
+                    class="w-full text-black rounded-xl outline-none"
+                  >
+                    <option value="Lecturer">Lecturer</option>
+                    <option value="Moderator">Moderator</option>
+                    <option value="Criteria Manager">Criteria Manager</option>
+                    <option value="TABE manager">TABE manager</option>
+                    <option value="ABET manager">ABET manager</option>
+                    <option value="AUN-QA manager">AUN-QA manager</option>
+                    <option value="Head of Curriculumn">
+                      Head of Curriculumn
+                    </option>
+                  </select>
+                </div>
+                <button
+                  @click="deleteRole(index)"
+                  class="flex items-center justify-center rounded-xl p-2 border hover:bg-red-500 hover:text-white"
+                >
+                  <Delete class="w-6 h-6" />
+                </button>
               </div>
-              <input
-                v-if="editMode"
-                v-model="userRole"
-                class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
-                type="text"
-                :placeholder="selectedUser.role"
-              />
+              <button
+                @click="addRole"
+                class="flex items-center justify-center rounded-xl p-2 border hover:bg-black-primary hover:text-white"
+              >
+                Add Role
+              </button>
             </div>
           </div>
           <div class="flex flex-col gap-1 w-full mt-2">
@@ -196,39 +284,39 @@
               v-if="!editMode"
               class="col-span-2 border text-black border-grey-tertiary rounded-xl p-3"
             >
-              {{ selectedUser.degree }}
+              <ul>
+                <li v-for="(degree, index) in selectedUser.degree" :key="index">
+                  {{ degree }}
+                </li>
+              </ul>
             </div>
-            <div class="flex flex-row gap-4 items-center">
-              <input
-                v-if="editMode"
-                v-model="userDegree"
-                class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
-                type="text"
-                :placeholder="selectedUser.degree"
-              />
-              <div v-if="editMode" class="flex flex-row gap-2">
+            <div v-if="editMode" class="flex flex-col gap-2">
+              <div
+                v-for="(degree, index) in userDegree"
+                :key="index"
+                class="flex flex-row gap-4 items-center"
+              >
+                <input
+                  v-model="user.degree[index]"
+                  class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
+                  type="text"
+                  placeholder="Enter degree"
+                />
                 <button
-                  @click="editDegree"
-                  class="flex items-center justify-center rounded-xl p-2 border hover:bg-black-primary hover:text-white"
-                >
-                  <Edit class="w-6 h-6" />
-                </button>
-                <button
-                  @click="deleteDegree"
+                  @click="deleteDegree(index)"
                   class="flex items-center justify-center rounded-xl p-2 border hover:bg-red-500 hover:text-white"
                 >
                   <Delete class="w-6 h-6" />
                 </button>
               </div>
+              <button
+                @click="addDegree"
+                class="flex items-center justify-center rounded-xl p-2 border hover:bg-black-primary hover:text-white"
+              >
+                Add Degree
+              </button>
             </div>
           </div>
-          <button
-            v-if="editMode"
-            @click="addDegree"
-            class="mt-2 font-medium w-full text-center py-2 border hover:bg-black-primary hover:text-white rounded-lg"
-          >
-            Add
-          </button>
           <div class="flex flex-col gap-1 w-full mt-2">
             <div class="col-span-1 text-grey-primary text-sm">
               Courses
@@ -364,20 +452,20 @@
         <button
           v-if="!editMode && !deleteMode"
           @click="$emit('close')"
-          class="mt-8 font-medium w-full text-center py-2 bg-grey-secondary hover:bg-black-primary hover:text-white rounded-lg"
+          class="mt-8 font-medium w-full text-center py-3 bg-grey-secondary hover:bg-black-primary hover:text-white rounded-lg"
         >
           Close
         </button>
         <div v-if="editMode && !deleteMode" class="flex flex-row gap-4 mt-8">
           <button
             @click="handleSaveEdit"
-            class="w-full font-medium text-center py-2 bg-yellow-primary rounded-lg"
+            class="w-full font-medium text-center py-3 bg-yellow-primary rounded-lg"
           >
             Save
           </button>
           <button
             @click="handleCancelEdit"
-            class="w-full font-medium text-center py-2 bg-grey-secondary rounded-lg"
+            class="w-full font-medium text-center py-3 bg-grey-secondary rounded-lg"
           >
             Cancel
           </button>
@@ -385,13 +473,13 @@
         <div v-if="deleteMode && !editMode" class="flex flex-row gap-4 mt-8">
           <button
             @click="handleConfirmDelete"
-            class="w-full font-medium text-center py-2 bg-yellow-primary rounded-lg"
+            class="w-full font-medium text-center py-3 bg-yellow-primary rounded-lg"
           >
             Confirm
           </button>
           <button
             @click="handleCancelDelete"
-            class="w-full font-medium text-center py-2 bg-grey-secondary rounded-lg"
+            class="w-full font-medium text-center py-3 bg-grey-secondary rounded-lg"
           >
             Cancel
           </button>
@@ -408,6 +496,66 @@ import Lecturer from "@/components/icons/Lecturer.vue";
 import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
 import Search from "@/components/icons/Search.vue";
+const emit = defineEmits(["close"]);
+
+const selectedUser = computed(() => {
+  return Users.value.find((user) => user.id === props.userId);
+});
+
+const invalidPicture = ref(false);
+
+const fileInput = ref(null);
+
+const triggerFileInput = () => {
+  fileInput.value.click();
+};
+
+const handleFileChange = (event) => {
+  const file = event.target.files[0];
+  if (file && file.size <= 10 * 1024 * 1024) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      user.value.picture = e.target.result;
+      user.value.pictureName = file.name;
+    };
+    reader.readAsDataURL(file);
+  } else {
+    invalidPicture.value = true;
+  }
+};
+
+const user = ref({
+  picture: "",
+  pictureName: "",
+  academic_position_eng: "",
+  academic_position_thai: "",
+  first_name: "",
+  last_name: "",
+  first_name_thai: "",
+  last_name_thai: "",
+  email: "",
+  role: [""],
+  degree: [""],
+});
+
+const userDegree = ref([]);
+
+const addDegree = () => {
+  user.value.degree.push("");
+};
+
+const addRole = () => {
+  user.value.role.push("");
+};
+
+const deleteDegree = (index) => {
+  user.value.degree.splice(index, 1);
+};
+
+const deleteRole = (index) => {
+  user.value.role.splice(index, 1);
+};
+
 
 const editMode = ref(false);
 const deleteMode = ref(false);
@@ -452,6 +600,11 @@ const props = defineProps({
 
 const handleEdit = () => {
   editMode.value = !editMode.value;
+  user.value = {
+    ...selectedUser.value,
+    degree: selectedUser.value.degree,
+  };
+  userDegree.value = selectedUser.value.degree;
 };
 
 const handleDelete = () => {
@@ -460,6 +613,17 @@ const handleDelete = () => {
 
 const handleSaveEdit = () => {
   console.log("Save Edit");
+  Users.value = Users.value.map((u) => {
+    if (u.id === selectedUser.value.id) {
+      return {
+        ...u,
+        ...user.value,
+        degree: userDegree.value,
+      };
+    }
+    return u;
+  });
+  console.log(Users.value);
   editMode.value = !editMode.value;
 };
 
@@ -472,7 +636,7 @@ const deleteUser = ref("");
 const checkDelete = ref(false);
 
 const handleConfirmDelete = () => {
-  if (deleteUser.value === `delete/${selectedUser.first_name}`) {
+  if (deleteUser.value === `delete/${selectedUser.value.first_name}`) {
     console.log("Confirm Delete");
     deleteMode.value = !deleteMode.value;
   } else {
@@ -491,16 +655,18 @@ const handleCancelDelete = () => {
 const Users = ref([
   {
     id: 1,
+    picture: "",
+    pictureName: "",
     first_name: "Daniel",
     last_name: "Smith",
     email: "daniel.smith@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer", "Moderator", "Criteria Manager"],
     courses: ["CSC101", "CSC102"],
     academic_position_eng: "Professor",
     academic_position_thai: "ศาสตราจารย์",
     first_name_thai: "แดเนียล",
     last_name_thai: "สมิธ",
-    degree: "PhD in Computer Science",
+    degree: ["PhD in Computer Science", "MSc in Computer Science"],
   },
 ]);
 
@@ -617,20 +783,6 @@ const courses = ref([
     },
   },
 ]);
-
-const selectedUser = computed(() => {
-  return Users.value.find((user) => user.id === props.userId);
-});
-
-const userAcademicEng = ref("");
-const userAcademicThai = ref("");
-const userFirstname = ref("");
-const userLastname = ref("");
-const userFirstnameThai = ref("");
-const userLastnameThai = ref("");
-const userEmail = ref("");
-const userRole = ref("");
-const userDegree = ref("");
 </script>
 
 <style lang="scss" scoped>

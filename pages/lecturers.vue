@@ -38,7 +38,7 @@
       </div>
       <div class="flex flex-row gap-4">
         <AddUserButton
-          @click="Template"
+          @click="addUser"
           class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
         >
           <span class="text-black-primary font-semibold text-base"
@@ -46,7 +46,6 @@
           >
         </AddUserButton>
         <TemplateButton
-          @click="Template"
           class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
         >
           <span class="text-black-primary font-semibold text-base"
@@ -54,7 +53,6 @@
           >
         </TemplateButton>
         <Import
-          @click="Import"
           class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
         >
           <span class="text-black-primary font-semibold text-base">Import</span>
@@ -62,9 +60,9 @@
       </div>
     </div>
     <div class="border border-grey-secondary p-4 rounded-2xl">
-      <div class="grid grid-cols-6 gap-4 pb-2 border-b">
+      <div class="grid grid-cols-5 gap-4 pb-2 border-b">
         <div
-          class="col-span-2 text-sm text-grey-primary flex items-center justify-center"
+          class="col-span-1 text-sm text-grey-primary flex items-center justify-center"
         >
           Name
         </div>
@@ -87,10 +85,15 @@
       <div
         class="max-h-[calc(100vh-450px)] overflow-y-scroll scrollbar-set mt-2"
       >
-        <div class="grid grid-cols-6 gap-4">
-          <div v-for="user in paginatedUsers" :key="user.id" class="contents">
+        <div v-for="user in paginatedUsers" :key="user.id" class="contents">
+          <div class="grid grid-cols-5 gap-4 py-2"
+          :class="[
+            'border-b',
+            { 'border-grey-tertiary': index !== paginatedUsers.length - 1 },
+          ]"
+          >
             <div
-              class="col-span-2 text-sm text-black-primary flex items-center justify-center"
+              class="col-span-1 text-sm text-black-primary flex items-center justify-center"
             >
               {{ user.first_name }} {{ user.last_name }}
             </div>
@@ -100,9 +103,13 @@
               {{ user.email }}
             </div>
             <div
-              class="col-span-1 text-sm text-black-primary flex items-center justify-center"
+              class="text-sm text-black-primary text-start mt-1 flex flex-col gap-2"
             >
-              {{ user.role }}
+              <role v-for="(role, index) in user.role" :key="index">
+                <div class="p-1 px-3 bg-grey-tertiary rounded-lg border">
+                  {{ role }}
+                </div>
+              </role>
             </div>
             <div
               class="col-span-1 flex-row gap-4 flex items-center justify-center"
@@ -150,12 +157,14 @@
     :userId="selectedUserId"
     @close="showUserPopup = false"
   />
+  <AddLecturer v-if="showAddUserPopup" @close="showAddUserPopup = false" />
 </template>
 
 <script setup>
 import { ref, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import Lecturers from "@/components/popups/Lecturers.vue";
+import AddLecturer from "@/components/popups/AddLecturer.vue";
 import AddUserButton from "@/components/button/AddUserButton.vue";
 import TemplateButton from "@/components/button/TemplateButton.vue";
 import Import from "@/components/button/ImportButton.vue";
@@ -169,7 +178,12 @@ const searchQuery = ref("");
 const currentPage = ref(1);
 const itemsPerPage = 20;
 const showUserPopup = ref(false);
+const showAddUserPopup = ref(false);
 const selectedUserId = ref(null);
+
+const addUser = () => {
+  showAddUserPopup.value = true;
+};
 
 const UsersPage1 = ref([
   {
@@ -177,7 +191,7 @@ const UsersPage1 = ref([
     first_name: "Daniel",
     last_name: "Smith",
     email: "daniel.smith@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer", "Moderator", "Criteria Manager"],
     courses: ["CSC101", "CSC102"],
   },
   {
@@ -185,7 +199,7 @@ const UsersPage1 = ref([
     first_name: "Sarah",
     last_name: "Johnson",
     email: "sarah.johnson@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer", "Criteria Manager"],
     courses: ["CSC103", "CSC104"],
   },
   {
@@ -193,7 +207,7 @@ const UsersPage1 = ref([
     first_name: "James",
     last_name: "Williams",
     email: "james.williams@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC105", "CSC106"],
   },
   {
@@ -201,7 +215,7 @@ const UsersPage1 = ref([
     first_name: "Patricia",
     last_name: "Brown",
     email: "patricia.brown@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC107", "CSC108"],
   },
   {
@@ -209,7 +223,7 @@ const UsersPage1 = ref([
     first_name: "Robert",
     last_name: "Jones",
     email: "robert.jones@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC109", "CSC110"],
   },
   {
@@ -217,7 +231,7 @@ const UsersPage1 = ref([
     first_name: "Linda",
     last_name: "Garcia",
     email: "linda.garcia@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC111", "CSC112"],
   },
   {
@@ -225,7 +239,7 @@ const UsersPage1 = ref([
     first_name: "Michael",
     last_name: "Martinez",
     email: "michael.martinez@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer", "Moderator", "Criteria Manager"],
     courses: ["CSC113", "CSC114"],
   },
   {
@@ -233,7 +247,7 @@ const UsersPage1 = ref([
     first_name: "Barbara",
     last_name: "Rodriguez",
     email: "barbara.rodriguez@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC115", "CSC116"],
   },
   {
@@ -241,7 +255,7 @@ const UsersPage1 = ref([
     first_name: "William",
     last_name: "Hernandez",
     email: "william.hernandez@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC117", "CSC118"],
   },
   {
@@ -249,7 +263,7 @@ const UsersPage1 = ref([
     first_name: "Elizabeth",
     last_name: "Lopez",
     email: "elizabeth.lopez@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer", "Moderator", "Criteria Manager"],
     courses: ["CSC119", "CSC120"],
   },
   {
@@ -257,7 +271,7 @@ const UsersPage1 = ref([
     first_name: "David",
     last_name: "Gonzalez",
     email: "david.gonzalez@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer", "Criteria Manager"],
     courses: ["CSC121", "CSC122"],
   },
   {
@@ -265,7 +279,7 @@ const UsersPage1 = ref([
     first_name: "Jennifer",
     last_name: "Wilson",
     email: "jennifer.wilson@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer", "Moderator", "Criteria Manager"],
     courses: ["CSC123", "CSC124"],
   },
   {
@@ -273,7 +287,7 @@ const UsersPage1 = ref([
     first_name: "Richard",
     last_name: "Anderson",
     email: "richard.anderson@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC125", "CSC126"],
   },
   {
@@ -281,7 +295,7 @@ const UsersPage1 = ref([
     first_name: "Maria",
     last_name: "Thomas",
     email: "maria.thomas@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC127", "CSC128"],
   },
   {
@@ -289,7 +303,7 @@ const UsersPage1 = ref([
     first_name: "Charles",
     last_name: "Taylor",
     email: "charles.taylor@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC129", "CSC130"],
   },
   {
@@ -297,7 +311,7 @@ const UsersPage1 = ref([
     first_name: "Susan",
     last_name: "Moore",
     email: "susan.moore@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC131", "CSC132"],
   },
   {
@@ -305,7 +319,7 @@ const UsersPage1 = ref([
     first_name: "Joseph",
     last_name: "Jackson",
     email: "joseph.jackson@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC133", "CSC134"],
   },
   {
@@ -313,7 +327,7 @@ const UsersPage1 = ref([
     first_name: "Margaret",
     last_name: "Martin",
     email: "margaret.martin@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC135", "CSC136"],
   },
   {
@@ -321,7 +335,7 @@ const UsersPage1 = ref([
     first_name: "Thomas",
     last_name: "Lee",
     email: "thomas.lee@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC137", "CSC138"],
   },
   {
@@ -329,7 +343,7 @@ const UsersPage1 = ref([
     first_name: "Jessica",
     last_name: "Perez",
     email: "jessica.perez@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC139", "CSC140"],
   },
 ]);
@@ -340,7 +354,7 @@ const UsersPage2 = ref([
     first_name: "Christopher",
     last_name: "Thompson",
     email: "christopher.thompson@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC141", "CSC142"],
   },
   {
@@ -348,7 +362,7 @@ const UsersPage2 = ref([
     first_name: "Amanda",
     last_name: "White",
     email: "amanda.white@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC143", "CSC144"],
   },
   {
@@ -356,7 +370,7 @@ const UsersPage2 = ref([
     first_name: "Matthew",
     last_name: "Harris",
     email: "matthew.harris@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC145", "CSC146"],
   },
   {
@@ -364,7 +378,7 @@ const UsersPage2 = ref([
     first_name: "Ashley",
     last_name: "Clark",
     email: "ashley.clark@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC147", "CSC148"],
   },
   {
@@ -372,7 +386,7 @@ const UsersPage2 = ref([
     first_name: "Joshua",
     last_name: "Lewis",
     email: "joshua.lewis@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC149", "CSC150"],
   },
   {
@@ -380,7 +394,7 @@ const UsersPage2 = ref([
     first_name: "Emily",
     last_name: "Robinson",
     email: "emily.robinson@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC151", "CSC152"],
   },
   {
@@ -388,7 +402,7 @@ const UsersPage2 = ref([
     first_name: "Daniel",
     last_name: "Walker",
     email: "daniel.walker@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC153", "CSC154"],
   },
   {
@@ -396,7 +410,7 @@ const UsersPage2 = ref([
     first_name: "Jessica",
     last_name: "Young",
     email: "jessica.young@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC155", "CSC156"],
   },
   {
@@ -404,7 +418,7 @@ const UsersPage2 = ref([
     first_name: "Andrew",
     last_name: "Allen",
     email: "andrew.allen@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC157", "CSC158"],
   },
   {
@@ -412,7 +426,7 @@ const UsersPage2 = ref([
     first_name: "Laura",
     last_name: "King",
     email: "laura.king@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC159", "CSC160"],
   },
   {
@@ -420,7 +434,7 @@ const UsersPage2 = ref([
     first_name: "Brian",
     last_name: "Scott",
     email: "brian.scott@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC161", "CSC162"],
   },
   {
@@ -428,7 +442,7 @@ const UsersPage2 = ref([
     first_name: "Megan",
     last_name: "Green",
     email: "megan.green@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC163", "CSC164"],
   },
   {
@@ -436,7 +450,7 @@ const UsersPage2 = ref([
     first_name: "Kevin",
     last_name: "Baker",
     email: "kevin.baker@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC165", "CSC166"],
   },
   {
@@ -444,7 +458,7 @@ const UsersPage2 = ref([
     first_name: "Stephanie",
     last_name: "Adams",
     email: "stephanie.adams@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC167", "CSC168"],
   },
   {
@@ -452,7 +466,7 @@ const UsersPage2 = ref([
     first_name: "Jason",
     last_name: "Nelson",
     email: "jason.nelson@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC169", "CSC170"],
   },
   {
@@ -460,7 +474,7 @@ const UsersPage2 = ref([
     first_name: "Rebecca",
     last_name: "Carter",
     email: "rebecca.carter@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC171", "CSC172"],
   },
   {
@@ -468,7 +482,7 @@ const UsersPage2 = ref([
     first_name: "Eric",
     last_name: "Mitchell",
     email: "eric.mitchell@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC173", "CSC174"],
   },
   {
@@ -476,7 +490,7 @@ const UsersPage2 = ref([
     first_name: "Michelle",
     last_name: "Perez",
     email: "michelle.perez@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC175", "CSC176"],
   },
   {
@@ -484,7 +498,7 @@ const UsersPage2 = ref([
     first_name: "Ryan",
     last_name: "Roberts",
     email: "ryan.roberts@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC177", "CSC178"],
   },
   {
@@ -492,7 +506,7 @@ const UsersPage2 = ref([
     first_name: "Kimberly",
     last_name: "Turner",
     email: "kimberly.turner@gmail.com",
-    role: "Lecturer",
+    role: ["Lecturer"],
     courses: ["CSC179", "CSC180"],
   },
 ]);
