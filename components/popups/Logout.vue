@@ -9,7 +9,7 @@
         <div class="flex justify-between gap-4">
           <button
             @click="handleLogout"
-            class="w-full font-medium py-2 bg-orange-primary text-white rounded-xl hover:bg-red-600"
+            class="w-full font-medium py-2 text-white rounded-xl bg-red-600"
           >
             Confirm
           </button>
