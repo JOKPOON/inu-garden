@@ -3,13 +3,12 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "@nuxtjs/i18n",
     "@nuxt/fonts",
+    "@pinia/nuxt",
     "@nuxtjs/sitemap",
-    "@nuxtjs/seo"
+    "@nuxtjs/seo",
   ],
 
-  plugins: [
-    '@/plugins/vue-chartjs.js'
-  ],
+  plugins: ["@/plugins/vue-chartjs.js"],
 
   tailwindcss: { exposeConfig: true },
   i18n: {
@@ -38,6 +37,5 @@ export default defineNuxtConfig({
     fallbackTitle: false,
     automaticDefaults: false,
   },
-
   compatibilityDate: "2024-10-29",
 });
