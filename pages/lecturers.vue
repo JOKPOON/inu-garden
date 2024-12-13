@@ -46,6 +46,7 @@
           >
         </AddUserButton>
         <TemplateButton
+          @="exportToExcel"
           class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
         >
           <span class="text-black-primary font-semibold text-base"
@@ -192,6 +193,10 @@ const addUser = () => {
 
 const importUser = () => {
   showImportUserPopup.value = true;
+};
+
+const exportToExcel = () => {
+
 };
 
 

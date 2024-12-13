@@ -42,22 +42,23 @@
               @change="handleFileSelect"
               class="hidden"
               accept=".xlsx, .xls"
+              multiple
             />
           </div>
         </div>
         <p
-          v-if="selectedFile"
+          v-if="selectedFiles.length"
           class="text-sm text-black-primary text-start mt-4"
         >
-          Selected File: {{ selectedFile.name }}
+          Selected Files: {{ selectedFiles.map(file => file.name).join(', ') }}
         </p>
 
         <div class="flex flex-row gap-4 w-full mt-6">
           <button
-            v-if="selectedFile"
+            v-if="selectedFiles.length"
             @click="importFromExcel"
             class="font-medium text-center py-3 bg-yellow-primary rounded-lg w-full"
-            :disabled="!selectedFile"
+            :disabled="!selectedFiles.length"
           >
             Import
           </button>
@@ -113,6 +114,20 @@
                 Invalid Picture Format or Size
               </div>
             </div>
+          </div>
+          <div class="flex flex-row gap-2">
+            <button
+              @click="deleteUser(index)"
+              class="flex items-center justify-center rounded-xl w-12 h-12 border hover:bg-red-500 hover:text-white"
+            >
+              <Delete class="w-6 h-6" />
+            </button>
+            <button
+              @click="$emit('close')"
+              class="flex items-center justify-center rounded-xl px-3 h-12 border hover:bg-black-primary hover:text-white font-medium"
+            >
+              Close
+            </button>
           </div>
         </div>
         <div
@@ -209,16 +224,14 @@
                     v-model="user.role[index]"
                     class="w-full text-black rounded-xl outline-none"
                   >
-                    <option value="" disabled selected>Select Role</option>
+                    <option value="" disabled>Select Role</option>
                     <option value="Lecturer">Lecturer</option>
                     <option value="Moderator">Moderator</option>
                     <option value="Criteria Manager">Criteria Manager</option>
                     <option value="TABEE Manager">TABEE Manager</option>
                     <option value="ABET Manager">ABET Manager</option>
                     <option value="AUN-QA Manager">AUN-QA Manager</option>
-                    <option value="Head of Curriculum">
-                      Head of Curriculum
-                    </option>
+                    <option value="Head of Curriculum">Head of Curriculum</option>
                   </select>
                 </div>
                 <button
@@ -268,18 +281,47 @@
           </div>
         </div>
         <div class="flex justify-end mt-4 gap-4">
-          <button
-            @click="confirm"
-            class="w-full font-medium text-center py-3 bg-yellow-primary rounded-lg"
+          <div class="w-full font-medium text-center py-3 border rounded-lg">
+            Total lecturer: {{ totalLecturer }}
+          </div>
+          <div class="w-full font-medium text-center border rounded-lg">
+            <div class="flex justify-center items-center mt-2">
+              <button
+                @click="prevPage"
+                class="flex items-center justify-center bg-white rounded-xl p-2 mr-2"
+                :disabled="currentPage === 1"
+              >
+                <ArrowRight class="w-4 h-4 rotate-180" />
+              </button>
+              <div class="flex items-center justify-center gap-2">
+                <span class="text-sm text-grey-primary">Page</span>
+                <span class="text-sm text-black-primary font-semibold">{{ currentPage }}</span>
+                <span class="text-sm text-grey-primary">of</span>
+                <span class="text-sm text-black-primary font-semibold">{{ totalPages }}</span>
+              </div>
+              <button
+                @click="nextPage"
+                class="flex items-center justify-center bg-white rounded-xl p-2 ml-2"
+                :disabled="currentPage === totalPages"
+              >
+                <ArrowRight class="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 mt-4 gap-4">
+          <ImportButton
+            @click="ImportUser"
+            class="flex items-center flex-row justify-center border bg-yellow-primary rounded-xl w-full py-3 gap-2"
           >
-            Confirm
-          </button>
-          <button
-            @click="backToImport"
-            class="w-full font-medium text-center py-3 bg-grey-secondary rounded-lg"
+            <span class="text-black-primary font-semibold text-base">Import</span>
+          </ImportButton>
+          <ImportAllButton
+            @click="importAll"
+            class="flex items-center flex-row justify-center border bg-black-primary rounded-xl w-full py-3 gap-2"
           >
-            Cancel
-          </button>
+            <span class="text-white font-semibold text-base">Import All</span>
+          </ImportAllButton>
         </div>
       </div>
     </div>
@@ -288,6 +330,9 @@
 
 <script setup>
 import { ref, defineEmits } from "vue";
+import ImportButton from "@/components/button/ImportButton.vue";
+import ImportAllButton from "@/components/button/ImportAllButton.vue";
+import ArrowRight from "@/components/icons/ArrowRight.vue";
 import Delete from "@/components/icons/Delete.vue";
 import Import from "@/components/icons/Import.vue";
 import * as XLSX from "xlsx";
@@ -312,15 +357,10 @@ const invalidPicture = ref(false);
 const importDone = ref(false);
 const invalidFileImport = ref(false);
 const isDragging = ref(false);
-const selectedFile = ref(null);
+const selectedFiles = ref([]);
 
 const fileInput = ref(null);
 const importFileInput = ref(null);
-
-const backToImport = () => {
-  importDone.value = false;
-  selectedFile.value = null;
-};
 
 const addDegree = () => {
   user.value.degree.push("");
@@ -361,13 +401,14 @@ const handleFileChange = (event) => {
 };
 
 const handleFileSelect = (event) => {
-  const file = event.target.files[0];
-  if (!file || !file.name.match(/\.(xlsx|xls)$/)) {
+  const files = Array.from(event.target.files);
+  const validFiles = files.filter(file => file.name.match(/\.(xlsx|xls)$/));
+  if (validFiles.length !== files.length) {
     invalidFileImport.value = true;
     return;
   }
   invalidFileImport.value = false;
-  selectedFile.value = file;
+  selectedFiles.value = validFiles;
 };
 
 const handleDragOver = () => {
@@ -380,11 +421,11 @@ const handleDragLeave = () => {
 
 const handleDrop = (event) => {
   isDragging.value = false;
-  const file = event.dataTransfer.files[0];
-  handleFileSelect({ target: { files: [file] } });
+  const files = Array.from(event.dataTransfer.files);
+  handleFileSelect({ target: { files } });
 };
 
-const confirm = () => {
+const ImportUser = () => {
   user.value.role = user.value.role.filter((role) => role !== "");
   user.value.degree = user.value.degree.filter((degree) => degree !== "");
   console.log(user.value);
@@ -392,29 +433,42 @@ const confirm = () => {
   emit("close");
 };
 
+const importAll = () => {
+  user.value.role = user.value.role.filter((role) => role !== "");
+  user.value.degree = user.value.degree.filter((degree) => degree !== "");
+  console.log(user.value);
+  invalidPicture.value = false;
+  importDone.value = true;
+  emit("close");
+};
+
 const importFromExcel = () => {
-  if (!selectedFile.value) return;
+  if (!selectedFiles.value.length) return;
 
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const data = new Uint8Array(e.target.result);
-    const workbook = XLSX.read(data, { type: "array" });
-    const firstSheetName = workbook.SheetNames[0];
-    const worksheet = workbook.Sheets[firstSheetName];
-    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+  selectedFiles.value.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: "array" });
+      const firstSheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[firstSheetName];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-    const headers = jsonData[0];
-    const values = jsonData[1];
+      const headers = jsonData[0];
+      const values = jsonData.slice(1);
 
-    headers.forEach((header, index) => {
-      if (header in user.value) {
-        user.value[header] = values[index];
-      }
-    });
+      values.forEach(row => {
+        headers.forEach((header, index) => {
+          if (header in user.value) {
+            user.value[header] = row[index];
+          }
+        });
+      });
 
-    importDone.value = true;
-  };
-  reader.readAsArrayBuffer(selectedFile.value);
+      importDone.value = true;
+    };
+    reader.readAsArrayBuffer(file);
+  });
 };
 </script>
 
