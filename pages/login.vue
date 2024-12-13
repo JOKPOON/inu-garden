@@ -101,6 +101,8 @@ import LoginLogo from "@/components/icons/LoginLogo.vue";
 import EmailLogin from "@/components/icons/EmailLogin.vue";
 import PasswordLogin from "@/components/icons/PasswordLogin.vue";
 import LoginButton from "@/components/button/LoginButton.vue";
+import HttpClient from "@/api/http.js";
+import base_url from "@/config/api.js";
 const { t } = useI18n();
 
 const Email = ref("");
@@ -115,7 +117,7 @@ const handleLogin = () => {
   checkPassword.value = Password.value.length < 0;
 
   if (!checkEmail.value && !checkPassword.value) {
-    fetch("http://localhost:3001/auth/login", {
+    fetch(base_url + "auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
