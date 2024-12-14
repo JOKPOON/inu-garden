@@ -87,7 +87,7 @@
       <div
         class="max-h-[calc(100vh-450px)] overflow-y-scroll scrollbar-set mt-2"
       >
-        <div v-for="user in paginatedUsers" :key="user.id" class="contents">
+        <div v-for="user in Users" :key="user.id" class="contents">
           <div
             class="grid grid-cols-5 gap-4 py-2"
             :class="[
@@ -194,9 +194,15 @@ const selectedUserId = ref(null);
 
 const handleSearch = () => {};
 
-const getUsers = () => {
+const getUsers = (page, size) => {
+  if (!page) {
+    page = 1;
+  }
+  if (!size) {
+    size = 2;
+  }
   // fetch users from API
-  fetch(base_url + "users", {
+  fetch(base_url + "users?pageIndex=" + page + "&pageSize=" + size, {
     credentials: "include",
     method: "GET",
     headers: {
@@ -204,14 +210,17 @@ const getUsers = () => {
     },
   })
     .then((res) => res.json())
-    .then((data) => {
-      if (data.success) {
-        data.data.forEach((user) => {
+    .then((res) => {
+      if (res.success) {
+        console.log(res);
+        res.data.data.forEach((user) => {
           user.role = user.role.split(",");
         });
-        Users.value = data.data;
+        Users.value = res.data.data;
+        totalUsers.value = res.data.total;
+        totalPages.value = res.data.total_page;
       } else {
-        console.log(data.error.message);
+        console.log(res.error.message);
       }
     });
 };
@@ -220,35 +229,10 @@ onMounted(() => {
   getUsers();
 });
 
-const addUser = (user) => {
-  fetch(base_url + "users", {
-    credentials: "include",
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(user),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      if (data.success) {
-        getUsers();
-        showAddUserPopup.value = false;
-      } else {
-        console.log(data.error.message);
-      }
-    });
-};
-
-const onClickAddUser = () => {
-  showAddUserPopup.value = true;
-};
-
-const onClickImportUser = () => {
-  showImportUserPopup.value = true;
-};
-
-const getTemplate = () => {};
+watch(currentPage, (newPage) => {
+  getUsers(newPage);
+  console.log("User", Users);
+});
 
 const UsersPage1 = ref([
   {
@@ -578,8 +562,38 @@ const UsersPage2 = ref([
 
 const Users = ref([...UsersPage1.value, ...UsersPage2.value]);
 
-const totalUsers = computed(() => Users.value.length);
-const totalPages = computed(() => Math.ceil(totalUsers.value / itemsPerPage));
+// const addUser = (user) => {
+//   fetch(base_url + "users", {
+//     credentials: "include",
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify(user),
+//   })
+//     .then((res) => res.json())
+//     .then((data) => {
+//       if (data.success) {
+//         getUsers();
+//         showAddUserPopup.value = false;
+//       } else {
+//         console.log(data.error.message);
+//       }
+//     });
+// };
+
+const onClickAddUser = () => {
+  showAddUserPopup.value = true;
+};
+
+const onClickImportUser = () => {
+  showImportUserPopup.value = true;
+};
+
+const getTemplate = () => {};
+
+const totalUsers = ref(0);
+const totalPages = ref(0);
 
 const paginatedUsers = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
