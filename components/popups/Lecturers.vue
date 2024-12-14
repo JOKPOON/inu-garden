@@ -22,8 +22,8 @@
               <div
                 class="text-lg 3xl:text-lg font-semibold text-black-primary text-start"
               >
-                {{ selectedUser.academic_position_eng }}
-                {{ selectedUser.first_name }} {{ selectedUser.last_name }}
+                {{ selectedUser.academic_position_th }}
+                {{ selectedUser.first_name_th }} {{ selectedUser.last_name_th }}
               </div>
               <div
                 class="text-sm text-black-primary text-start mt-1 flex flex-row gap-2"
@@ -108,14 +108,14 @@
                   v-if="!editMode"
                   class="col-span-2 border text-black border-grey-tertiary rounded-xl p-3"
                 >
-                  {{ selectedUser.academic_position_eng }}
+                  {{ selectedUser.academic_position_en }}
                 </div>
                 <input
                   v-if="editMode"
-                  v-model="user.academic_position_eng"
+                  v-model="user.academic_position_en"
                   class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                   type="text"
-                  :placeholder="selectedUser.academic_position_eng"
+                  :placeholder="selectedUser.academic_position_en"
                 />
               </div>
               <div class="flex flex-col gap-1 min-w-64">
@@ -126,14 +126,14 @@
                   v-if="!editMode"
                   class="col-span-2 border text-black border-grey-tertiary rounded-xl p-3"
                 >
-                  {{ selectedUser.academic_position_thai }}
+                  {{ selectedUser.academic_position_th }}
                 </div>
                 <input
                   v-if="editMode"
-                  v-model="user.academic_position_thai"
+                  v-model="user.academic_position_th"
                   class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                   type="text"
-                  :placeholder="selectedUser.academic_position_thai"
+                  :placeholder="selectedUser.academic_position_th"
                 />
               </div>
             </div>
@@ -146,14 +146,14 @@
                   v-if="!editMode"
                   class="col-span-2 border text-black border-grey-tertiary rounded-xl p-3"
                 >
-                  {{ selectedUser.first_name }}
+                  {{ selectedUser.first_name_en }}
                 </div>
                 <input
                   v-if="editMode"
-                  v-model="user.first_name"
+                  v-model="user.first_name_en"
                   class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                   type="text"
-                  :placeholder="selectedUser.first_name"
+                  :placeholder="selectedUser.first_name_en"
                 />
               </div>
               <div class="flex flex-col gap-1 min-w-64">
@@ -164,14 +164,14 @@
                   v-if="!editMode"
                   class="col-span-2 border text-black border-grey-tertiary rounded-xl p-3"
                 >
-                  {{ selectedUser.last_name }}
+                  {{ selectedUser.last_name_en }}
                 </div>
                 <input
                   v-if="editMode"
-                  v-model="user.last_name"
+                  v-model="user.last_name_en"
                   class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                   type="text"
-                  :placeholder="selectedUser.last_name"
+                  :placeholder="selectedUser.last_name_en"
                 />
               </div>
             </div>
@@ -184,14 +184,14 @@
                   v-if="!editMode"
                   class="col-span-2 border text-black border-grey-tertiary rounded-xl p-3"
                 >
-                  {{ selectedUser.first_name_thai }}
+                  {{ selectedUser.first_name_th }}
                 </div>
                 <input
                   v-if="editMode"
-                  v-model="user.first_name_thai"
+                  v-model="user.first_name_th"
                   class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                   type="text"
-                  :placeholder="selectedUser.first_name_thai"
+                  :placeholder="selectedUser.first_name_th"
                 />
               </div>
               <div class="flex flex-col gap-1 min-w-64">
@@ -202,14 +202,14 @@
                   v-if="!editMode"
                   class="col-span-2 border text-black border-grey-tertiary rounded-xl p-3"
                 >
-                  {{ selectedUser.last_name_thai }}
+                  {{ selectedUser.last_name_th }}
                 </div>
                 <input
                   v-if="editMode"
-                  v-model="user.last_name_thai"
+                  v-model="user.last_name_th"
                   class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                   type="text"
-                  :placeholder="selectedUser.last_name_thai"
+                  :placeholder="selectedUser.last_name_th"
                 />
               </div>
             </div>
@@ -254,13 +254,13 @@
                     class="w-full text-black rounded-xl outline-none"
                   >
                     <option value="" disabled selected>Select Role</option>
-                    <option value="Lecturer">Lecturer</option>
-                    <option value="Moderator">Moderator</option>
+                    <option value="LECTURER">Lecturer</option>
+                    <option value="MODERATOR">Moderator</option>
                     <option value="Criteria Manager">Criteria Manager</option>
-                    <option value="TABEE Managerr">TABEE Managerr</option>
-                    <option value="ABET Manager">ABET Manager</option>
-                    <option value="AUN-QA Manager">AUN-QA Manager</option>
-                    <option value="Head of Curriculumn">
+                    <option value="TABEE_MANAGER">TABEE Managerr</option>
+                    <option value="ABET_MANAGER">ABET Manager</option>
+                    <option value="AUN-QA_MANAGER">AUN-QA Manager</option>
+                    <option value="HEAD_OF_CURRICULUM">
                       Head of Curriculumn
                     </option>
                   </select>
@@ -529,12 +529,12 @@ const handleFileChange = (event) => {
 const user = ref({
   picture: "",
   pictureName: "",
-  academic_position_eng: "",
-  academic_position_thai: "",
-  first_name: "",
-  last_name: "",
-  first_name_thai: "",
-  last_name_thai: "",
+  academic_position_en: "",
+  academic_position_th: "",
+  first_name_en: "",
+  last_name_en: "",
+  first_name_th: "",
+  last_name_th: "",
   email: "",
   role: [""],
   degree: [""],
@@ -658,18 +658,18 @@ const handleCancelDelete = () => {
 
 const Users = ref([
   {
-    id: 1,
+    id: "01JF0ACX1R8SKZABS1RVDZNNE3",
     picture: "",
     pictureName: "",
-    first_name: "Daniel",
-    last_name: "Smith",
+    first_name_en: "Daniel",
+    last_name_en: "Smith",
     email: "daniel.smith@gmail.com",
     role: ["Lecturer", "Moderator", "Criteria Manager"],
     courses: ["CSC101", "CSC102"],
-    academic_position_eng: "Professor",
-    academic_position_thai: "ศาสตราจารย์",
-    first_name_thai: "แดเนียล",
-    last_name_thai: "สมิธ",
+    academic_position_en: "Professor",
+    academic_position_th: "ศาสตราจารย์",
+    first_name_th: "แดเนียล",
+    last_name_th: "สมิธ",
     degree: ["PhD in Computer Science", "MSc in Computer Science"],
   },
 ]);

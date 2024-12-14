@@ -38,7 +38,7 @@
       </div>
       <div class="flex flex-row gap-4">
         <AddUserButton
-          @click="addUser"
+          @click="onClickAddUser"
           class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
         >
           <span class="text-black-primary font-semibold text-base"
@@ -46,7 +46,7 @@
           >
         </AddUserButton>
         <TemplateButton
-          @="exportToExcel"
+          @="getTemplate"
           class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
         >
           <span class="text-black-primary font-semibold text-base"
@@ -54,7 +54,7 @@
           >
         </TemplateButton>
         <Import
-          @click="importUser"
+          @click="onClickImportUser"
           class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
         >
           <span class="text-black-primary font-semibold text-base">Import</span>
@@ -98,7 +98,10 @@
             <div
               class="col-span-1 text-sm text-black-primary flex items-center justify-center"
             >
-              {{ user.first_name }} {{ user.last_name }}
+              {{ user.academic_position_th }} {{ user.first_name_th }}
+              {{ user.last_name_th }} <br />
+              {{ user.academic_position_en }} {{ user.first_name_en }}
+              {{ user.last_name_en }}
             </div>
             <div
               class="col-span-2 text-sm text-black-primary flex items-center justify-center"
@@ -106,7 +109,7 @@
               {{ user.email }}
             </div>
             <div
-              class="text-sm text-black-primary text-start mt-1 flex flex-col gap-2"
+              class="text-sm text-black-primary text-start mt-1 flex flex-wrap gap-2 items-center"
             >
               <role v-for="(role, index) in user.role" :key="index">
                 <div class="p-1 px-3 bg-grey-tertiary rounded-lg border">
@@ -114,6 +117,7 @@
                 </div>
               </role>
             </div>
+
             <div
               class="col-span-1 flex-row gap-4 flex items-center justify-center"
             >
@@ -176,6 +180,7 @@ import Import from "@/components/button/ImportButton.vue";
 import Search from "@/components/icons/Search.vue";
 import ShowUser from "@/components/icons/ShowUser.vue";
 import ArrowRight from "@/components/icons/ArrowRight.vue";
+import base_url from "~/config/api";
 
 const { t } = useI18n();
 
@@ -187,18 +192,63 @@ const showAddUserPopup = ref(false);
 const showImportUserPopup = ref(false);
 const selectedUserId = ref(null);
 
-const addUser = () => {
+const handleSearch = () => {};
+
+const getUsers = () => {
+  // fetch users from API
+  fetch(base_url + "users", {
+    credentials: "include",
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.success) {
+        data.data.forEach((user) => {
+          user.role = user.role.split(",");
+        });
+        Users.value = data.data;
+      } else {
+        console.log(data.error.message);
+      }
+    });
+};
+
+onMounted(() => {
+  getUsers();
+});
+
+const addUser = (user) => {
+  fetch(base_url + "users", {
+    credentials: "include",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(user),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.success) {
+        getUsers();
+        showAddUserPopup.value = false;
+      } else {
+        console.log(data.error.message);
+      }
+    });
+};
+
+const onClickAddUser = () => {
   showAddUserPopup.value = true;
 };
 
-const importUser = () => {
+const onClickImportUser = () => {
   showImportUserPopup.value = true;
 };
 
-const exportToExcel = () => {
-
-};
-
+const getTemplate = () => {};
 
 const UsersPage1 = ref([
   {
