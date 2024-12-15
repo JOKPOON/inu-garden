@@ -22,13 +22,13 @@
               <div
                 class="text-lg 3xl:text-lg font-semibold text-black-primary text-start"
               >
-                {{ selectedUser.academic_position_th }}
-                {{ selectedUser.first_name_th }} {{ selectedUser.last_name_th }}
+                {{ user.academic_position_th }}
+                {{ user.first_name_th }} {{ user.last_name_th }}
               </div>
               <div
                 class="text-sm text-black-primary text-start mt-1 flex flex-row gap-2"
               >
-                <role v-for="(role, index) in selectedUser.role" :key="index">
+                <role v-for="(role, index) in user.role" :key="index">
                   <div class="p-1 px-3 bg-grey-tertiary rounded-lg border">
                     {{ role }}
                   </div>
@@ -108,14 +108,14 @@
                   v-if="!editMode"
                   class="col-span-2 border text-black border-grey-tertiary rounded-xl p-3"
                 >
-                  {{ selectedUser.academic_position_en }}
+                  {{ user.academic_position_en }}
                 </div>
                 <input
                   v-if="editMode"
                   v-model="user.academic_position_en"
                   class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                   type="text"
-                  :placeholder="selectedUser.academic_position_en"
+                  :placeholder="user.academic_position_en"
                 />
               </div>
               <div class="flex flex-col gap-1 min-w-64">
@@ -126,14 +126,14 @@
                   v-if="!editMode"
                   class="col-span-2 border text-black border-grey-tertiary rounded-xl p-3"
                 >
-                  {{ selectedUser.academic_position_th }}
+                  {{ user.academic_position_th }}
                 </div>
                 <input
                   v-if="editMode"
                   v-model="user.academic_position_th"
                   class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                   type="text"
-                  :placeholder="selectedUser.academic_position_th"
+                  :placeholder="user.academic_position_th"
                 />
               </div>
             </div>
@@ -146,14 +146,14 @@
                   v-if="!editMode"
                   class="col-span-2 border text-black border-grey-tertiary rounded-xl p-3"
                 >
-                  {{ selectedUser.first_name_en }}
+                  {{ user.first_name_en }}
                 </div>
                 <input
                   v-if="editMode"
                   v-model="user.first_name_en"
                   class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                   type="text"
-                  :placeholder="selectedUser.first_name_en"
+                  :placeholder="user.first_name_en"
                 />
               </div>
               <div class="flex flex-col gap-1 min-w-64">
@@ -164,14 +164,14 @@
                   v-if="!editMode"
                   class="col-span-2 border text-black border-grey-tertiary rounded-xl p-3"
                 >
-                  {{ selectedUser.last_name_en }}
+                  {{ user.last_name_en }}
                 </div>
                 <input
                   v-if="editMode"
                   v-model="user.last_name_en"
                   class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                   type="text"
-                  :placeholder="selectedUser.last_name_en"
+                  :placeholder="user.last_name_en"
                 />
               </div>
             </div>
@@ -184,14 +184,14 @@
                   v-if="!editMode"
                   class="col-span-2 border text-black border-grey-tertiary rounded-xl p-3"
                 >
-                  {{ selectedUser.first_name_th }}
+                  {{ user.first_name_th }}
                 </div>
                 <input
                   v-if="editMode"
                   v-model="user.first_name_th"
                   class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                   type="text"
-                  :placeholder="selectedUser.first_name_th"
+                  :placeholder="user.first_name_th"
                 />
               </div>
               <div class="flex flex-col gap-1 min-w-64">
@@ -202,14 +202,14 @@
                   v-if="!editMode"
                   class="col-span-2 border text-black border-grey-tertiary rounded-xl p-3"
                 >
-                  {{ selectedUser.last_name_th }}
+                  {{ user.last_name_th }}
                 </div>
                 <input
                   v-if="editMode"
                   v-model="user.last_name_th"
                   class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                   type="text"
-                  :placeholder="selectedUser.last_name_th"
+                  :placeholder="user.last_name_th"
                 />
               </div>
             </div>
@@ -220,7 +220,7 @@
               v-if="!editMode"
               class="border text-black border-grey-tertiary rounded-xl p-3"
             >
-              {{ selectedUser.email }}
+              {{ user.email }}
             </div>
             <input
               v-if="editMode"
@@ -237,7 +237,7 @@
               class="border text-black border-grey-tertiary rounded-xl p-3"
             >
               <ul>
-                <li v-for="(role, index) in selectedUser.role" :key="index">
+                <li v-for="(role, index) in user.role" :key="index">
                   {{ role }}
                 </li>
               </ul>
@@ -287,14 +287,14 @@
               class="col-span-2 border text-black border-grey-tertiary rounded-xl p-3"
             >
               <ul>
-                <li v-for="(degree, index) in selectedUser.degree" :key="index">
+                <li v-for="(degree, index) in user.degree" :key="index">
                   {{ degree }}
                 </li>
               </ul>
             </div>
             <div v-if="editMode" class="flex flex-col gap-2">
               <div
-                v-for="(degree, index) in userDegree"
+                v-for="(degree, index) in user.degree"
                 :key="index"
                 class="flex flex-row gap-4 items-center"
               >
@@ -435,7 +435,7 @@
         <div v-if="deleteMode" class="mt-4 w-full">
           <div class="flex flex-col gap-1 w-full">
             <div class="col-span-1 text-grey-primary text-sm">
-              Type "delete/{{ selectedUser.first_name }}" to delete
+              Type "delete/{{ user.first_name_en }}" to delete
             </div>
             <input
               v-model="deleteUser"
@@ -498,11 +498,8 @@ import Lecturer from "@/components/icons/Lecturer.vue";
 import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
 import Search from "@/components/icons/Search.vue";
+import base_url from "@/config/api";
 const emit = defineEmits(["close"]);
-
-const selectedUser = computed(() => {
-  return Users.value.find((user) => user.id === props.userId);
-});
 
 const invalidPicture = ref(false);
 
@@ -539,6 +536,38 @@ const user = ref({
   role: [""],
   degree: [""],
 });
+
+onMounted(() => {
+  fetch(base_url + "users/" + props.userId, {
+    credentials: "include",
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .then((json) => {
+      user.value = json.data;
+      user.value.role = json.data.role.split(",");
+      user.value.degree = json.data.degree.split(",");
+      console.log(user.value);
+    });
+});
+
+// onActivated(() => {
+//   fetch(base_url + "users/" + props.userId, {
+//     credentials: "include",
+//     method: "GET",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//   })
+//     .then((response) => response.json())
+//     .then((json) => {
+//       users.value = json.data;
+//       console.log(user.value);
+//     });
+// });
 
 const userDegree = ref([]);
 
@@ -602,14 +631,29 @@ const props = defineProps({
 const handleEdit = () => {
   editMode.value = !editMode.value;
   user.value = {
-    ...selectedUser.value,
-    degree: selectedUser.value.degree,
+    ...user.value,
+    degree: user.value.degree,
   };
-  userDegree.value = selectedUser.value.degree;
+  userDegree.value = user.value.degree;
 };
 
 const handleDelete = () => {
   deleteMode.value = !deleteMode.value;
+};
+
+const userJSON = (user) => {
+  return {
+    picture: user.value.picture,
+    academic_position_en: user.value.academic_position_en,
+    academic_position_th: user.value.academic_position_th,
+    first_name_en: user.value.first_name_en,
+    last_name_en: user.value.last_name_en,
+    first_name_th: user.value.first_name_th,
+    last_name_th: user.value.last_name_th,
+    email: user.value.email,
+    role: user.value.role.join(","),
+    degree: user.value.degree.join(","),
+  };
 };
 
 const handleSaveEdit = () => {
@@ -617,17 +661,20 @@ const handleSaveEdit = () => {
   user.value.role = user.value.role.filter((role) => role !== "");
   user.value.degree = user.value.degree.filter((degree) => degree !== "");
 
-  Users.value = Users.value.map((u) => {
-    if (u.id === selectedUser.value.id) {
-      return {
-        ...u,
-        ...user.value,
-        degree: userDegree.value,
-      };
-    }
-    return u;
-  });
-  console.log(Users.value);
+  fetch(base_url + "users/" + props.userId, {
+    credentials: "include",
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(userJSON(user)),
+  })
+    .then((response) => response.json())
+    .then((json) => {
+      console.log(json);
+    });
+
+  console.log(user.value);
   editMode.value = !editMode.value;
 };
 
@@ -640,8 +687,20 @@ const deleteUser = ref("");
 const checkDelete = ref(false);
 
 const handleConfirmDelete = () => {
-  if (deleteUser.value === `delete/${selectedUser.value.first_name}`) {
+  if (deleteUser.value === `delete/${user.value.first_name_en}`) {
     console.log("Confirm Delete");
+
+    fetch(base_url + "users/" + props.userId, {
+      credentials: "include",
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log(json);
+      });
     deleteMode.value = !deleteMode.value;
   } else {
     checkDelete.value = true;
@@ -655,24 +714,6 @@ const handleCancelDelete = () => {
   deleteUser.value = "";
   checkDelete.value = false;
 };
-
-const Users = ref([
-  {
-    id: "01JF0ACX1R8SKZABS1RVDZNNE3",
-    picture: "",
-    pictureName: "",
-    first_name_en: "Daniel",
-    last_name_en: "Smith",
-    email: "daniel.smith@gmail.com",
-    role: ["Lecturer", "Moderator", "Criteria Manager"],
-    courses: ["CSC101", "CSC102"],
-    academic_position_en: "Professor",
-    academic_position_th: "ศาสตราจารย์",
-    first_name_th: "แดเนียล",
-    last_name_th: "สมิธ",
-    degree: ["PhD in Computer Science", "MSc in Computer Science"],
-  },
-]);
 
 const courses = ref([
   {

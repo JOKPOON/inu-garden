@@ -162,10 +162,13 @@
   <Lecturers
     v-if="showUserPopup"
     :userId="selectedUserId"
-    @close="showUserPopup = false"
+    @close="(showUserPopup = false)"
   />
-  <AddLecturer v-if="showAddUserPopup" @close="showAddUserPopup = false" />
-  <ImportUser v-if="showImportUserPopup" @close="showImportUserPopup = false" />
+  <AddLecturer v-if="showAddUserPopup" @close="(showAddUserPopup = false)" />
+  <ImportUser
+    v-if="showImportUserPopup"
+    @close="(showImportUserPopup = false)"
+  />
 </template>
 
 <script setup>
@@ -581,6 +584,24 @@ const Users = ref([...UsersPage1.value, ...UsersPage2.value]);
 //       }
 //     });
 // };
+
+const getUserById = (id) => {
+  fetch(base_url + `users/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.success) {
+        console.log(data.data);
+      } else {
+        console.log(data.error.message);
+      }
+    });
+};
 
 const onClickAddUser = () => {
   showAddUserPopup.value = true;

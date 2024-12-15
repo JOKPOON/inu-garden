@@ -11,7 +11,7 @@
             <div class="rounded-full bg-grey-primary h-16 w-16">
               <img
                 :src="
-                  user.picture ||
+                  user?.picture ||
                   'https://thumbs.dreamstime.com/b/arabic-business-man-traditional-muslim-hat-placeholder-102337208.jpg'
                 "
                 alt="Profile Picture"
