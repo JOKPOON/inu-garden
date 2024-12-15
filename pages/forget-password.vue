@@ -22,16 +22,10 @@
           </div>
 
           <div
-            :class="[
-              'flex flex-row rounded-xl border mb-4 gap-2',
-              { 'border-red-500': checkEmail },
-            ]"
+            :class="[ 'flex flex-row rounded-xl border mb-4 gap-2', { 'border-red-500': checkEmail } ]"
           >
             <div
-              :class="[
-                'border p-3 rounded-xl flex flex-center justify-center',
-                { 'border-red-500': checkEmail },
-              ]"
+              :class="[ 'border p-3 rounded-xl flex flex-center justify-center', { 'border-red-500': checkEmail } ]"
             >
               <EmailLogin class="w-6 h-6" />
             </div>
@@ -44,42 +38,17 @@
             />
           </div>
           <div
-            :class="[
-              'flex flex-row rounded-xl border mb-4 gap-2',
-              { 'border-red-500': checkOTP },
-            ]"
-          >
-            <div
-              :class="[
-                'border p-3 rounded-xl flex flex-center justify-center',
-                { 'border-red-500': checkOTP },
-              ]"
-            >
-              <PasswordLogin class="w-6 h-6" />
-            </div>
-            <input
-              id="password"
-              type="password"
-              v-model="OTP"
-              class="bg-transparent focus:ring-0 outline-none text-base w-72 pr-3"
-              placeholder="Enter OTP"
-            />
-          </div>
-          <div
-            v-if="checkOTP || checkEmail"
+            v-if="checkEmail"
             class="text-sm text-red-500 text-left w-72 mb-4 -mt-2"
           >
-            <span v-if="checkEmail && !checkOTP">Invalid Email Format</span>
-            <span v-if="checkOTP && !checkEmail">Invalid OTP</span>
+            Invalid Email Format
           </div>
           <div class="flex items-center justify-center w-full pt-6">
             <LoginButton
               @click="handleRequestOTP"
               class="flex items-center flex-row justify-center bg-black-primary rounded-xl px-12 py-3 gap-2"
             >
-              <span class="text-white font-semibold text-base"
-                >Change Password</span
-              >
+              <span class="text-white font-semibold text-base">Request OTP</span>
             </LoginButton>
           </div>
         </div>
@@ -99,20 +68,30 @@
           <div class="text-xl text-black-primary -mt-4">Reset 🔐</div>
           <div class="text-3xl text-black-primary font-semibold">Password</div>
           <div class="text-sm text-grey-primary mb-4 mt-2">
-            Enter your new password
+            Enter your OTP and new password
           </div>
 
           <div
-            :class="[
-              'flex flex-row rounded-xl border mb-4 gap-2',
-              { 'border-red-500': checkEmail },
-            ]"
+            :class="[ 'flex flex-row rounded-xl border mb-4 gap-2', { 'border-red-500': checkOTP } ]"
           >
             <div
-              :class="[
-                'border p-3 rounded-xl flex flex-center justify-center',
-                { 'border-red-500': checkEmail },
-              ]"
+              :class="[ 'border p-3 rounded-xl flex flex-center justify-center', { 'border-red-500': checkOTP } ]"
+            >
+              <PasswordLogin class="w-6 h-6" />
+            </div>
+            <input
+              id="otp"
+              type="text"
+              v-model="OTP"
+              class="bg-transparent focus:ring-0 outline-none text-base w-72 pr-3"
+              placeholder="Enter OTP"
+            />
+          </div>
+          <div
+            :class="[ 'flex flex-row rounded-xl border mb-4 gap-2', { 'border-red-500': checkPassword } ]"
+          >
+            <div
+              :class="[ 'border p-3 rounded-xl flex flex-center justify-center', { 'border-red-500': checkPassword } ]"
             >
               <PasswordLogin class="w-6 h-6" />
             </div>
@@ -125,16 +104,10 @@
             />
           </div>
           <div
-            :class="[
-              'flex flex-row rounded-xl border mb-4 gap-2',
-              { 'border-red-500': checkPassword },
-            ]"
+            :class="[ 'flex flex-row rounded-xl border mb-4 gap-2', { 'border-red-500': checkPassword } ]"
           >
             <div
-              :class="[
-                'border p-3 rounded-xl flex flex-center justify-center',
-                { 'border-red-500': checkPassword },
-              ]"
+              :class="[ 'border p-3 rounded-xl flex flex-center justify-center', { 'border-red-500': checkPassword } ]"
             >
               <PasswordLogin class="w-6 h-6" />
             </div>
@@ -147,24 +120,18 @@
             />
           </div>
           <div
-            v-if="checkPassword || checkEmail"
+            v-if="checkOTP || checkPassword"
             class="text-sm text-red-500 text-left w-72 mb-4 -mt-2"
           >
-            <span v-if="checkEmail && !checkPassword"
-              >Invalid Email Format</span
-            >
-            <span v-if="checkPassword && !checkEmail"
-              >Passwords do not match</span
-            >
+            <span v-if="checkOTP">Invalid OTP</span>
+            <span v-if="checkPassword">Passwords do not match</span>
           </div>
           <div class="flex items-center justify-center w-full pt-6">
             <LoginButton
               @click="handlePasswordChange"
               class="flex items-center flex-row justify-center bg-black-primary rounded-xl px-12 py-3 gap-2"
             >
-              <span class="text-white font-semibold text-base"
-                >Change Password</span
-              >
+              <span class="text-white font-semibold text-base">Change Password</span>
             </LoginButton>
           </div>
         </div>
@@ -178,17 +145,16 @@ import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import BannerLogin from "@/components/images/BannerLogin.jpg";
-import LoginLogo from "@/components/icons/LoginLogo.vue";
 import EmailLogin from "@/components/icons/EmailLogin.vue";
 import PasswordLogin from "@/components/icons/PasswordLogin.vue";
 import LoginButton from "@/components/button/LoginButton.vue";
+import base_url from "@/config/api";
 
 const { t } = useI18n();
 const router = useRouter();
 
 const Email = ref("");
 const OTP = ref("");
-const Password = ref("");
 const newPassword = ref("");
 const confirmPassword = ref("");
 const checkEmail = ref(false);
@@ -197,19 +163,42 @@ const checkPassword = ref(false);
 const OTPCheck = ref(false);
 
 const handleRequestOTP = () => {
-  if (checkEmail.value || checkOTP.value) {
-    return;
-  }
-  OTPCheck.value = true;
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  checkEmail.value = !emailPattern.test(Email.value);
+
 };
 
 const handlePasswordChange = () => {
-  if (newPassword.value !== confirmPassword.value) {
-    checkPassword.value = true;
-    return;
+  checkOTP.value = OTP.value.length !== 6;
+  checkPassword.value = newPassword.value !== confirmPassword.value;
+
+  if (!checkOTP.value && !checkPassword.value) {
+    fetch(base_url + "auth/reset-password", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: Email.value,
+        otp: OTP.value,
+        newPassword: newPassword.value,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          router.push("/login");
+        } else {
+          console.log(data.error.message);
+          if (data.error.message === "Invalid OTP") {
+            checkOTP.value = true;
+          }
+        }
+      })
+      .catch((error) => {
+        console.error("Error resetting password:", error);
+      });
   }
-  checkPassword.value = false;
-  router.push("/login");
 };
 
 watch(Email, () => {

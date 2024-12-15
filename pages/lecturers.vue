@@ -38,7 +38,7 @@
       </div>
       <div class="flex flex-row gap-4">
         <AddUserButton
-          @click="addUser"
+          @click="onClickAddUser"
           class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
         >
           <span class="text-black-primary font-semibold text-base"
@@ -46,7 +46,7 @@
           >
         </AddUserButton>
         <TemplateButton
-          @="exportToExcel"
+          @="getTemplate"
           class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
         >
           <span class="text-black-primary font-semibold text-base"
@@ -54,7 +54,7 @@
           >
         </TemplateButton>
         <Import
-          @click="importUser"
+          @click="onClickImportUser"
           class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
         >
           <span class="text-black-primary font-semibold text-base">Import</span>
@@ -87,7 +87,7 @@
       <div
         class="max-h-[calc(100vh-450px)] overflow-y-scroll scrollbar-set mt-2"
       >
-        <div v-for="user in paginatedUsers" :key="user.id" class="contents">
+        <div v-for="user in Users" :key="user.id" class="contents">
           <div
             class="grid grid-cols-5 gap-4 py-2"
             :class="[
@@ -98,7 +98,10 @@
             <div
               class="col-span-1 text-sm text-black-primary flex items-center justify-center"
             >
-              {{ user.first_name }} {{ user.last_name }}
+              {{ user.academic_position_th }} {{ user.first_name_th }}
+              {{ user.last_name_th }} <br />
+              {{ user.academic_position_en }} {{ user.first_name_en }}
+              {{ user.last_name_en }}
             </div>
             <div
               class="col-span-2 text-sm text-black-primary flex items-center justify-center"
@@ -106,7 +109,7 @@
               {{ user.email }}
             </div>
             <div
-              class="text-sm text-black-primary text-start mt-1 flex flex-col gap-2"
+              class="text-sm text-black-primary text-start mt-1 flex flex-wrap gap-2 items-center"
             >
               <role v-for="(role, index) in user.role" :key="index">
                 <div class="p-1 px-3 bg-grey-tertiary rounded-lg border">
@@ -114,6 +117,7 @@
                 </div>
               </role>
             </div>
+
             <div
               class="col-span-1 flex-row gap-4 flex items-center justify-center"
             >
@@ -158,10 +162,13 @@
   <Lecturers
     v-if="showUserPopup"
     :userId="selectedUserId"
-    @close="showUserPopup = false"
+    @close="(showUserPopup = false)"
   />
-  <AddLecturer v-if="showAddUserPopup" @close="showAddUserPopup = false" />
-  <ImportUser v-if="showImportUserPopup" @close="showImportUserPopup = false" />
+  <AddLecturer v-if="showAddUserPopup" @close="(showAddUserPopup = false)" />
+  <ImportUser
+    v-if="showImportUserPopup"
+    @close="(showImportUserPopup = false)"
+  />
 </template>
 
 <script setup>
@@ -176,6 +183,7 @@ import Import from "@/components/button/ImportButton.vue";
 import Search from "@/components/icons/Search.vue";
 import ShowUser from "@/components/icons/ShowUser.vue";
 import ArrowRight from "@/components/icons/ArrowRight.vue";
+import base_url from "~/config/api";
 
 const { t } = useI18n();
 
@@ -187,18 +195,47 @@ const showAddUserPopup = ref(false);
 const showImportUserPopup = ref(false);
 const selectedUserId = ref(null);
 
-const addUser = () => {
-  showAddUserPopup.value = true;
+const handleSearch = () => {};
+
+const getUsers = (page, size) => {
+  if (!page) {
+    page = 1;
+  }
+  if (!size) {
+    size = 2;
+  }
+  // fetch users from API
+  fetch(base_url + "users?pageIndex=" + page + "&pageSize=" + size, {
+    credentials: "include",
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      if (res.success) {
+        console.log(res);
+        res.data.data.forEach((user) => {
+          user.role = user.role.split(",");
+        });
+        Users.value = res.data.data;
+        totalUsers.value = res.data.total;
+        totalPages.value = res.data.total_page;
+      } else {
+        console.log(res.error.message);
+      }
+    });
 };
 
-const importUser = () => {
-  showImportUserPopup.value = true;
-};
+onMounted(() => {
+  getUsers();
+});
 
-const exportToExcel = () => {
-
-};
-
+watch(currentPage, (newPage) => {
+  getUsers(newPage);
+  console.log("User", Users);
+});
 
 const UsersPage1 = ref([
   {
@@ -528,8 +565,56 @@ const UsersPage2 = ref([
 
 const Users = ref([...UsersPage1.value, ...UsersPage2.value]);
 
-const totalUsers = computed(() => Users.value.length);
-const totalPages = computed(() => Math.ceil(totalUsers.value / itemsPerPage));
+// const addUser = (user) => {
+//   fetch(base_url + "users", {
+//     credentials: "include",
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify(user),
+//   })
+//     .then((res) => res.json())
+//     .then((data) => {
+//       if (data.success) {
+//         getUsers();
+//         showAddUserPopup.value = false;
+//       } else {
+//         console.log(data.error.message);
+//       }
+//     });
+// };
+
+const getUserById = (id) => {
+  fetch(base_url + `users/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.success) {
+        console.log(data.data);
+      } else {
+        console.log(data.error.message);
+      }
+    });
+};
+
+const onClickAddUser = () => {
+  showAddUserPopup.value = true;
+};
+
+const onClickImportUser = () => {
+  showImportUserPopup.value = true;
+};
+
+const getTemplate = () => {};
+
+const totalUsers = ref(0);
+const totalPages = ref(0);
 
 const paginatedUsers = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
