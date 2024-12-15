@@ -3,7 +3,7 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "@nuxtjs/i18n",
     "@nuxt/fonts",
-    "@pinia/nuxt",
+    "@nuxt/pinia",
     "@nuxtjs/sitemap",
     "@nuxtjs/seo",
   ],
