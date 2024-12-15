@@ -144,7 +144,7 @@ const editCourse = (code) => {
 const { t } = useI18n();
 const searchQuery = ref("");
 const selectedProgramOption = ref("");
-const selectedYearOption = ref("");
+const selectedYearOption = ref("2024");
 
 const programOptions = ref(getProgramOptions());
 const yearsOptions = ref(getYearsOptions());

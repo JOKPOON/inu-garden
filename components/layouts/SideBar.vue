@@ -11,8 +11,11 @@
         />
       </button>
       <div
-        class="h-full bg-white rounded-xl p-6 flex flex-col justify-between items-center shadow-sm "
-        :class="{ 'w-28  transition-all duration-300': smallNav, 'w-80': !smallNav }"
+        class="h-full bg-white rounded-xl p-6 flex flex-col justify-between items-center shadow-sm"
+        :class="{
+          'w-28  transition-all duration-300': smallNav,
+          'w-80': !smallNav,
+        }"
       >
         <div class="flex flex-col gap-6 w-full">
           <button
@@ -21,16 +24,29 @@
           >
             <div class="rounded-full bg-black-primary h-16 w-16">
               <div class="rounded-full bg-grey-primary h-16 w-16">
-                <img :src=" 'https://thumbs.dreamstime.com/b/arabic-business-man-traditional-muslim-hat-placeholder-102337208.jpg'" alt="Profile Picture" class="h-full w-full object-cover rounded-full" />
+                <img
+                  :src="'https://thumbs.dreamstime.com/b/arabic-business-man-traditional-muslim-hat-placeholder-102337208.jpg'"
+                  alt="Profile Picture"
+                  class="h-full w-full object-cover rounded-full"
+                />
               </div>
             </div>
             <div v-if="!smallNav" class="flex flex-col">
               <div
                 class="text-base 3xl:text-lg font-semibold text-black-primary text-start"
               >
-                Username
+                {{ userStore.userData?.first_name_en }}
+                {{ userStore.userData?.last_name_en }}
               </div>
-              <div class="text-sm text-grey-primary text-start">Role</div>
+              <div class="text-sm text-grey-primary text-start">
+                {{
+                  userStore.userData?.role
+                    .split(",")[0]
+                    .replace(/_/g, " ")
+                    .toLowerCase()
+                    .replace(/\b\w/g, (char) => char.toUpperCase())
+                }}
+              </div>
             </div>
           </button>
           <div
@@ -208,7 +224,7 @@
           </div>
         </div>
       </div>
-      <div class="w-full h-full p-6 bg-white shadow-sm rounded-xl ">
+      <div class="w-full h-full p-6 bg-white shadow-sm rounded-xl">
         <slot class="w-full h-full" />
       </div>
     </div>
@@ -219,6 +235,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from "vue";
 import { useI18n } from "vue-i18n";
+import { useUserStore } from "@/store/user";
 import { useRouter, useRoute } from "vue-router";
 import Course from "@/components/icons/Course.vue";
 import Student from "@/components/icons/Student.vue";
@@ -231,6 +248,8 @@ import ArrowRight from "@/components/icons/ArrowRight.vue";
 import LogoSidebar from "@/components/icons/LogoSidebar.png";
 import LoginLogo from "@/components/icons/LoginLogo.vue";
 import LogoutPopup from "@/components/popups/Logout.vue";
+
+const userStore = useUserStore();
 
 const { t } = useI18n();
 const router = useRouter();
