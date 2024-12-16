@@ -1,7 +1,7 @@
 <template>
   <div v-if="loading" class="loading-container">
     <div class="spinner"></div>
-    <p>Loading...</p>
+    <p class="mt-2">Loading...</p>
   </div>
   <div v-else>
     <SideBar
@@ -60,6 +60,7 @@ onMounted(() => {
 }
 
 .spinner {
+
   border: 4px solid rgba(0, 0, 0, 0.1);
   border-left-color: #161616;
   border-radius: 50%;
