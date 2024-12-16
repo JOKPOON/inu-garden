@@ -258,8 +258,8 @@ const handlePasswordChange = () => {
       },
       body: JSON.stringify({
         email: Email.value,
-        otp: OTP.value,
-        newPassword: newPassword.value,
+        token: OTP.value,
+        new_password: newPassword.value,
       }),
     })
       .then((res) => res.json())
