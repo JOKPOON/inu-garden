@@ -190,6 +190,7 @@ import Search from "@/components/icons/Search.vue";
 import ShowUser from "@/components/icons/ShowUser.vue";
 import ArrowRight from "@/components/icons/ArrowRight.vue";
 import base_url from "@/config/api";
+import { useUserStore } from "@/store/user";
 const { t } = useI18n();
 
 const user = ref({
@@ -295,6 +296,10 @@ onMounted(() => {
   getUsers();
 });
 
+const userStore = useUserStore();
+
+
+
 watch(currentPage, (newPage) => {
   getUsers(newPage);
   console.log("User", Users);
@@ -310,7 +315,7 @@ watch(showAddUserPopup, (newVal) => {
   if (!newVal) {
     getUsers();
   }
-});
+}); 
 
 watch(showImportUserPopup, (newVal) => {
   if (!newVal) {
