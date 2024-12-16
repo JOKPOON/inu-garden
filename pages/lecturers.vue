@@ -314,7 +314,7 @@ const getUsers = (query, page, size) => {
           user.role = user.role.split(",");
         });
         Users.value = res.data.data;
-        totalUsers.value = res.data.total;
+        totalUsers.value = res.data.data.length;
         totalPages.value = res.data.total_page;
       } else {
         console.log(res.error.message);
