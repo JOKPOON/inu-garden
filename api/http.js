@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const HttpClient = axios.create({
-  baseURL: "https://api.example.com", // Replace with your API's base URL
+  baseURL: "https://inu.bukharney.site/", // Replace with your API's base URL
   timeout: 10000, // Timeout for requests
   headers: {
     "Content-Type": "application/json",
