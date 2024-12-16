@@ -25,12 +25,13 @@
           <input
             type="text"
             v-model="searchQuery"
+            @keyup.enter="getUsers(searchQuery)"
             class="bg-transparent border-none focus:ring-0 outline-none text-base w-56"
             placeholder="Search..."
           />
           <button
             class="flex items-center justify-center bg-white rounded-xl"
-            @click="handleSearch"
+            @click="getUsers(searchQuery)"
           >
             <Search class="w-6 h-6" />
           </button>
@@ -209,7 +210,6 @@ import ArrowRight from "@/components/icons/ArrowRight.vue";
 import base_url from "@/config/api";
 import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
-import { useUserStore } from "@/store/user";
 const { t } = useI18n();
 
 const user = ref({
@@ -278,9 +278,7 @@ const showAddUserPopup = ref(false);
 const showImportUserPopup = ref(false);
 const selectedUserId = ref(null);
 
-const handleSearch = () => {};
-
-const getUsers = (page, size) => {
+const getUsers = (query, page, size) => {
   if (!page) {
     page = 1;
   }
@@ -288,13 +286,26 @@ const getUsers = (page, size) => {
     size = 20;
   }
 
-  fetch(base_url + "users?pageIndex=" + page + "&pageSize=" + size, {
-    credentials: "include",
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
+  if (!query) {
+    query = "";
+  }
+
+  fetch(
+    base_url +
+      "users?pageIndex=" +
+      page +
+      "&pageSize=" +
+      size +
+      "&query=" +
+      query,
+    {
+      credentials: "include",
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  )
     .then((res) => res.json())
     .then((res) => {
       if (res.success) {
@@ -314,8 +325,6 @@ const getUsers = (page, size) => {
 onMounted(() => {
   getUsers();
 });
-
-const userStore = useUserStore();
 
 watch(currentPage, (newPage) => {
   getUsers(newPage);
