@@ -89,17 +89,20 @@
       >
         <div v-for="(user, index) in Users" :key="user.id" class="contents">
           <div
-            class="grid grid-cols-5 gap-4 py-2"
+            @click="openPopup(user.id)"
+            class="grid grid-cols-5 gap-4 py-2 hover:cursor-pointer hover:bg-[#F6F8F8] hover:rounded-xl"
             :class="[
               'border-b',
               { 'border-grey-tertiary': index !== paginatedUsers.length - 1 },
             ]"
           >
             <div
-              class="col-span-1 text-sm text-black-primary flex items-center justify-center"
+              class="col-span-1 text-sm text-black-primary flex items-center justify-start pl-4"
             >
               {{ user.academic_position_en }} {{ user.first_name_en }}
-              {{ user.last_name_en }}
+              {{ user.last_name_en }} <br />
+              {{ user.academic_position_th }} {{ user.first_name_th }}
+              {{ user.last_name_th }}
             </div>
             <div
               class="col-span-2 text-sm text-black-primary flex items-center justify-center"
@@ -126,47 +129,61 @@
               class="col-span-1 flex-row gap-4 flex items-center justify-center"
             >
               <button
-                class="flex items-center justify-center bg-white rounded-xl p-2 border"
-                @click="openPopup(user.id)"
+                class="flex items-center justify-center bg-white rounded-xl p-2 border hover:bg-black-primary hover:text-white"
+                @click="openPopup(user.id, 'show')"
               >
                 <ShowUser class="w-5 h-5" />
+              </button>
+              <button
+                @click="openPopup(user.id, 'edit')"
+                class="flex items-center justify-center rounded-xl p-2 border bg-white hover:bg-black-primary hover:text-white"
+              >
+                <Edit class="w-5 h-5" />
+              </button>
+              <button
+                @click="openPopup(user.id, 'delete')"
+                class="flex items-center justify-center rounded-xl p-2 border hover:bg-red-500 hover:text-white"
+              >
+                <Delete class="w-5 h-5" />
               </button>
             </div>
           </div>
         </div>
       </div>
- 
-    </div>     <div class="flex justify-center items-center mt-2">
-        <button
-          v-if="currentPage != 1"
-          @click="prevPage"
-          class="flex items-center justify-center bg-white rounded-xl p-2 mr-2"
-          :disabled="currentPage === 1"
-        >
-          <ArrowRight class="w-4 h-4 rotate-180" />
-        </button>
-        <div class="flex items-center justify-center gap-2">
-          <span class="text-sm text-grey-primary">Page</span>
-          <span class="text-sm text-black-primary font-semibold">{{
-            currentPage
-          }}</span>
-          <span class="text-sm text-grey-primary">of</span>
-          <span class="text-sm text-black-primary font-semibold">{{
-            totalPages
-          }}</span>
-        </div>
-        <button
-          v-if="currentPage != totalPages"
-          @click="nextPage"
-          class="flex items-center justify-center bg-white rounded-xl p-2 ml-2"
-          :disabled="currentPage === totalPages"
-        >
-          <ArrowRight class="w-4 h-4" />
-        </button>
+    </div>
+    <div class="flex justify-center items-center mt-2">
+      <button
+        v-if="currentPage != 1"
+        @click="prevPage"
+        class="flex items-center justify-center bg-white rounded-xl p-2 mr-2"
+        :disabled="currentPage === 1"
+      >
+        <ArrowRight class="w-4 h-4 rotate-180" />
+      </button>
+      <div class="flex items-center justify-center gap-2">
+        <span class="text-sm text-grey-primary">Page</span>
+        <span class="text-sm text-black-primary font-semibold">{{
+          currentPage
+        }}</span>
+        <span class="text-sm text-grey-primary">of</span>
+        <span class="text-sm text-black-primary font-semibold">{{
+          totalPages
+        }}</span>
       </div>
+      <button
+        v-if="currentPage != totalPages"
+        @click="nextPage"
+        class="flex items-center justify-center bg-white rounded-xl p-2 ml-2"
+        :disabled="currentPage === totalPages"
+      >
+        <ArrowRight class="w-4 h-4" />
+      </button>
+    </div>
     <Lecturers
       v-if="showUserPopup"
       :userId="selectedUserId"
+      :editMode="editMode"
+      :deleteMode="deleteMode"
       @close="showUserPopup = false"
     />
     <AddLecturer v-if="showAddUserPopup" @close="showAddUserPopup = false" />
@@ -190,6 +207,8 @@ import Search from "@/components/icons/Search.vue";
 import ShowUser from "@/components/icons/ShowUser.vue";
 import ArrowRight from "@/components/icons/ArrowRight.vue";
 import base_url from "@/config/api";
+import Edit from "@/components/icons/Edit.vue";
+import Delete from "@/components/icons/Delete.vue";
 import { useUserStore } from "@/store/user";
 const { t } = useI18n();
 
@@ -298,8 +317,6 @@ onMounted(() => {
 
 const userStore = useUserStore();
 
-
-
 watch(currentPage, (newPage) => {
   getUsers(newPage);
   console.log("User", Users);
@@ -315,7 +332,7 @@ watch(showAddUserPopup, (newVal) => {
   if (!newVal) {
     getUsers();
   }
-}); 
+});
 
 watch(showImportUserPopup, (newVal) => {
   if (!newVal) {
@@ -354,9 +371,27 @@ const prevPage = () => {
   }
 };
 
-const openPopup = (id) => {
-  selectedUserId.value = id;
+const editMode = ref(false);
+const deleteMode = ref(false);
+
+const openPopup = (userId, action) => {
+  selectedUserId.value = userId;
   showUserPopup.value = true;
+
+  if (action === "show") {
+    editMode.value = false;
+    deleteMode.value = false;
+  }
+
+  if (action === "edit") {
+    editMode.value = true;
+    deleteMode.value = false;
+  }
+
+  if (action === "delete") {
+    editMode.value = false;
+    deleteMode.value = true;
+  }
 };
 
 useHead({
