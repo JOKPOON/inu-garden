@@ -82,6 +82,7 @@
           <div class="flex items-center justify-center w-full pt-10">
             <LoginButton
               @click="handleLogin"
+              @keydown.enter="handleLogin"
               class="flex items-center flex-row justify-center bg-black-primary rounded-xl px-12 py-3 gap-2"
             >
               <span class="text-white font-semibold text-base">Login</span>

@@ -30,9 +30,12 @@
               >
                 <role v-for="(role, index) in user.role" :key="index">
                   <div class="p-1 px-3 bg-grey-tertiary rounded-lg border">
-                    {{ role.replace(/_/g, " ")
-                      .toLowerCase()
-                      .replace(/\b\w/g, (char) => char.toUpperCase()) }}
+                    {{
+                      role
+                        .replace(/_/g, " ")
+                        .toLowerCase()
+                        .replace(/\b\w/g, (char) => char.toUpperCase())
+                    }}
                   </div>
                 </role>
               </div>
@@ -240,9 +243,12 @@
             >
               <ul>
                 <li v-for="(role, index) in user.role" :key="index">
-                  {{ role.replace(/_/g, " ")
+                  {{
+                    role
+                      .replace(/_/g, " ")
                       .toLowerCase()
-                      .replace(/\b\w/g, (char) => char.toUpperCase()) }}
+                      .replace(/\b\w/g, (char) => char.toUpperCase())
+                  }}
                 </li>
               </ul>
             </div>
@@ -285,7 +291,9 @@
             </div>
           </div>
           <div class="flex flex-col gap-1 w-full mt-2">
-            <div class="col-span-1 text-grey-primary text-sm">Degree - English</div>
+            <div class="col-span-1 text-grey-primary text-sm">
+              Degree - English
+            </div>
             <div
               v-if="!editMode"
               class="col-span-2 border text-black border-grey-tertiary rounded-xl p-3"
@@ -322,7 +330,8 @@
                 Add Degree
               </button>
             </div>
-          </div>  <div class="flex flex-col gap-1 w-full mt-2">
+          </div>
+          <div class="flex flex-col gap-1 w-full mt-2">
             <div class="col-span-1 text-grey-primary text-sm">Degree - ไทย</div>
             <div
               v-if="!editMode"
@@ -640,9 +649,6 @@ const deleteRole = (index) => {
   user.value.role.splice(index, 1);
 };
 
-const editMode = ref(false);
-const deleteMode = ref(false);
-
 const searchQuery = ref("");
 const selectedProgramOption = ref("");
 const selectedYearOption = ref("");
@@ -673,13 +679,25 @@ function getProgramOptions() {
 function handleSearch() {
   console.log("Search query:", searchQuery.value);
 }
-
 const props = defineProps({
   userId: {
     type: Number,
     required: true,
   },
+  editMode: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+  deleteMode: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
 });
+
+const editMode = ref(props.editMode);
+const deleteMode = ref(props.deleteMode);
 
 const handleEdit = () => {
   editMode.value = !editMode.value;
@@ -715,8 +733,12 @@ const userJSON = (user) => {
 const handleSaveEdit = () => {
   console.log("Save Edit");
   user.value.role = user.value.role.filter((role) => role !== "");
-  user.value.degree_en = user.value.degree_en.filter((degree_en) => degree_en !== "");
-  user.value.degree_th = user.value.degree_th.filter((degree_th) => degree_th !== "");
+  user.value.degree_en = user.value.degree_en.filter(
+    (degree_en) => degree_en !== ""
+  );
+  user.value.degree_th = user.value.degree_th.filter(
+    (degree_th) => degree_th !== ""
+  );
 
   fetch(base_url + "users/" + props.userId, {
     credentials: "include",
@@ -735,8 +757,6 @@ const handleSaveEdit = () => {
 
   editMode.value = !editMode.value;
 };
-
-
 
 const handleCancelEdit = () => {
   console.log("Cancel Edit");

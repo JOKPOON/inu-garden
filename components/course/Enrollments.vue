@@ -1,13 +1,26 @@
 <template>
-    <div>
-        Enrollment
+    <div class="flex justify-center items-center flex-col h-full w-full">
+      <img
+        :src="BannerLogin"
+        alt="Banner Login"
+        class="h-[405px] object-cover rounded-2xl mt-16"
+      />
     </div>
-</template>
-
-<script setup>
-
-</script>
-
-<style lang="scss" scoped>
-
-</style>
+  </template>
+  
+  <script setup>
+  import BannerLogin from "@/components/images/BannerLogin.jpg";
+  const { t } = useI18n();
+  
+  useHead({
+    title: t("seo.title"),
+    description: t("seo.desc"),
+  });
+  
+  definePageMeta({
+    layout: "landing",
+  });
+  </script>
+  
+  <style lang="scss" scoped></style>
+  
