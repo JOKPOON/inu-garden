@@ -22,15 +22,17 @@
               <div
                 class="text-lg 3xl:text-lg font-semibold text-black-primary text-start"
               >
-                {{ user.academic_position_th }}
-                {{ user.first_name_th }} {{ user.last_name_th }}
+                {{ user.academic_position_en }} {{ user.first_name_en }}
+                {{ user.last_name_en }}
               </div>
               <div
                 class="text-sm text-black-primary text-start mt-1 flex flex-row gap-2"
               >
                 <role v-for="(role, index) in user.role" :key="index">
                   <div class="p-1 px-3 bg-grey-tertiary rounded-lg border">
-                    {{ role }}
+                    {{ role.replace(/_/g, " ")
+                      .toLowerCase()
+                      .replace(/\b\w/g, (char) => char.toUpperCase()) }}
                   </div>
                 </role>
               </div>
@@ -238,7 +240,9 @@
             >
               <ul>
                 <li v-for="(role, index) in user.role" :key="index">
-                  {{ role }}
+                  {{ role.replace(/_/g, " ")
+                      .toLowerCase()
+                      .replace(/\b\w/g, (char) => char.toUpperCase()) }}
                 </li>
               </ul>
             </div>
@@ -281,38 +285,76 @@
             </div>
           </div>
           <div class="flex flex-col gap-1 w-full mt-2">
-            <div class="col-span-1 text-grey-primary text-sm">Degree</div>
+            <div class="col-span-1 text-grey-primary text-sm">Degree - English</div>
             <div
               v-if="!editMode"
               class="col-span-2 border text-black border-grey-tertiary rounded-xl p-3"
             >
               <ul>
-                <li v-for="(degree, index) in user.degree" :key="index">
+                <li v-for="(degree, index) in user.degree_en" :key="index">
                   {{ degree }}
                 </li>
               </ul>
             </div>
             <div v-if="editMode" class="flex flex-col gap-2">
               <div
-                v-for="(degree, index) in user.degree"
+                v-for="(degree, index) in user.degree_en"
                 :key="index"
                 class="flex flex-row gap-4 items-center"
               >
                 <input
-                  v-model="user.degree[index]"
+                  v-model="user.degree_en[index]"
                   class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                   type="text"
                   placeholder="Enter degree"
                 />
                 <button
-                  @click="deleteDegree(index)"
+                  @click="deleteDegree_en(index)"
                   class="flex items-center justify-center rounded-xl p-2 border hover:bg-red-500 hover:text-white"
                 >
                   <Delete class="w-6 h-6" />
                 </button>
               </div>
               <button
-                @click="addDegree"
+                @click="addDegree_en"
+                class="flex items-center justify-center rounded-xl p-2 border hover:bg-black-primary hover:text-white"
+              >
+                Add Degree
+              </button>
+            </div>
+          </div>  <div class="flex flex-col gap-1 w-full mt-2">
+            <div class="col-span-1 text-grey-primary text-sm">Degree - ไทย</div>
+            <div
+              v-if="!editMode"
+              class="col-span-2 border text-black border-grey-tertiary rounded-xl p-3"
+            >
+              <ul>
+                <li v-for="(degree, index) in user.degree_th" :key="index">
+                  {{ degree }}
+                </li>
+              </ul>
+            </div>
+            <div v-if="editMode" class="flex flex-col gap-2">
+              <div
+                v-for="(degree, index) in user.degree_th"
+                :key="index"
+                class="flex flex-row gap-4 items-center"
+              >
+                <input
+                  v-model="user.degree_th[index]"
+                  class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
+                  type="text"
+                  placeholder="Enter degree"
+                />
+                <button
+                  @click="deleteDegree_th(index)"
+                  class="flex items-center justify-center rounded-xl p-2 border hover:bg-red-500 hover:text-white"
+                >
+                  <Delete class="w-6 h-6" />
+                </button>
+              </div>
+              <button
+                @click="addDegree_th"
                 class="flex items-center justify-center rounded-xl p-2 border hover:bg-black-primary hover:text-white"
               >
                 Add Degree
@@ -534,7 +576,8 @@ const user = ref({
   last_name_th: "",
   email: "",
   role: [""],
-  degree: [""],
+  degree_en: [""],
+  degree_th: [""],
 });
 
 onMounted(() => {
@@ -549,7 +592,8 @@ onMounted(() => {
     .then((json) => {
       user.value = json.data;
       user.value.role = json.data.role.split(",");
-      user.value.degree = json.data.degree.split(",");
+      user.value.degree_en = json.data.degree_en.split(",");
+      user.value.degree_th = json.data.degree_th.split(",");
       console.log(user.value);
     });
 });
@@ -569,18 +613,27 @@ onMounted(() => {
 //     });
 // });
 
-const userDegree = ref([]);
+const userDegree_en = ref([]);
+const userDegree_th = ref([]);
 
-const addDegree = () => {
-  user.value.degree.push("");
+const addDegree_en = () => {
+  user.value.degree_en.push("");
+};
+
+const addDegree_th = () => {
+  user.value.degree_th.push("");
 };
 
 const addRole = () => {
   user.value.role.push("");
 };
 
-const deleteDegree = (index) => {
-  user.value.degree.splice(index, 1);
+const deleteDegree_en = (index) => {
+  user.value.degree_en.splice(index, 1);
+};
+
+const deleteDegree_th = (index) => {
+  user.value.degree_th.splice(index, 1);
 };
 
 const deleteRole = (index) => {
@@ -632,9 +685,11 @@ const handleEdit = () => {
   editMode.value = !editMode.value;
   user.value = {
     ...user.value,
-    degree: user.value.degree,
+    degree_en: user.value.degree_en.split(","),
+    degree_th: user.value.degree_th.split(","),
   };
-  userDegree.value = user.value.degree;
+  userDegree_en.value = user.value.degree_en;
+  userDegree_th.value = user.value.degree_th;
 };
 
 const handleDelete = () => {
@@ -652,7 +707,8 @@ const userJSON = (user) => {
     last_name_th: user.value.last_name_th,
     email: user.value.email,
     role: user.value.role.join(","),
-    degree: user.value.degree.join(","),
+    degree_en: user.value.degree_en.join(","),
+    degree_th: user.value.degree_th.join(","),
   };
 };
 
@@ -678,6 +734,8 @@ const handleSaveEdit = () => {
   editMode.value = !editMode.value;
 };
 
+
+
 const handleCancelEdit = () => {
   console.log("Cancel Edit");
   editMode.value = !editMode.value;
@@ -702,6 +760,7 @@ const handleConfirmDelete = () => {
         console.log(json);
       });
     deleteMode.value = !deleteMode.value;
+    emit("close");
   } else {
     checkDelete.value = true;
     console.log("Incorrect input");

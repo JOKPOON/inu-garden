@@ -52,6 +52,12 @@
         <div
           class="max-h-[calc(100vh-385px)] overflow-y-scroll scrollbar-set mt-4"
         >
+        <div
+                v-if="textWarning"
+                class="text-sm text-red-500 mb-4  text-center w-full"
+              >
+                Please fill in all the fields
+              </div>
           <div class="flex flex-col gap-2">
             <div class="grid grid-cols-2 gap-4 mt-2">
               <div class="flex flex-col gap-1 min-w-64">
@@ -141,7 +147,7 @@
                 <div class="p-3 border border-grey-tertiary rounded-xl w-full">
                   <select
                     v-model="user.role[index]"
-                    class="w-full text-black rounded-xl outline-none"
+                    class="w-full text-black rounded-xl outline-none hover:cursor-pointer"
                   >
                     <option value="" disabled selected>Select Role</option>
                     <option value="LECTURER">Lecturer</option>
@@ -172,28 +178,57 @@
           </div>
 
           <div class="flex flex-col gap-1 w-full mt-2">
-            <div class="text-grey-primary text-sm">Degree</div>
+            <div class="text-grey-primary text-sm">Degree - English</div>
             <div class="flex flex-col gap-2">
               <div
-                v-for="(degree, index) in user.degree"
+                v-for="(degree, index) in user.degree_en"
                 :key="index"
                 class="flex items-center gap-2"
               >
                 <input
-                  v-model="user.degree[index]"
+                  v-model="user.degree_en[index]"
                   class="w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                   type="text"
                   placeholder="Degree"
                 />
                 <button
-                  @click="deleteDegree(index)"
+                  @click="deleteDegree_en(index)"
                   class="flex items-center justify-center rounded-xl p-2 border hover:bg-red-500 hover:text-white"
                 >
                   <Delete class="w-6 h-6" />
                 </button>
               </div>
               <button
-                @click="addDegree"
+                @click="addDegree_en"
+                class="flex items-center justify-center rounded-xl p-3 border hover:bg-black-primary hover:text-white"
+              >
+                Add Degree
+              </button>
+            </div>
+          </div>
+          <div class="flex flex-col gap-1 w-full mt-2">
+            <div class="text-grey-primary text-sm">Degree - ไทย</div>
+            <div class="flex flex-col gap-2">
+              <div
+                v-for="(degree, index) in user.degree_th"
+                :key="index"
+                class="flex items-center gap-2"
+              >
+                <input
+                  v-model="user.degree_th[index]"
+                  class="w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
+                  type="text"
+                  placeholder="Degree"
+                />
+                <button
+                  @click="deleteDegree_th(index)"
+                  class="flex items-center justify-center rounded-xl p-2 border hover:bg-red-500 hover:text-white"
+                >
+                  <Delete class="w-6 h-6" />
+                </button>
+              </div>
+              <button
+                @click="addDegree_th"
                 class="flex items-center justify-center rounded-xl p-3 border hover:bg-black-primary hover:text-white"
               >
                 Add Degree
@@ -225,10 +260,11 @@ import { ref, defineEmits } from "vue";
 import { useRouter } from "vue-router";
 import Delete from "@/components/icons/Delete.vue";
 import * as XLSX from "xlsx";
-import base_url from "~/config/api";
+import base_url from "@/config/api";
 
 const emit = defineEmits(["close"]);
 const router = useRouter();
+const textWarning = ref("");
 
 const user = ref({
   picture: "",
@@ -241,23 +277,32 @@ const user = ref({
   last_name_th: "",
   email: "",
   role: [""],
-  degree: [""],
+  degree_en: [""],
+  degree_th: [""],
 });
 
 const invalidPicture = ref(false);
 
 const fileInput = ref(null);
 
-const addDegree = () => {
-  user.value.degree.push("");
+const addDegree_en = () => {
+  user.value.degree_en.push("");
+};
+
+const addDegree_th = () => {
+  user.value.degree_th.push("");
 };
 
 const addRole = () => {
   user.value.role.push("");
 };
 
-const deleteDegree = (index) => {
-  user.value.degree.splice(index, 1);
+const deleteDegree_en = (index) => {
+  user.value.degree_en.splice(index, 1);
+};
+
+const deleteDegree_th = (index) => {
+  user.value.degree_th.splice(index, 1);
 };
 
 const deleteRole = (index) => {
@@ -276,11 +321,13 @@ const handleFileChange = (event) => {
       user.value.picture = e.target.result;
       user.value.pictureName = file.name;
     };
+    invalidPicture.value = false;
     reader.readAsDataURL(file);
   } else {
     invalidPicture.value = true;
   }
 };
+
 
 const userJSON = (user) => {
   return {
@@ -293,7 +340,8 @@ const userJSON = (user) => {
     last_name_th: user.value.last_name_th,
     email: user.value.email,
     role: user.value.role.join(","),
-    degree: user.value.degree.join(","),
+    degree_en: user.value.degree_en.join(","),
+    degree_th: user.value.degree_th.join(","),
   };
 };
 
@@ -318,14 +366,18 @@ const addLecturer = () => {
         emit("close");
       } else {
         console.log(data.error.message);
+        textWarning.value = data.error.message;
       }
     });
 };
+
+
 
 const confirm = () => {
   console.log(user.value);
   addLecturer();
 };
+
 </script>
 
 <style lang="scss" scoped>

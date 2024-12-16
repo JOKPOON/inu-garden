@@ -41,7 +41,7 @@
               ref="importFileInput"
               @change="handleFileSelect"
               class="hidden"
-              accept=".xlsx, .xls"
+              accept=".xlsx, .xls, .csv"
               multiple
             />
           </div>
@@ -50,7 +50,8 @@
           v-if="selectedFiles.length"
           class="text-sm text-black-primary text-start mt-4"
         >
-          Selected Files: {{ selectedFiles.map(file => file.name).join(', ') }}
+          Selected Files:
+          {{ selectedFiles.map((file) => file.name).join(", ") }}
         </p>
 
         <div class="flex flex-row gap-4 w-full mt-6">
@@ -78,7 +79,7 @@
             <div class="rounded-full bg-grey-primary h-16 w-16">
               <img
                 :src="
-                  user.picture ||
+                  users[currentPage - 1].picture ||
                   'https://thumbs.dreamstime.com/b/arabic-business-man-traditional-muslim-hat-placeholder-102337208.jpg'
                 "
                 alt="Profile Picture"
@@ -88,7 +89,7 @@
             <div class="flex flex-col">
               <div class="flex flex-row border border-grey-primary rounded-xl">
                 <div class="text-base px-4 py-2 text-grey-primary rounded-xl">
-                  {{ user.pictureName || "file name" }}
+                  {{ users[currentPage - 1].pictureName || "file name" }}
                 </div>
                 <button
                   @click="triggerFileInput"
@@ -117,7 +118,7 @@
           </div>
           <div class="flex flex-row gap-2">
             <button
-              @click="deleteUser(index)"
+              @click="deleteUser"
               class="flex items-center justify-center rounded-xl w-12 h-12 border hover:bg-red-500 hover:text-white"
             >
               <Delete class="w-6 h-6" />
@@ -140,7 +141,7 @@
                   Academic Position - English
                 </div>
                 <input
-                  v-model="user.academic_position_eng"
+                  v-model="users[currentPage - 1].academic_position_en"
                   class="w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                   type="text"
                   placeholder="Academic Position"
@@ -151,7 +152,7 @@
                   Academic Position - ไทย
                 </div>
                 <input
-                  v-model="user.academic_position_thai"
+                  v-model="users[currentPage - 1].academic_position_th"
                   class="w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                   type="text"
                   placeholder="Academic Position"
@@ -164,7 +165,7 @@
                   First Name - English
                 </div>
                 <input
-                  v-model="user.first_name"
+                  v-model="users[currentPage - 1].first_name_en"
                   class="w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                   type="text"
                   placeholder="First Name"
@@ -173,7 +174,7 @@
               <div class="flex flex-col gap-1 min-w-64">
                 <div class="text-grey-primary text-sm">Last Name - English</div>
                 <input
-                  v-model="user.last_name"
+                  v-model="users[currentPage - 1].last_name_en"
                   class="w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                   type="text"
                   placeholder="Last Name"
@@ -184,7 +185,7 @@
               <div class="flex flex-col gap-1 min-w-64">
                 <div class="text-grey-primary text-sm">First Name - ไทย</div>
                 <input
-                  v-model="user.first_name_thai"
+                  v-model="users[currentPage - 1].first_name_th"
                   class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                   type="text"
                   placeholder="First name"
@@ -193,7 +194,7 @@
               <div class="flex flex-col gap-1 min-w-64">
                 <div class="text-grey-primary text-sm">Last Name - ไทย</div>
                 <input
-                  v-model="user.last_name_thai"
+                  v-model="users[currentPage - 1].last_name_th"
                   class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                   type="text"
                   placeholder="Last Name"
@@ -205,7 +206,7 @@
           <div class="flex flex-col gap-1 min-w-64 mt-2">
             <div class="text-grey-primary text-sm">Email</div>
             <input
-              v-model="user.email"
+              v-model="users[currentPage - 1].email"
               class="w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
               type="text"
               placeholder="Email"
@@ -215,14 +216,14 @@
             <div class="text-grey-primary text-sm">Role</div>
             <div class="flex flex-col gap-2">
               <div
-                v-for="(role, index) in user.role"
+                v-for="(role, index) in users[currentPage - 1].role"
                 :key="index"
                 class="flex items-center gap-2 w-full"
               >
                 <div class="p-3 border border-grey-tertiary rounded-xl w-full">
                   <select
-                    v-model="user.role[index]"
-                    class="w-full text-black rounded-xl outline-none"
+                    v-model="users[currentPage - 1].role[index]"
+                    class="w-full text-black rounded-xl outline-none hover:cursor-pointer"
                   >
                     <option value="" disabled>Select Role</option>
                     <option value="Lecturer">Lecturer</option>
@@ -231,18 +232,20 @@
                     <option value="TABEE Manager">TABEE Manager</option>
                     <option value="ABET Manager">ABET Manager</option>
                     <option value="AUN-QA Manager">AUN-QA Manager</option>
-                    <option value="Head of Curriculum">Head of Curriculum</option>
+                    <option value="Head of Curriculum">
+                      Head of Curriculum
+                    </option>
                   </select>
                 </div>
                 <button
-                  @click="deleteRole(index)"
+                  @click="deleteRole(users[currentPage - 1], index)"
                   class="flex items-center justify-center rounded-xl p-2 border hover:bg-red-500 hover:text-white"
                 >
                   <Delete class="w-6 h-6" />
                 </button>
               </div>
               <button
-                @click="addRole"
+                @click="addRole(users[currentPage - 1])"
                 class="flex items-center justify-center rounded-xl p-3 border hover:bg-black-primary hover:text-white"
               >
                 Add Role
@@ -251,28 +254,57 @@
           </div>
 
           <div class="flex flex-col gap-1 w-full mt-2">
-            <div class="text-grey-primary text-sm">Degree</div>
+            <div class="text-grey-primary text-sm">Degree - English</div>
             <div class="flex flex-col gap-2">
               <div
-                v-for="(degree, index) in user.degree"
+                v-for="(degree, index) in users[currentPage - 1].degree_en"
                 :key="index"
                 class="flex items-center gap-2"
               >
                 <input
-                  v-model="user.degree[index]"
+                  v-model="users[currentPage - 1].degree_en[index]"
                   class="w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                   type="text"
                   placeholder="Degree"
                 />
                 <button
-                  @click="deleteDegree(index)"
+                  @click="deleteDegree_en(users[currentPage - 1], index)"
                   class="flex items-center justify-center rounded-xl p-2 border hover:bg-red-500 hover:text-white"
                 >
                   <Delete class="w-6 h-6" />
                 </button>
               </div>
               <button
-                @click="addDegree"
+                @click="addDegree_en(users[currentPage - 1])"
+                class="flex items-center justify-center rounded-xl p-3 border hover:bg-black-primary hover:text-white"
+              >
+                Add Degree
+              </button>
+            </div>
+          </div>
+          <div class="flex flex-col gap-1 w-full mt-2">
+            <div class="text-grey-primary text-sm">Degree - ไทย</div>
+            <div class="flex flex-col gap-2">
+              <div
+                v-for="(degree, index) in users[currentPage - 1].degree_th"
+                :key="index"
+                class="flex items-center gap-2"
+              >
+                <input
+                  v-model="users[currentPage - 1].degree_th[index]"
+                  class="w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
+                  type="text"
+                  placeholder="Degree"
+                />
+                <button
+                  @click="deleteDegree_th(users[currentPage - 1], index)"
+                  class="flex items-center justify-center rounded-xl p-2 border hover:bg-red-500 hover:text-white"
+                >
+                  <Delete class="w-6 h-6" />
+                </button>
+              </div>
+              <button
+                @click="addDegree_th(users[currentPage - 1])"
                 class="flex items-center justify-center rounded-xl p-3 border hover:bg-black-primary hover:text-white"
               >
                 Add Degree
@@ -282,11 +314,13 @@
         </div>
         <div class="flex justify-end mt-4 gap-4">
           <div class="w-full font-medium text-center py-3 border rounded-lg">
-            Total lecturer: {{ totalLecturer }}
+            Total Lecturer : {{ totalPages }}
           </div>
           <div class="w-full font-medium text-center border rounded-lg">
             <div class="flex justify-center items-center mt-2">
+              <div v-if="currentPage == 1" class="w-6 h-6 mr-2"></div>
               <button
+                v-if="currentPage != 1"
                 @click="prevPage"
                 class="flex items-center justify-center bg-white rounded-xl p-2 mr-2"
                 :disabled="currentPage === 1"
@@ -294,12 +328,18 @@
                 <ArrowRight class="w-4 h-4 rotate-180" />
               </button>
               <div class="flex items-center justify-center gap-2">
-                <span class="text-sm text-grey-primary">Page</span>
-                <span class="text-sm text-black-primary font-semibold">{{ currentPage }}</span>
+                <span class="text-sm text-grey-primary">Lecturer</span>
+                <span class="text-sm text-black-primary font-semibold">{{
+                  currentPage
+                }}</span>
                 <span class="text-sm text-grey-primary">of</span>
-                <span class="text-sm text-black-primary font-semibold">{{ totalPages }}</span>
+                <span class="text-sm text-black-primary font-semibold">{{
+                  totalPages
+                }}</span>
               </div>
+              <div v-if="currentPage == totalPages" class="w-6 h-6 ml-2"></div>
               <button
+                v-if="currentPage != totalPages"
                 @click="nextPage"
                 class="flex items-center justify-center bg-white rounded-xl p-2 ml-2"
                 :disabled="currentPage === totalPages"
@@ -311,10 +351,12 @@
         </div>
         <div class="grid grid-cols-2 mt-4 gap-4">
           <ImportButton
-            @click="ImportUser"
+            @click="ImportUser(users[currentPage - 1])"
             class="flex items-center flex-row justify-center border bg-yellow-primary rounded-xl w-full py-3 gap-2"
           >
-            <span class="text-black-primary font-semibold text-base">Import</span>
+            <span class="text-black-primary font-semibold text-base"
+              >Import</span
+            >
           </ImportButton>
           <ImportAllButton
             @click="importAll"
@@ -329,53 +371,54 @@
 </template>
 
 <script setup>
-import { ref, defineEmits } from "vue";
+import { ref, defineEmits, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import ImportButton from "@/components/button/ImportButton.vue";
 import ImportAllButton from "@/components/button/ImportAllButton.vue";
 import ArrowRight from "@/components/icons/ArrowRight.vue";
 import Delete from "@/components/icons/Delete.vue";
 import Import from "@/components/icons/Import.vue";
+import base_url from "@/config/api";
 import * as XLSX from "xlsx";
 
 const emit = defineEmits(["close"]);
+const router = useRouter();
 
-const user = ref({
-  picture: "",
-  pictureName: "",
-  academic_position_eng: "",
-  academic_position_thai: "",
-  first_name: "",
-  last_name: "",
-  first_name_thai: "",
-  last_name_thai: "",
-  email: "",
-  role: [""],
-  degree: [""],
-});
-
+const users = ref([]);
 const invalidPicture = ref(false);
 const importDone = ref(false);
 const invalidFileImport = ref(false);
 const isDragging = ref(false);
 const selectedFiles = ref([]);
+const currentPage = ref(1);
+const totalPages = ref(1);
+const totalLecturer = ref(0);
 
 const fileInput = ref(null);
 const importFileInput = ref(null);
 
-const addDegree = () => {
-  user.value.degree.push("");
+const addDegree_en = (user) => {
+  user.degree_en.push("");
 };
 
-const addRole = () => {
-  user.value.role.push("");
+const addDegree_th = (user) => {
+  user.degree_th.push("");
 };
 
-const deleteDegree = (index) => {
-  user.value.degree.splice(index, 1);
+const addRole = (user) => {
+  user.role.push("");
 };
 
-const deleteRole = (index) => {
-  user.value.role.splice(index, 1);
+const deleteDegree_en = (user, index) => {
+  user.degree_en.splice(index, 1);
+};
+
+const deleteDegree_th = (user, index) => {
+  user.degree_th.splice(index, 1);
+};
+
+const deleteRole = (user, index) => {
+  user.role.splice(index, 1);
 };
 
 const triggerFileInput = () => {
@@ -391,8 +434,9 @@ const handleFileChange = (event) => {
   if (file && file.size <= 10 * 1024 * 1024) {
     const reader = new FileReader();
     reader.onload = (e) => {
-      user.value.picture = e.target.result;
-      user.value.pictureName = file.name;
+      const user = users.value[currentPage.value - 1];
+      user.picture = e.target.result;
+      user.pictureName = file.name;
     };
     reader.readAsDataURL(file);
   } else {
@@ -402,7 +446,9 @@ const handleFileChange = (event) => {
 
 const handleFileSelect = (event) => {
   const files = Array.from(event.target.files);
-  const validFiles = files.filter(file => file.name.match(/\.(xlsx|xls)$/));
+  const validFiles = files.filter((file) =>
+    file.name.match(/\.(xlsx|xls|csv)$/)
+  );
   if (validFiles.length !== files.length) {
     invalidFileImport.value = true;
     return;
@@ -411,7 +457,8 @@ const handleFileSelect = (event) => {
   selectedFiles.value = validFiles;
 };
 
-const handleDragOver = () => {
+const handleDragOver = (event) => {
+  event.preventDefault();
   isDragging.value = true;
 };
 
@@ -420,32 +467,104 @@ const handleDragLeave = () => {
 };
 
 const handleDrop = (event) => {
+  event.preventDefault();
   isDragging.value = false;
   const files = Array.from(event.dataTransfer.files);
   handleFileSelect({ target: { files } });
 };
 
-const ImportUser = () => {
-  user.value.role = user.value.role.filter((role) => role !== "");
-  user.value.degree = user.value.degree.filter((degree) => degree !== "");
-  console.log(user.value);
-  invalidPicture.value = false;
-  emit("close");
+const ImportUser = (user) => {
+  fetch(base_url + "users", {
+    credentials: "include",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      picture: user.picture,
+      academic_position_en: user.academic_position_en,
+      academic_position_th: user.academic_position_th,
+      first_name_en: user.first_name_en,
+      last_name_en: user.last_name_en,
+      first_name_th: user.first_name_th,
+      last_name_th: user.last_name_th,
+      email: user.email,
+      role: user.role.map((r) => r.toUpperCase().replace(" ", "_")).join(","),
+      degree_en: user.degree_en.join(","),
+      degree_th: user.degree_th.join(","),
+    }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.success) {
+        console.log(data);
+        user.value.role = user.value.role.filter((role) => role !== "");
+        user.value.degree = user.value.degree.filter((degree) => degree !== "");
+        invalidPicture.value = false;
+      } else {
+        console.log(data.error.message);
+      }
+    });
+  deleteUser();
+};
+
+const deleteUser = () => {
+  users.value.splice(currentPage.value - 1, 1);
+  totalPages.value = users.value.length;
+  if (currentPage.value > totalPages.value) {
+    currentPage.value = totalPages.value;
+  }
 };
 
 const importAll = () => {
-  user.value.role = user.value.role.filter((role) => role !== "");
-  user.value.degree = user.value.degree.filter((degree) => degree !== "");
-  console.log(user.value);
-  invalidPicture.value = false;
-  importDone.value = true;
+  const promises = users.value.map((user) => {
+    fetch(base_url + "users", {
+      credentials: "include",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        picture: user.picture,
+        academic_position_en: user.academic_position_en,
+        academic_position_th: user.academic_position_th,
+        first_name_en: user.first_name_en,
+        last_name_en: user.last_name_en,
+        first_name_th: user.first_name_th,
+        last_name_th: user.last_name_th,
+        email: user.email,
+        role: user.role.map((r) => r.toUpperCase().replace(" ", "_")).join(","),
+        degree_en: user.degree_en.join(","),
+        degree_th: user.degree_th.join(","),
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data.success) {
+          throw new Error(data.error.message);
+        }
+        return data;
+      });
+  });
+
+  Promise.all(promises)
+    .then((results) => {
+      console.log("All users imported successfully:", results);
+      users.value = [];
+      totalPages.value = 0;
+      currentPage.value = 1;
+      importDone.value = false;
+    })
+    .catch((error) => {
+      console.error("Error importing users:", error);
+    });
   emit("close");
 };
 
 const importFromExcel = () => {
   if (!selectedFiles.value.length) return;
 
-  selectedFiles.value.forEach(file => {
+  selectedFiles.value.forEach((file) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       const data = new Uint8Array(e.target.result);
@@ -454,21 +573,88 @@ const importFromExcel = () => {
       const worksheet = workbook.Sheets[firstSheetName];
       const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
+      console.log("Parsed JSON Data:", jsonData);
+
       const headers = jsonData[0];
       const values = jsonData.slice(1);
 
-      values.forEach(row => {
+      values.forEach((row) => {
+        const userData = {
+          picture: "",
+          pictureName: "",
+          academic_position_en: "",
+          academic_position_th: "",
+          first_name_en: "",
+          last_name_en: "",
+          first_name_th: "",
+          last_name_th: "",
+          email: "",
+          role: [""],
+          degree_en: [""],
+          degree_th: [""],
+        };
         headers.forEach((header, index) => {
-          if (header in user.value) {
-            user.value[header] = row[index];
+          switch (header) {
+            case "Picture":
+              userData.picture = "";
+              break;
+            case "Academic Position (EN)":
+              userData.academic_position_en = row[index];
+              break;
+            case "Academic Position (TH)":
+              userData.academic_position_th = row[index];
+              break;
+            case "First Name (EN)":
+              userData.first_name_en = row[index];
+              break;
+            case "Last Name (EN)":
+              userData.last_name_en = row[index];
+              break;
+            case "First Name (TH)":
+              userData.first_name_th = row[index];
+              break;
+            case "Last Name (TH)":
+              userData.last_name_th = row[index];
+              break;
+            case "Email":
+              userData.email = row[index];
+              break;
+            case "Role":
+              userData.role = row[index] ? row[index].split(", ") : [];
+              break;
+            case "Degree (EN)":
+              userData.degree_en = row[index] ? row[index].split(", ") : [];
+              break;
+            case "Degree (TH)":
+              userData.degree_th = row[index] ? row[index].split(", ") : [];
+              break;
+            default:
+              break;
           }
         });
+        users.value.push(userData);
       });
 
+      console.log("Updated Users Array:", users.value);
+
+      totalLecturer.value = users.value.length;
+      totalPages.value = totalLecturer.value;
       importDone.value = true;
     };
     reader.readAsArrayBuffer(file);
   });
+};
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
+};
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
 };
 </script>
 
