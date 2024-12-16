@@ -52,12 +52,12 @@
         <div
           class="max-h-[calc(100vh-385px)] overflow-y-scroll scrollbar-set mt-4"
         >
-        <div
-                v-if="textWarning"
-                class="text-sm text-red-500 mb-4  text-center w-full"
-              >
-                Please fill in all the fields
-              </div>
+          <div
+            v-if="textWarning"
+            class="text-sm text-red-500 mb-4 text-center w-full"
+          >
+            Please fill in all the fields
+          </div>
           <div class="flex flex-col gap-2">
             <div class="grid grid-cols-2 gap-4 mt-2">
               <div class="flex flex-col gap-1 min-w-64">
@@ -328,7 +328,6 @@ const handleFileChange = (event) => {
   }
 };
 
-
 const userJSON = (user) => {
   return {
     picture: user.value.picture,
@@ -360,10 +359,15 @@ const addLecturer = () => {
       if (data.success) {
         console.log(data);
         user.value.role = user.value.role.filter((role) => role !== "");
-        user.value.degree = user.value.degree.filter((degree) => degree !== "");
+        user.value.degree_en = user.value.degree_en.filter(
+          (degree_en) => degree_en !== ""
+        );
+        user.value.degree_th = user.value.degree_th.filter(
+          (degree_th) => degree_th !== ""
+        );
+        emit("close");
         invalidPicture.value = false;
         router.go();
-        emit("close");
       } else {
         console.log(data.error.message);
         textWarning.value = data.error.message;
@@ -371,13 +375,10 @@ const addLecturer = () => {
     });
 };
 
-
-
 const confirm = () => {
   console.log(user.value);
   addLecturer();
 };
-
 </script>
 
 <style lang="scss" scoped>

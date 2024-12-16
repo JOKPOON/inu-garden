@@ -24,7 +24,6 @@ export default defineNuxtConfig({
   fonts: {
     families: [{ name: "Noto Sans Thai", fallbacks: ["Arial"], global: true }],
   },
-
   sitemap: {
     autoI18n: true,
     debug: true,

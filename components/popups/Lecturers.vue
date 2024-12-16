@@ -715,7 +715,8 @@ const userJSON = (user) => {
 const handleSaveEdit = () => {
   console.log("Save Edit");
   user.value.role = user.value.role.filter((role) => role !== "");
-  user.value.degree = user.value.degree.filter((degree) => degree !== "");
+  user.value.degree_en = user.value.degree_en.filter((degree_en) => degree_en !== "");
+  user.value.degree_th = user.value.degree_th.filter((degree_th) => degree_th !== "");
 
   fetch(base_url + "users/" + props.userId, {
     credentials: "include",
@@ -731,6 +732,7 @@ const handleSaveEdit = () => {
     });
 
   console.log(user.value);
+
   editMode.value = !editMode.value;
 };
 
@@ -761,6 +763,7 @@ const handleConfirmDelete = () => {
       });
     deleteMode.value = !deleteMode.value;
     emit("close");
+    router.go();
   } else {
     checkDelete.value = true;
     console.log("Incorrect input");
