@@ -1,26 +1,82 @@
 <template>
-    <div class="flex justify-center items-center flex-col h-full w-full">
-      <img
-        :src="BannerLogin"
-        alt="Banner Login"
-        class="h-[405px] object-cover rounded-2xl mt-16"
-      />
+  <div class="flex items-center justify-between flex-row">
+    <div class="border border-grey-secondary rounded-xl">
+      <button
+        v-for="button in buttons"
+        :key="button"
+        :class="[
+          'px-6 py-2 rounded-xl',
+          activeButton === button
+            ? 'bg-black-primary text-white'
+            : 'border border-grey-secondary text-base',
+        ]"
+        @click="setActionButton(button)"
+      >
+        {{ button }}
+      </button>
     </div>
-  </template>
-  
-  <script setup>
-  import BannerLogin from "@/components/images/BannerLogin.jpg";
-  const { t } = useI18n();
-  
-  useHead({
-    title: t("seo.title"),
-    description: t("seo.desc"),
-  });
-  
-  definePageMeta({
-    layout: "landing",
-  });
-  </script>
-  
-  <style lang="scss" scoped></style>
-  
+    <div
+      v-if="activeButton === 'Student Enrollments'"
+      class="flex flex-row gap-8"
+    >
+      <div class="flex flex-col">
+        <div class="text-base text-black-primary font-semibold text-end">
+          Total
+        </div>
+        <div class="text-base text-grey-primary text-end -mt-2">
+          <span class="font-semibold text-2xl text-black-primary">{{
+            10
+          }}</span>
+          Students
+        </div>
+      </div>
+      <AddUserButton
+        @click="onClickAddUser"
+        class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
+      >
+        <span class="text-black-primary font-semibold text-base">Add Student</span>
+      </AddUserButton>
+    </div>
+  </div>
+  <div v-if="activeButton === 'Student Enrollments'">
+    <StudentEnrollments />
+  </div>
+  <div v-else-if="activeButton === 'Student Results'">
+    <StudentResult />
+  </div>
+</template>
+
+<script setup>
+import { ref } from "vue";
+import AddUserButton from "@/components/button/AddUserButton.vue";
+import StudentEnrollments from "@/components/course/StudentEnrollments.vue";
+import StudentResult from "@/components/course/StudentResult.vue";
+
+const { t } = useI18n();
+
+useHead({
+  title: t("seo.title"),
+  description: t("seo.desc"),
+});
+
+definePageMeta({
+  layout: "landing",
+});
+
+const buttons = ["Student Enrollments", "Student Results"];
+
+const activeButton = ref("Student Enrollments");
+const setActionButton = (button) => {
+  activeButton.value = button;
+};
+</script>
+
+<style lang="scss" scoped>
+.scrollbar-set {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+</style>

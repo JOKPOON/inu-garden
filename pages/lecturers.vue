@@ -210,6 +210,7 @@ import ArrowRight from "@/components/icons/ArrowRight.vue";
 import base_url from "@/config/api";
 import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
+import * as XLSX from 'xlsx';
 const { t } = useI18n();
 
 const user = ref({
@@ -228,7 +229,7 @@ const user = ref({
 });
 
 const exportUser = () => {
-  const csvContent = [
+  const data = [
     [
       "Picture",
       "Academic Position (EN)",
@@ -255,19 +256,13 @@ const exportUser = () => {
       user.value.degree_en.join(";"),
       user.value.degree_th.join(";"),
     ],
-  ]
-    .map((e) => e.join(","))
-    .join("\n");
+  ];
 
-  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-  const link = document.createElement("a");
-  const url = URL.createObjectURL(blob);
-  link.setAttribute("href", url);
-  link.setAttribute("download", "lecturer.csv");
-  link.style.visibility = "hidden";
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+  const worksheet = XLSX.utils.aoa_to_sheet(data);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Lecturers");
+
+  XLSX.writeFile(workbook, "lecturer.xlsx");
 };
 
 const searchQuery = ref("");
