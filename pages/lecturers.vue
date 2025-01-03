@@ -26,7 +26,7 @@
             type="text"
             v-model="searchQuery"
             @keyup.enter="getUsers(searchQuery)"
-            class="bg-transparent border-none focus:ring-0 outline-none text-base w-56"
+            class="bg-transparent border-none focus:ring-0 outline-none text-base w-48"
             placeholder="Search..."
           />
           <button
