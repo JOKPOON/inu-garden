@@ -93,7 +93,7 @@
           class="contents"
         >
           <div
-            class="grid grid-cols-5 gap-4 py-2 hover:cursor-pointer hover:bg-[#F6F8F8] hover:rounded-xl"
+            class="grid grid-cols-5 gap-4 py-2 hover:cursor-pointer hover:bg-[#F6F8F8] hover:rounded-xl border-b border-grey-tertiary"
           >
             <div
               class="col-span-1 text-sm text-black-primary flex items-center justify-center"
