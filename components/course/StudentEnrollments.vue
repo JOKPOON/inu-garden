@@ -28,13 +28,13 @@
         >
           <span class="font-semibold text-base">Status</span>
           <template v-if="status === 'default'">
-            <Status class="w-6 h-6" />
+            <Status class="w-5 h-5" />
           </template>
           <template v-else-if="status === 'ascending'">
-            <ArrowUp class="w-6 h-6" />
+            <ArrowUp class="w-5 h-5" />
           </template>
           <template v-else>
-            <ArrowDown class="w-6 h-6" />
+            <ArrowDown class="w-5 h-5" />
           </template>
         </button>
       </div>
