@@ -83,7 +83,7 @@
           <div
             class="h-full w-24 flex items-center justify-center py-2 text-sm"
           >
-            <Include v-if="getActiveAssessment().clos === 'Include'" />
+            <Include v-if="getActiveAssessment().closStatus === 'Include'" />
             <NotInclude v-else />
           </div>
           <div
@@ -243,10 +243,14 @@
                   :key="student.studentID"
                   class="grid grid-cols-7 gap-4 py-2 hover:cursor-pointer hover:bg-[#F6F8F8] hover:rounded-xl border-b border-grey-tertiary"
                 >
-                  <div class="col-span-2 text-sm text-black-primary text-start flex items-center">
+                  <div
+                    class="col-span-2 text-sm text-black-primary text-start flex items-center"
+                  >
                     {{ student.studentID }}
                   </div>
-                  <div class="col-span-2 text-sm text-black-primary text-start flex items-center">
+                  <div
+                    class="col-span-2 text-sm text-black-primary text-start flex items-center"
+                  >
                     {{ student.studentName }}
                   </div>
                   <div
@@ -383,7 +387,7 @@ const getStudents = (query) => {
     {
       id: 1,
       name: "Assessment 1",
-      clos: "Include",
+      closStatus: "Include",
       description:
         "lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud",
       maxScore: 100,
@@ -422,7 +426,7 @@ const getStudents = (query) => {
     {
       id: 2,
       name: "Assessment 2",
-      clos: "Not Include",
+      closStatus: "Not Include",
       description:
         "lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud",
       maxScore: 90,
@@ -461,7 +465,7 @@ const getStudents = (query) => {
     {
       id: 3,
       name: "Assessment 3",
-      clos: "Include",
+      closStatus: "Include",
       description:
         "lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud",
       maxScore: 100,
