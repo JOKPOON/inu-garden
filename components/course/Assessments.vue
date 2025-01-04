@@ -220,7 +220,7 @@
               </div>
               <div v-else-if="activeButton === 'Students Assessment'">
                 <div
-                  class="grid grid-cols-7 gap-4 py-2 hover:cursor-pointer hover:bg-[#F6F8F8] hover:rounded-xl border-b border-grey-tertiary"
+                  class="grid grid-cols-7 gap-4 py-2 hover:rounded-xl border-b border-grey-tertiary"
                 >
                   <div
                     class="col-span-2 text-sm text-start text-grey-primary font-medium"
@@ -241,7 +241,7 @@
                 <div
                   v-for="(student, index) in getActiveAssessment().student"
                   :key="student.studentID"
-                  class="grid grid-cols-7 gap-4 py-2 hover:cursor-pointer hover:bg-[#F6F8F8] hover:rounded-xl border-b border-grey-tertiary"
+                  class="grid grid-cols-7 gap-4 py-2 hover:rounded-xl border-b border-grey-tertiary"
                 >
                   <div
                     class="col-span-2 text-sm text-black-primary text-start flex items-center"
