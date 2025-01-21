@@ -233,7 +233,7 @@ const courses = ref([
       email: "lecturer_1@inu.com",
       password: "$2a$10",
       first_name: "lecturer",
-      last_name: "1",
+      last_name: "1st",
       role: "LECTURER",
     },
   },
