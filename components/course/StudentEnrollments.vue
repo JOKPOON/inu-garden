@@ -28,13 +28,13 @@
         >
           <span class="font-semibold text-base">Status</span>
           <template v-if="status === 'default'">
-            <Status class="w-6 h-6" />
+            <Status class="w-5 h-5" />
           </template>
           <template v-else-if="status === 'ascending'">
-            <ArrowUp class="w-6 h-6" />
+            <ArrowUp class="w-5 h-5" />
           </template>
           <template v-else>
-            <ArrowDown class="w-6 h-6" />
+            <ArrowDown class="w-5 h-5" />
           </template>
         </button>
       </div>
@@ -93,7 +93,7 @@
           class="contents"
         >
           <div
-            class="grid grid-cols-5 gap-4 py-2 hover:cursor-pointer hover:bg-[#F6F8F8] hover:rounded-xl"
+            class="grid grid-cols-5 gap-4 py-2 hover:cursor-pointer hover:bg-[#F6F8F8] hover:rounded-xl border-b border-grey-tertiary"
           >
             <div
               class="col-span-1 text-sm text-black-primary flex items-center justify-center"

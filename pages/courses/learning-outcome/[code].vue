@@ -8,13 +8,11 @@
 </template>
 
 <script setup>
-
 import { useI18n } from "vue-i18n";
 import CourseNav from "@/components/course/CourseNav.vue";
 import LearningOutcome from "@/components/course/LearningOutcome.vue";
 
 const { t } = useI18n();
-
 
 useHead({
   title: t("seo.title"),
