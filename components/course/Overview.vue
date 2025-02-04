@@ -39,14 +39,14 @@
           <div class="flex flex-row gap-2 mt-4">
             <Lecturer class="w-6 h-6" />
             <p class="text-sm text-grey-primary">
-              {{ course.user.first_name }}
+              Lecturer : {{ course.user.first_name }}
             </p>
           </div>
           <div class="grid grid-cols-2 gap-4 items-center mt-1">
             <div class="flex flex-row gap-2">
               <Course class="w-6 h-6" />
               <p class="text-sm text-grey-primary">
-                academic_year Year : {{ course.academic_year }}
+                Academic Year : {{ course.academic_year }}
               </p>
             </div>
             <div class="flex flex-row gap-2 items-center">

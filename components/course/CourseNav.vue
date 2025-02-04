@@ -30,6 +30,7 @@ const buttons = [
   "Learning Outcome",
   "Assessments",
   "Feedback",
+  "Survey"
 ];
 
 const buttonRoutes = {
@@ -38,6 +39,7 @@ const buttonRoutes = {
   "Learning Outcome": "learning-outcome",
   Assessments: "assessments",
   Feedback: "feedback",
+  Survey: "survey"
 };
 
 const activeButton = ref(props.currentRouteName);

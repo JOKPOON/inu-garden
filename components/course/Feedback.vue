@@ -128,7 +128,7 @@
     <div class="flex-col flex gap-4">
       <div class="p-3 rounded-xl border border-grey-tertiary">
         <h3 class="text-base font-semibold mb-4 ml-3">Feedbacks</h3>
-        <div class="max-h-[calc(100vh-540px)] overflow-y-scroll scrollbar-set">
+        <div class="max-h-[calc(100vh-570px)] overflow-y-scroll scrollbar-set">
           <div
             v-for="feedback in feedbacks"
             :key="feedback.id"
