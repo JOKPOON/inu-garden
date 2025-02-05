@@ -44,17 +44,17 @@
     <div class="border border-grey-secondary p-4 rounded-2xl">
       <div class="flex flex-row gap-4 pb-2 border-b">
         <div
-          class="w-64 text-base text-grey-primary flex items-center justify-center font-medium"
+          class="w-64 text-sm  text-grey-primary flex items-center justify-center "
         >
           Assessment Name
         </div>
         <div
-          class="w-24 text-sm text-grey-primary flex items-center justify-center text-center font-medium"
+          class="w-24 text-sm text-grey-primary flex items-center justify-center text-center "
         >
           Included <br />In CLOs
         </div>
         <div
-          class="w-full text-base text-grey-primary flex items-center justify-center font-medium"
+          class="w-full text-sm text-grey-primary flex items-center justify-center"
         >
           Details
         </div>
