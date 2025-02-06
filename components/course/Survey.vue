@@ -19,6 +19,7 @@
       <button
         v-if="!isComplete"
         class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-2 gap-2 hover:bg-black-primary hover:text-white"
+        @click="startSurvey"
       >
         <Send class="w-5 h-5" />
         <div class="text-base">Start Survey</div>
@@ -50,6 +51,7 @@
 
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import SurveyManagement from "@/components/course/SurveyManagement.vue";
 import SurveyStatistic from "@/components/course/SurveyStatistic.vue";
 import Send from "@/components/icons/Send.vue";
@@ -58,6 +60,8 @@ import Include from "@/components/icons/Include.vue";
 const buttons = ["Survey Management", "Survey Statistic"];
 const activeButton = ref("Survey Management");
 const isComplete = ref(false);
+const router = useRouter();
+const code = router.currentRoute.value.params.code;
 
 const setActionButton = (button) => {
   activeButton.value = button;
@@ -65,6 +69,11 @@ const setActionButton = (button) => {
 
 const markAsComplete = () => {
   isComplete.value = !isComplete.value;
+};
+
+
+const startSurvey = () => {
+  router.push(`/courses/survey/${code}/question`);
 };
 </script>
 
