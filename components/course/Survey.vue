@@ -19,7 +19,7 @@
       <button
         v-if="!isComplete"
         class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-2 gap-2 hover:bg-black-primary hover:text-white"
-        @click="startSurvey"
+        @click="showPopup"
       >
         <Send class="w-5 h-5" />
         <div class="text-base">Start Survey</div>
@@ -47,6 +47,13 @@
       <SurveyStatistic />
     </div>
   </div>
+
+  <SurverLink
+    v-if="isPopupVisible"
+    @close="isPopupVisible = false"
+    :link="surveyLink"
+    :name="surveyName"
+  />
 </template>
 
 <script setup>
@@ -56,12 +63,16 @@ import SurveyManagement from "@/components/course/SurveyManagement.vue";
 import SurveyStatistic from "@/components/course/SurveyStatistic.vue";
 import Send from "@/components/icons/Send.vue";
 import Include from "@/components/icons/Include.vue";
+import SurverLink from "@/components/popups/SurverLink.vue";
 
 const buttons = ["Survey Management", "Survey Statistic"];
 const activeButton = ref("Survey Management");
 const isComplete = ref(false);
+const isPopupVisible = ref(false);
 const router = useRouter();
 const code = router.currentRoute.value.params.code;
+const surveyLink = ref(`http://localhost:3000/courses/survey/${code}/question`);
+const surveyName = code;
 
 const setActionButton = (button) => {
   activeButton.value = button;
@@ -71,9 +82,8 @@ const markAsComplete = () => {
   isComplete.value = !isComplete.value;
 };
 
-
-const startSurvey = () => {
-  router.push(`/courses/survey/${code}/question`);
+const showPopup = () => {
+  isPopupVisible.value = true;
 };
 </script>
 
