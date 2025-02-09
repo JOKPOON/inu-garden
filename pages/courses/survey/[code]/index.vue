@@ -11,7 +11,6 @@
 import { useI18n } from "vue-i18n";
 import CourseNav from "@/components/course/CourseNav.vue";
 import Survey from "@/components/course/Survey.vue";
-
 const { t } = useI18n();
 
 useHead({
