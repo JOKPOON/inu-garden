@@ -100,9 +100,9 @@
             <div
               class="col-span-1 text-sm text-black-primary flex items-center justify-start pl-4"
             >
-              {{ user.academic_position_en }} {{ user.first_name_en }}
+              {{ user.title_en_short }} {{ user.first_name_en }}
               {{ user.last_name_en }} <br />
-              {{ user.academic_position_th }} {{ user.first_name_th }}
+              {{ user.title_th_short }} {{ user.first_name_th }}
               {{ user.last_name_th }}
             </div>
             <div
@@ -210,12 +210,16 @@ import ArrowRight from "@/components/icons/ArrowRight.vue";
 import base_url from "@/config/api";
 import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
-import * as XLSX from 'xlsx';
+import * as XLSX from "xlsx";
 const { t } = useI18n();
 
 const user = ref({
   picture: "",
   pictureName: "",
+  title_en: "",
+  title_th: "",
+  title_en_short: "",
+  title_th_short: "",
   academic_position_en: "",
   academic_position_th: "",
   first_name_en: "",
@@ -232,6 +236,10 @@ const exportUser = () => {
   const data = [
     [
       "Picture",
+      "Title (EN)",
+      "Title (TH)",
+      "Title Short (EN)",
+      "Title Short (TH)",
       "Academic Position (EN)",
       "Academic Position (TH)",
       "First Name (EN)",
@@ -245,6 +253,10 @@ const exportUser = () => {
     ],
     [
       user.value.picture,
+      user.value.title_en,
+      user.value.title_th,
+      user.value.title_en_short,
+      user.value.title_th_short,
       user.value.academic_position_en,
       user.value.academic_position_th,
       user.value.first_name_en,
