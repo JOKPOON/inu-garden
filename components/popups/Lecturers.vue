@@ -145,6 +145,82 @@
             <div class="grid grid-cols-2 gap-4 mt-2">
               <div class="flex flex-col gap-1 min-w-64">
                 <div class="col-span-1 text-grey-primary text-sm">
+                  Title - English
+                </div>
+                <div
+                  v-if="!editMode"
+                  class="col-span-2 border text-black border-grey-tertiary rounded-xl p-3"
+                >
+                  {{ user.title_en }}
+                </div>
+                <input
+                  v-if="editMode"
+                  v-model="user.title_en"
+                  class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
+                  type="text"
+                  :placeholder="user.title_en"
+                />
+              </div>
+              <div class="flex flex-col gap-1 min-w-64">
+                <div class="col-span-1 text-grey-primary text-sm">
+                  Title - ไทย
+                </div>
+                <div
+                  v-if="!editMode"
+                  class="col-span-2 border text-black border-grey-tertiary rounded-xl p-3"
+                >
+                  {{ user.title_th }}
+                </div>
+                <input
+                  v-if="editMode"
+                  v-model="user.title_th"
+                  class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
+                  type="text"
+                  :placeholder="user.title_th"
+                />
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mt-2">
+              <div class="flex flex-col gap-1 min-w-64">
+                <div class="col-span-1 text-grey-primary text-sm">
+                  Title Short- English
+                </div>
+                <div
+                  v-if="!editMode"
+                  class="col-span-2 border text-black border-grey-tertiary rounded-xl p-3"
+                >
+                  {{ user.title_en_short }}
+                </div>
+                <input
+                  v-if="editMode"
+                  v-model="user.title_en_short"
+                  class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
+                  type="text"
+                  :placeholder="user.title_en_short"
+                />
+              </div>
+              <div class="flex flex-col gap-1 min-w-64">
+                <div class="col-span-1 text-grey-primary text-sm">
+                  Title Short - ไทย
+                </div>
+                <div
+                  v-if="!editMode"
+                  class="col-span-2 border text-black border-grey-tertiary rounded-xl p-3"
+                >
+                  {{ user.title_th_short }}
+                </div>
+                <input
+                  v-if="editMode"
+                  v-model="user.title_th_short"
+                  class="col-span-2 w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
+                  type="text"
+                  :placeholder="user.title_th_short"
+                />
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mt-2">
+              <div class="flex flex-col gap-1 min-w-64">
+                <div class="col-span-1 text-grey-primary text-sm">
                   First Name - English
                 </div>
                 <div
@@ -577,6 +653,10 @@ const handleFileChange = (event) => {
 const user = ref({
   picture: "",
   pictureName: "",
+  title_en: "",
+  title_th: "",
+  title_en_short: "",
+  title_th_short: "",
   academic_position_en: "",
   academic_position_th: "",
   first_name_en: "",
@@ -717,6 +797,10 @@ const handleDelete = () => {
 const userJSON = (user) => {
   return {
     picture: user.value.picture,
+    title_en: user.value.title_en,
+    title_th: user.value.title_th,
+    title_en_short: user.value.title_en_short,
+    title_th_short: user.value.title_th_short,
     academic_position_en: user.value.academic_position_en,
     academic_position_th: user.value.academic_position_th,
     first_name_en: user.value.first_name_en,

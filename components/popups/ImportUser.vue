@@ -161,6 +161,48 @@
             </div>
             <div class="grid grid-cols-2 gap-4 mt-2">
               <div class="flex flex-col gap-1 min-w-64">
+                <div class="text-grey-primary text-sm">Title - English</div>
+                <input
+                  v-model="users[currentPage - 1].title_en"
+                  class="w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
+                  type="text"
+                  placeholder="Title"
+                />
+              </div>
+              <div class="flex flex-col gap-1 min-w-64">
+                <div class="text-grey-primary text-sm">Title - ไทย</div>
+                <input
+                  v-model="users[currentPage - 1].title_th"
+                  class="w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
+                  type="text"
+                  placeholder="Title"
+                />
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mt-2">
+              <div class="flex flex-col gap-1 min-w-64">
+                <div class="text-grey-primary text-sm">
+                  Title Short - English
+                </div>
+                <input
+                  v-model="users[currentPage - 1].title_en_short"
+                  class="w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
+                  type="text"
+                  placeholder="Title Short"
+                />
+              </div>
+              <div class="flex flex-col gap-1 min-w-64">
+                <div class="text-grey-primary text-sm">Title Short - ไทย</div>
+                <input
+                  v-model="users[currentPage - 1].title_th_short"
+                  class="w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
+                  type="text"
+                  placeholder="Title Short"
+                />
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mt-2">
+              <div class="flex flex-col gap-1 min-w-64">
                 <div class="text-grey-primary text-sm">
                   First Name - English
                 </div>
@@ -482,6 +524,10 @@ const ImportUser = (user) => {
     },
     body: JSON.stringify({
       picture: user.picture,
+      title_en: user.title_en,
+      title_th: user.title_th,
+      title_en_short: user.title_en_short,
+      title_th_short: user.title_th_short,
       academic_position_en: user.academic_position_en,
       academic_position_th: user.academic_position_th,
       first_name_en: user.first_name_en,
@@ -526,6 +572,10 @@ const importAll = () => {
       },
       body: JSON.stringify({
         picture: user.picture,
+        title_en: user.title_en,
+        title_th: user.title_th,
+        title_en_short: user.title_en_short,
+        title_th_short: user.title_th_short,
         academic_position_en: user.academic_position_en,
         academic_position_th: user.academic_position_th,
         first_name_en: user.first_name_en,
@@ -583,6 +633,10 @@ const importFromExcel = () => {
         const userData = {
           picture: "",
           pictureName: "",
+          title_en: "",
+          title_th: "",
+          title_en_short: "",
+          title_th_short: "",
           academic_position_en: "",
           academic_position_th: "",
           first_name_en: "",
@@ -604,6 +658,18 @@ const importFromExcel = () => {
               break;
             case "Academic Position (TH)":
               userData.academic_position_th = row[index];
+              break;
+            case "Title (EN)":
+              userData.title_en = row[index];
+              break;
+            case "Title (TH)":
+              userData.title_th = row[index];
+              break;
+            case "Title Short (EN)":
+              userData.title_en_short = row[index];
+              break;
+            case "Title Short (TH)":
+              userData.title_th_short = row[index];
               break;
             case "First Name (EN)":
               userData.first_name_en = row[index];
