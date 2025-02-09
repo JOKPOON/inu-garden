@@ -121,7 +121,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import SendButton from "@/components/button/SendButton.vue";
 
@@ -157,8 +157,16 @@ const allQuestionsAnswered = computed(() => {
 });
 
 function SendSurvey() {
+  localStorage.setItem(`survey_${code}_sent`, 'true');
   router.push(`/courses/survey/${code}/thanks`);
 }
+
+onMounted(() => {
+  const surveySent = localStorage.getItem(`survey_${code}_sent`);
+  if (surveySent === 'true') {
+    router.push(`/courses/survey/${code}/thanks`);
+  }
+});
 </script>
 
 <style lang="scss" scoped>
