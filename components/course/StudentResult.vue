@@ -3,7 +3,7 @@
       <img
         :src="BannerLogin"
         alt="Banner Login"
-        class="h-[405px] object-cover rounded-2xl mt-16"
+        class="h-[350px] object-cover rounded-2xl mt-16"
       />
     </div>
   </template>

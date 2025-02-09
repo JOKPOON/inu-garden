@@ -64,7 +64,7 @@
             Import
           </button>
           <button
-            @click="$emit('close')"
+            @click="$emit('close') && router.go()"
             class="font-medium text-center py-3 bg-grey-secondary rounded-lg w-full"
           >
             Cancel
@@ -559,6 +559,7 @@ const importAll = () => {
       console.error("Error importing users:", error);
     });
   emit("close");
+  router.go();
 };
 
 const importFromExcel = () => {
