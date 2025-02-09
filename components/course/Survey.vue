@@ -71,7 +71,7 @@ const isComplete = ref(false);
 const isPopupVisible = ref(false);
 const router = useRouter();
 const code = router.currentRoute.value.params.code;
-const surveyLink = ref(`http://https://inugardenview.vercel.app/courses/survey/${code}/question`);
+const surveyLink = ref(`https://inugardenview.vercel.app/courses/survey/${code}/question`);
 const surveyName = code;
 
 const setActionButton = (button) => {
