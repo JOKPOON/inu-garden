@@ -322,8 +322,7 @@ onMounted(() => {
 });
 
 watch(currentPage, (newPage) => {
-  getUsers(newPage);
-  console.log("User", Users);
+  getUsers(searchQuery.value, newPage, itemsPerPage);
 });
 
 watch(showUserPopup, (newVal) => {

@@ -69,7 +69,8 @@
                 :key="instructor.id"
                 :value="instructor.id"
               >
-                {{ instructor.first_name }}
+                {{ instructor.first_name_th }} {{ instructor.last_name_th }} -
+                {{ instructor.first_name_en }} {{ instructor.last_name_en }}
               </option>
             </select>
           </div>
@@ -86,8 +87,8 @@
               <option value="" disabled selected>Select Semesters</option>
               <option
                 v-for="semester in semesters"
-                :key="semester.value"
-                :value="semester.value"
+                :key="semester.id"
+                :value="semester.id"
               >
                 {{ semester.year }}
               </option>
@@ -136,13 +137,14 @@
               v-model="courseProgram"
               class="w-full focus:ring-0 outline-none hover:cursor-pointer"
             >
-              <option value="" disabled selected>Program</option>
+              <option value="" disabled selected>Select Programs</option>
               <option
-                v-for="Program in Programs"
-                :key="Program.value"
-                :value="Program.value"
+                v-for="program in programs"
+                :key="program.id"
+                :value="program.id"
               >
-                {{ Program.year }}
+                {{ program.name_en }} - {{ program.name_th }} /
+                {{ program.year }}
               </option>
             </select>
           </div>
@@ -280,23 +282,23 @@
           </div>
         </div>
       </div>
-   
-    </div>   <div class="w-full flex justify-end gap-4 mt-6">
-        <button
-          @click="createCourse"
-          class="flex items-center flex-row justify-center bg-yellow-primary rounded-xl px-4 py-3 gap-2"
+    </div>
+    <div class="w-full flex justify-end gap-4 mt-6">
+      <button
+        @click="createCourse"
+        class="flex items-center flex-row justify-center bg-yellow-primary rounded-xl px-4 py-3 gap-2"
+      >
+        <span class="text-black-primary font-[500] text-base"
+          >Create Course</span
         >
-          <span class="text-black-primary font-[500] text-base"
-            >Create Course</span
-          >
-        </button>
-        <button
-          @click="cancelCourse"
-          class="flex items-center flex-row justify-center font-[500] bg-grey-secondary rounded-xl p-3 border hover:bg-black-primary text-black-primary hover:text-white"
-        >
-          Cancel
-        </button>
-      </div>
+      </button>
+      <button
+        @click="cancelCourse"
+        class="flex items-center flex-row justify-center font-[500] bg-grey-secondary rounded-xl p-3 border hover:bg-black-primary text-black-primary hover:text-white"
+      >
+        Cancel
+      </button>
+    </div>
   </div>
 </template>
 
@@ -304,25 +306,70 @@
 import TemplateButton from "@/components/button/TemplateButton.vue";
 import Import from "@/components/button/ImportButton.vue";
 import History from "@/components/button/HistoryButton.vue";
+import base_url from "@/config/api";
 const { t } = useI18n();
 
-const instructors = ref([
-  { id: 1, first_name: "John" },
-  { id: 2, first_name: "Doe" },
-  { id: 3, first_name: "Jane" },
-]);
+const instructors = ref([]);
+const semesters = ref([]);
+const programs = ref([]);
 
-const semesters = ref([
-  { value: 1, year: "2021" },
-  { value: 2, year: "2022" },
-  { value: 3, year: "2023" },
-]);
+const fetchInstructors = async () => {
+  try {
+    const response = await fetch(`${base_url}users`, {
+      credentials: "include",
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-const Programs = ref([
-  { value: 1, year: "2021" },
-  { value: 2, year: "2022" },
-  { value: 3, year: "2023" },
-]);
+    if (!response.ok) throw new Error("Failed to fetch instructors");
+    const res = await response.json(); // Adjust based on API response structure
+    instructors.value = res.data.data;
+  } catch (error) {
+    console.error("Error fetching instructors:", error);
+  }
+};
+
+const fetchSemesters = async () => {
+  try {
+    const response = await fetch(`${base_url}semesters`, {
+      credentials: "include",
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Failed to fetch semesters");
+    const res = await response.json();
+    semesters.value = res.data;
+  } catch (error) {
+    console.error("Error fetching semesters:", error);
+  }
+};
+
+const fetchPrograms = async () => {
+  try {
+    const response = await fetch(`${base_url}programmes`, {
+      credentials: "include",
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Failed to fetch programs");
+    const res = await response.json();
+    programs.value = res.data;
+  } catch (error) {
+    console.error("Error fetching programs:", error);
+  }
+};
+// Call API functions on component mount
+onMounted(() => {
+  fetchInstructors();
+  fetchSemesters();
+  fetchPrograms();
+});
 
 useHead({
   title: t("seo.title"),
