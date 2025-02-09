@@ -85,6 +85,48 @@
             </div>
             <div class="grid grid-cols-2 gap-4 mt-2">
               <div class="flex flex-col gap-1 min-w-64">
+                <div class="text-grey-primary text-sm">Title - English</div>
+                <input
+                  v-model="user.title_en"
+                  class="w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
+                  type="text"
+                  placeholder="Title"
+                />
+              </div>
+              <div class="flex flex-col gap-1 min-w-64">
+                <div class="text-grey-primary text-sm">Title - ไทย</div>
+                <input
+                  v-model="user.title_th"
+                  class="w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
+                  type="text"
+                  placeholder="Title"
+                />
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mt-2">
+              <div class="flex flex-col gap-1 min-w-64">
+                <div class="text-grey-primary text-sm">
+                  Short Title - English
+                </div>
+                <input
+                  v-model="user.title_en_short"
+                  class="w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
+                  type="text"
+                  placeholder="Short Title"
+                />
+              </div>
+              <div class="flex flex-col gap-1 min-w-64">
+                <div class="text-grey-primary text-sm">Short Title - ไทย</div>
+                <input
+                  v-model="user.title_th_short"
+                  class="w-full border text-black border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
+                  type="text"
+                  placeholder="Short Title"
+                />
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mt-2">
+              <div class="flex flex-col gap-1 min-w-64">
                 <div class="text-grey-primary text-sm">
                   First Name - English
                 </div>
@@ -269,6 +311,10 @@ const textWarning = ref("");
 const user = ref({
   picture: "",
   pictureName: "",
+  title_en: "",
+  title_th: "",
+  title_en_short: "",
+  title_th_short: "",
   academic_position_en: "",
   academic_position_th: "",
   first_name_en: "",
@@ -331,6 +377,10 @@ const handleFileChange = (event) => {
 const userJSON = (user) => {
   return {
     picture: user.value.picture,
+    title_en: user.value.title_en,
+    title_th: user.value.title_th,
+    title_en_short: user.value.title_en_short,
+    title_th_short: user.value.title_th_short,
     academic_position_en: user.value.academic_position_en,
     academic_position_th: user.value.academic_position_th,
     first_name_en: user.value.first_name_en,
