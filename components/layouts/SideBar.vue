@@ -137,6 +137,25 @@
               class="flex flex-row items-center gap-2 p-2 rounded-xl hover:translate-x-1 transition-transform"
               :class="{
                 'bg-black-primary text-white':
+                  route.path.startsWith('/evaluation'),
+                'bg-grey-light text-black-primary': route.path !== '/evaluation',
+              }"
+              @click="handleClick('/evaluation')"
+            >
+              <Evaluation
+                :class="{
+                  'text-white': route.path.startsWith('/evaluation'),
+                  'text-black-primary': route.path !== '/evaluation',
+                }"
+              />
+              <div v-if="!smallNav" class="font-medium">
+                {{ t("layout.evaluation") }}
+              </div>
+            </button>
+            <button
+              class="flex flex-row items-center gap-2 p-2 rounded-xl hover:translate-x-1 transition-transform"
+              :class="{
+                'bg-black-primary text-white':
                   route.path.startsWith('/criteria'),
                 'bg-grey-light text-black-primary': route.path !== '/criteria',
               }"
@@ -241,6 +260,7 @@ import Course from "@/components/icons/Course.vue";
 import Student from "@/components/icons/Student.vue";
 import Lecturer from "@/components/icons/Lecturer.vue";
 import Graduation from "@/components/icons/Graduation.vue";
+import Evaluation from "@/components/icons/Evaluation.vue";
 import Criteria from "@/components/icons/Criteria.vue";
 import Profile from "@/components/icons/Profile.vue";
 import Logout from "@/components/icons/Logout.vue";
