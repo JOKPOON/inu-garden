@@ -1,2 +1,2 @@
-const base_url = "https://inu.bukharney.site/";
+const base_url = "http://localhost:3001/";
 export default base_url;
