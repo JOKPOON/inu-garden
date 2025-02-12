@@ -69,8 +69,10 @@
                 :key="instructor.id"
                 :value="instructor.id"
               >
-                {{ instructor.first_name_th }} {{ instructor.last_name_th }} -
-                {{ instructor.first_name_en }} {{ instructor.last_name_en }}
+                {{ instructor.title_th_short }} {{ instructor.first_name_th }}
+                {{ instructor.last_name_th }} / {{ instructor.title_en_short
+                }}{{ instructor.first_name_en }}
+                {{ instructor.last_name_en }}
               </option>
             </select>
           </div>
@@ -81,7 +83,7 @@
             class="bg-transparent border border-grey-tertiary rounded-xl text-base p-3 hover:cursor-pointer"
           >
             <select
-              v-model="courseInstructor"
+              v-model="courseSemester"
               class="w-full focus:ring-0 outline-none hover:cursor-pointer"
             >
               <option value="" disabled selected>Select Semesters</option>
@@ -90,7 +92,7 @@
                 :key="semester.id"
                 :value="semester.id"
               >
-                {{ semester.year }}
+                {{ semester.semester_sequence }} / {{ semester.year }}
               </option>
             </select>
           </div>
@@ -115,17 +117,6 @@
             class="w-full border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
             type="text"
             placeholder="Graduate Year"
-          />
-        </div>
-        <div class="w-full flex flex-col gap-2">
-          <div class="text-base text-black-primary font-semibold">
-            Program Year
-          </div>
-          <input
-            v-model="courseProgramYear"
-            class="w-full border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
-            type="text"
-            placeholder="Program Year"
           />
         </div>
         <div class="w-full flex flex-col gap-2">
@@ -156,6 +147,17 @@
             class="w-full border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
             type="text"
             placeholder="Credit"
+          />
+        </div>
+        <div class="w-full flex flex-col gap-2">
+          <div class="text-base text-black-primary font-semibold">
+            Expected Passing CLO %
+          </div>
+          <input
+            v-model="courseExpectedPassingCLOPercentage"
+            class="w-full border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
+            type="text"
+            placeholder="ExpectedPassingCLO"
           />
         </div>
       </div>
@@ -309,9 +311,68 @@ import History from "@/components/button/HistoryButton.vue";
 import base_url from "@/config/api";
 const { t } = useI18n();
 
+const courseName = ref("");
+const courseCode = ref("");
+const courseInstructor = ref("");
+const courseSemester = ref("");
+const courseAcademicYear = ref("");
+const courseGraduateYear = ref("");
+const courseProgramYear = ref("");
+const courseProgram = ref("");
+const courseCredit = ref(3);
+const courseDescription = ref("");
+const courseExpectedPassingCLOPercentage = ref(85.0);
+const courseGradeA = ref(80);
+const courseGradeBPlus = ref(75);
+const courseGradeB = ref(70);
+const courseGradeCPlus = ref(65);
+const courseGradeC = ref(60);
+const courseGradeDPlus = ref(55);
+const courseGradeD = ref(50);
+
 const instructors = ref([]);
 const semesters = ref([]);
 const programs = ref([]);
+
+const createCourse = async () => {
+  try {
+    const response = await fetch(`${base_url}courses`, {
+      credentials: "include",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: courseName.value,
+        code: courseCode.value,
+        lecturer_ids: [courseInstructor.value],
+        semester_id: courseSemester.value,
+        academic_year: courseAcademicYear.value,
+        graduate_year: courseGraduateYear.value,
+        programme_id: courseProgram.value,
+        expected_passing_clo_percentage:
+          courseExpectedPassingCLOPercentage.value,
+        program_id: courseProgram.value,
+        credit: courseCredit.value,
+        description: courseDescription.value,
+        criteria_grade_a: courseGradeA.value,
+        criteria_grade_bp: courseGradeBPlus.value,
+        criteria_grade_b: courseGradeB.value,
+        criteria_grade_cp: courseGradeCPlus.value,
+        criteria_grade_c: courseGradeC.value,
+        criteria_grade_dp: courseGradeDPlus.value,
+        criteria_grade_d: courseGradeD.value,
+      }),
+    });
+
+    if (!response.ok) throw new Error("Failed to create course");
+    const res = await response.json();
+    console.log(res);
+    router.push({ name: "courses" });
+  } catch (error) {
+    console.error("Error creating course:", error);
+  }
+};
 
 const fetchInstructors = async () => {
   try {
