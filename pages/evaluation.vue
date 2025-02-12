@@ -3,22 +3,6 @@
     <div
       class="px-4 py-3 bg-white border border-grey-secondary rounded-xl flex flex-row gap-4 items-center"
     >
-      <input
-        type="text"
-        v-model="searchQuery"
-        class="bg-transparent border-none focus:ring-0 outline-none text-base w-56"
-        placeholder="Search..."
-      />
-      <button
-        class="flex items-center justify-center bg-white rounded-xl"
-        @click="handleSearch"
-      >
-        <Search class="w-6 h-6" />
-      </button>
-    </div>
-    <div
-      class="px-4 py-3 bg-white border border-grey-secondary rounded-xl flex flex-row gap-4 items-center"
-    >
       <select
         v-model="selectedDepartmentOption"
         class="bg-transparent border-none focus:ring-0 outline-none text-base pr-2 hover:cursor-pointer"
@@ -60,9 +44,7 @@
       </select>
     </div>
   </div>
-  <div
-    class="rounded-xl p-6 bg-white border border-grey-secondary mt-6 max-h-[calc(100vh-250px)] overflow-y-scroll scrollbar-set"
-  >
+  <div class="rounded-xl p-6 bg-white border border-grey-secondary mt-6">
     <div class="mb-4">
       <div class="flex flex-row gap-4 items-center">
         <h2 class="text-base font-semibold text-gray-800">Topics :</h2>
@@ -87,7 +69,8 @@
     </div>
     <div class="grid grid-cols-4 gap-6">
       <div
-        class="col-span-3 rounded-xl bg-white border border-grey-secondary overflow-y-scroll set-scrollbar"
+        v-if="selectedTopic"
+        class="col-span-3 rounded-xl bg-white border border-grey-secondary overflow-y-scroll set-scrollbar max-h-[calc(100vh-360px)]"
       >
         <table
           v-if="selectedTopic"
@@ -97,43 +80,43 @@
             <tr>
               <th
                 scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-center text-xs font-medium text-grey-primary uppercase tracking-wider"
               >
                 Code
               </th>
               <th
                 scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-center text-xs font-medium text-grey-primary uppercase tracking-wider"
               >
                 Course Name
               </th>
               <th
                 scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-center text-xs font-medium text-grey-primary uppercase tracking-wider"
               >
                 CLO
               </th>
               <th
                 scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-center text-xs font-medium text-grey-primary uppercase tracking-wider"
               >
                 Assessment
               </th>
               <th
                 scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-center text-xs font-medium text-grey-primary uppercase tracking-wider"
               >
                 PLO
               </th>
               <th
                 scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-center text-xs font-medium text-grey-primary uppercase tracking-wider"
               >
                 PO
               </th>
               <th
                 scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-center text-xs font-medium text-grey-primary uppercase tracking-wider"
               >
                 SO
               </th>
@@ -143,53 +126,154 @@
             <tr>
               <th
                 scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                Code
-              </th>
+                class="px-6 py-3 text-center text-xs font-medium text-grey-primary uppercase tracking-wider"
+              ></th>
               <th
                 scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                Course Name
-              </th>
+                class="px-6 py-3 text-center text-xs font-medium text-grey-primary uppercase tracking-wider"
+              ></th>
               <th
                 scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                CLO
-              </th>
+                class="px-6 py-3 text-center text-xs font-medium text-grey-primary uppercase tracking-wider"
+              ></th>
               <th
                 scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-center text-xs font-medium text-grey-primary uppercase tracking-wider"
+              ></th>
+              <th
+                class="py-3 text-center text-xs font-medium text-grey-primary uppercase tracking-wider"
               >
-                Assessment
+                <div class="flex flex-row gap-4 items-center px-4">
+                  <div v-for="i in checkLongestPLO(filteredTopics[0])" :key="i">
+                    PLO{{ i }}
+                  </div>
+                </div>
               </th>
               <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="py-3 text-center text-xs font-medium text-grey-primary uppercase tracking-wider"
               >
-                <div v-for="topic in filteredTopics" :key="topic.name">
-                  <div
-                    v-for="(clo, index) in Object.keys(topic.clo)"
-                    :key="index"
-                    class="flex flex-row gap-2 items-center"
-                  >
-                    <div
-                      v-for="(ploKey, ploValue) in topic.clo[clo].plo"
-                      :key="ploKey"
-                    >
-                      <div class="text-sm text-gray-500 text-center">
-                        {{ ploValue }}
-                      </div>
-                    </div>
+                <div class="flex flex-row gap-4 items-center px-4">
+                  <div v-for="i in checkLongestPO(filteredTopics[0])" :key="i">
+                    PO{{ i }}
+                  </div>
+                </div>
+              </th>
+              <th
+                class="py-3 text-center text-xs font-medium text-grey-primary uppercase tracking-wider"
+              >
+                <div class="flex flex-row gap-4 items-center px-4">
+                  <div v-for="i in checkLongestSO(filteredTopics[0])" :key="i">
+                    SO{{ i }}
                   </div>
                 </div>
               </th>
             </tr>
           </thead>
+          <tbody class="bg-white divide-y divide-grey-secondary">
+            <tr v-for="topic in topics" :key="topic.name">
+              <td
+                class="px-6 py-4 whitespace-nowrap text-sm text-black-primary"
+              >
+                {{ topic.code }}
+              </td>
+              <td
+                class="px-6 py-4 whitespace-nowrap text-sm text-black-primary"
+              >
+                {{ topic.courseName }}
+              </td>
+              <td
+                class="px-6 py-4 whitespace-nowrap text-sm text-black-primary"
+              >
+                <div v-for="(clo, cloKey) in topic.clo" :key="cloKey">
+                  {{ clo.description }}
+                  <div
+                    v-for="(item, index) in clo.Include.length - 1"
+                    :key="index"
+                    class="flex flex-row gap-4 items-center px-4"
+                  >
+                    <div><br /></div>
+                  </div>
+                </div>
+              </td>
+              <td
+                class="px-6 py-4 whitespace-nowrap text-sm text-black-primary"
+              >
+                <div v-for="(clo, cloKey) in topic.clo" :key="cloKey">
+                  <div
+                    v-for="assessment in clo.Include"
+                    :key="assessment.name"
+                    class="flex flex-row gap-4 items-center px-4"
+                  >
+                    <div>{{ assessment.name }}</div>
+                  </div>
+                </div>
+              </td>
+              <td class="py-4 whitespace-nowrap text-sm text-black-primary">
+                <div v-for="(clo, cloKey) in topic.clo" :key="cloKey">
+                  <div
+                    v-for="assessment in clo.Include"
+                    :key="assessment.name"
+                    class="flex flex-row gap-4 items-center px-4"
+                  >
+                    <div
+                      v-for="plo in Object.keys(assessment.plo)"
+                      :key="plo"
+                      class="w-full text-center"
+                    >
+                      {{ assessment.plo[plo] }}
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td class="py-4 whitespace-nowrap text-sm text-black-primary">
+                <div v-for="(clo, cloKey) in topic.clo" :key="cloKey">
+                  <div
+                    v-for="assessment in clo.Include"
+                    :key="assessment.name"
+                    class="flex flex-row gap-4 items-center px-4"
+                  >
+                    <div
+                      v-for="po in Object.keys(assessment.po)"
+                      :key="po"
+                      class="w-full text-center"
+                    >
+                      {{ assessment.po[po] }}
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td class="py-4 whitespace-nowrap text-sm text-black-primary">
+                <div v-for="(clo, cloKey) in topic.clo" :key="cloKey">
+                  <div
+                    v-for="assessment in clo.Include"
+                    :key="assessment.name"
+                    class="flex flex-row gap-4 items-center px-4"
+                  >
+                    <div
+                      v-for="so in Object.keys(assessment.so)"
+                      :key="so"
+                      class="w-full text-center"
+                    >
+                      {{ assessment.so[so] }}
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
-      <div class="col-span-1">
+      <div v-else class="col-span-3 flex items-center justify-center flex-col">
+        <img
+          :src="BannerLogin"
+          alt="Banner Login"
+          class="w-64 max-w-md object-cover rounded-2xl mb-4"
+        />
+        <div class="text-center font-semibold text-grey-primary">
+          Please select a topic!
+        </div>
+      </div>
+      <div class="col-span-1 h-full">
         <h3 class="text-base font-semibold text-black-primary mb-2">
           From Academic Year
         </h3>
@@ -230,6 +314,24 @@
             </option>
           </select>
         </div>
+        <div class="mt-4 flex flex-col">
+          <div class="text-base text-black- font-medium">Meaning</div>
+          <div class="text-base text-black-primary">
+            <span class="font-semibold">X</span> : Direct Assessment
+          </div>
+          <div class="text-base text-black-primary">
+            <span class="font-semibold">O</span> : Indirect Assessment
+          </div>
+          <div class="border-t mt-4">
+            <ExportButton
+              class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2 mt-4"
+            >
+              <span class="text-black-primary font-semibold text-base"
+                >Export</span
+              >
+            </ExportButton>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -238,8 +340,22 @@
 <script setup>
 import { ref, computed } from "vue";
 import { useI18n } from "vue-i18n";
-import Search from "@/components/icons/Search.vue";
+import ExportButton from "@/components/button/ExportButton.vue";
+import BannerLogin from "@/components/images/BannerLogin.jpg";
 const { t } = useI18n();
+
+const handleSearch = () => {
+  console.log("Search query:", searchQuery.value);
+};
+
+useHead({
+  title: t("seo.title"),
+  description: t("seo.desc"),
+});
+
+definePageMeta({
+  layout: "landing",
+});
 
 const searchQuery = ref("");
 const selectedDepartmentOption = ref("");
@@ -258,85 +374,179 @@ const topics = ref([
   {
     name: "Topic 1",
     code: "CS211",
-    couseName: "Data Structures",
+    courseName: "Data Structures",
     description: "Introduction to Data Structures",
     clo: {
       CLO1: {
         description: "CLO1 Example",
-        Include: ["Assesment1", "Assesment2"],
-        plo: { PLO1: "X", PLO2: "O" },
-        po: { PO1: "X", PO2: "O" },
-        so: { SO1: "X", SO2: "O" },
+        Include: [
+          {
+            name: "Assessment1",
+            plo: { PLO1: "O", PLO2: "X" },
+            po: { PO1: "X", PO2: "O" },
+            so: { SO1: "X", SO2: "O" },
+          },
+          {
+            name: "Assessment2",
+            plo: { PLO1: "O", PLO2: "X" },
+            po: { PO1: "X", PO2: "O" },
+            so: { SO1: "X", SO2: "O" },
+          },
+        ],
       },
       CLO2: {
         description: "CLO2 Example",
-        Include: ["Assesment1", "Assesment2"],
-        plo: { PLO1: "X", PLO2: "O" },
-        po: { PO1: "X", PO2: "O" },
-        so: { SO1: "X", SO2: "O" },
+        Include: [
+          {
+            name: "Assessment1",
+            plo: { PLO1: "O", PLO2: "X" },
+            po: { PO1: "X", PO2: "O" },
+            so: { SO1: "X", SO2: "O" },
+          },
+          {
+            name: "Assessment2",
+            plo: { PLO1: "O", PLO2: "X" },
+            po: { PO1: "X", PO2: "O" },
+            so: { SO1: "X", SO2: "O" },
+          },
+        ],
       },
     },
   },
   {
     name: "Topic 2",
     code: "CS212",
-    couseName: "Algorithms",
+    courseName: "Algorithms",
     description: "Introduction to Algorithms",
     clo: {
       CLO1: {
         description: "CLO1 Example",
-        Include: ["Assesment1", "Assesment2"],
-        plo: { PLO1: "X", PLO2: "O", PLO3: "O" },
-        po: { PO1: "X", PO2: "O" },
-        so: { SO1: "X", SO2: "O" },
+        Include: [
+          {
+            name: "Assessment1",
+            plo: { PLO1: "O", PLO2: "X" },
+            po: { PO1: "X", PO2: "O" },
+            so: { SO1: "X", SO2: "O" },
+          },
+          {
+            name: "Assessment2",
+            plo: { PLO1: "O", PLO2: "X" },
+            po: { PO1: "X", PO2: "O" },
+            so: { SO1: "X", SO2: "O" },
+          },
+        ],
       },
       CLO2: {
         description: "CLO2 Example",
-        Include: ["Assesment1", "Assesment2"],
-        plo: { PLO1: "X", PLO2: "O" },
-        po: { PO1: "X", PO2: "O" },
-        so: { SO1: "X", SO2: "O" },
+        Include: [
+          {
+            name: "Assessment1",
+            plo: { PLO1: "O", PLO2: "X" },
+            po: { PO1: "X", PO2: "O" },
+            so: { SO1: "X", SO2: "O" },
+          },
+          {
+            name: "Assessment2",
+            plo: { PLO1: "O", PLO2: "X" },
+            po: { PO1: "X", PO2: "O" },
+            so: { SO1: "X", SO2: "O" },
+          },
+        ],
       },
     },
   },
   {
     name: "Topic 3",
     code: "CS213",
-    couseName: "Database Management",
-    description: "Introduction to Database Management",
+    courseName: "Operating Systems",
+    description: "Introduction to Operating Systems",
     clo: {
       CLO1: {
         description: "CLO1 Example",
-        Include: ["Assesment1", "Assesment2"],
-        plo: { PLO1: "X", PLO2: "O" },
-        po: { PO1: "X", PO2: "O" },
-        so: { SO1: "X", SO2: "O" },
+        Include: [
+          {
+            name: "Assessment1",
+            plo: { PLO1: "O", PLO2: "X" },
+            po: { PO1: "X", PO2: "O" },
+            so: { SO1: "X", SO2: "O" },
+          },
+          {
+            name: "Assessment2",
+            plo: { PLO1: "O", PLO2: "X" },
+            po: { PO1: "X", PO2: "O" },
+            so: { SO1: "X", SO2: "O" },
+          },
+        ],
       },
       CLO2: {
         description: "CLO2 Example",
-        Include: ["Assesment1", "Assesment2"],
-        plo: { PLO1: "X", PLO2: "O" },
-        po: { PO1: "X", PO2: "O" },
-        so: { SO1: "X", SO2: "O" },
+        Include: [
+          {
+            name: "Assessment1",
+            plo: { PLO1: "O", PLO2: "X" },
+            po: { PO1: "X", PO2: "O" },
+            so: { SO1: "X", SO2: "O" },
+          },
+          {
+            name: "Assessment2",
+            plo: { PLO1: "O", PLO2: "X" },
+            po: { PO1: "X", PO2: "O" },
+            so: { SO1: "X", SO2: "O" },
+          },
+        ],
       },
     },
   },
 ]);
 
+const checkLongestPLO = (topic) => {
+  if (!topic) return 0;
+  let longest = 0;
+  for (const cloKey in topic.clo) {
+    const clo = topic.clo[cloKey];
+    for (const assessment of clo.Include) {
+      const ploKeys = Object.keys(assessment.plo);
+      if (ploKeys.length > longest) {
+        longest = ploKeys.length;
+      }
+    }
+  }
+  return longest;
+};
+
+const checkLongestPO = (topic) => {
+  if (!topic) return 0;
+  let longest = 0;
+  for (const cloKey in topic.clo) {
+    const clo = topic.clo[cloKey];
+    for (const assessment of clo.Include) {
+      const poKeys = Object.keys(assessment.po);
+      if (poKeys.length > longest) {
+        longest = poKeys.length;
+      }
+    }
+  }
+  return longest;
+};
+
+const checkLongestSO = (topic) => {
+  if (!topic) return 0;
+  let longest = 0;
+  for (const cloKey in topic.clo) {
+    const clo = topic.clo[cloKey];
+    for (const assessment of clo.Include) {
+      const soKeys = Object.keys(assessment.so);
+      if (soKeys.length > longest) {
+        longest = soKeys.length;
+      }
+    }
+  }
+  return longest;
+};
+
 const filteredTopics = computed(() => {
   if (!selectedTopic.value) return [];
   return topics.value.filter((topic) => topic.name === selectedTopic.value);
-});
-
-const handleSearch = () => {};
-
-useHead({
-  title: t("seo.title"),
-  description: t("seo.desc"),
-});
-
-definePageMeta({
-  layout: "landing",
 });
 </script>
 
