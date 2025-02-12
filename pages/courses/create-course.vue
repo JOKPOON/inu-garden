@@ -74,9 +74,9 @@
                   :key="instructor.id"
                   :value="instructor.id"
                 >
-                  {{ instructor.title_th_short }} {{ instructor.first_name_th }}
-                  {{ instructor.last_name_th }} / {{ instructor.title_en_short
-                  }}{{ instructor.first_name_en }}
+                  {{ instructor.title_th_short }}
+                  {{ instructor.first_name_th }} {{ instructor.last_name_th }} /
+                  {{ instructor.title_en_short }}{{ instructor.first_name_en }}
                   {{ instructor.last_name_en }}
                 </option>
               </select>
@@ -332,11 +332,9 @@ const { t } = useI18n();
 
 const courseName = ref("");
 const courseCode = ref("");
-const courseInstructor = ref("");
 const courseSemester = ref("");
 const courseAcademicYear = ref("");
 const courseGraduateYear = ref("");
-const courseProgramYear = ref("");
 const courseProgram = ref("");
 const courseCredit = ref(3);
 const courseDescription = ref("");
@@ -365,7 +363,7 @@ const createCourse = async () => {
       body: JSON.stringify({
         name: courseName.value,
         code: courseCode.value,
-        lecturer_ids: [courseInstructor.value],
+        lecturer_ids: courseInstructors.value,
         semester_id: courseSemester.value,
         academic_year: courseAcademicYear.value,
         graduate_year: courseGraduateYear.value,
