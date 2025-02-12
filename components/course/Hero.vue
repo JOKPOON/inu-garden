@@ -26,11 +26,11 @@
         >
           <option value="">All Programs</option>
           <option
-            v-for="option in programOptions"
-            :key="option"
-            :value="option"
+            v-for="option in programs"
+            :key="option.id"
+            :value="option.id"
           >
-            {{ option }}
+            {{ option.name_en }} ({{ option.year }})
           </option>
         </select>
       </div>
@@ -60,7 +60,7 @@
   <div class="grid grid-cols-2 grid-flex-media gap-4 mt-6 flex-col">
     <div
       v-for="course in courses"
-      :key="course.semester_id"
+      :key="course.id"
       class="bg-white border border-grey-tertiary shadow-sm rounded-xl p-6"
     >
       <div class="flex flex-row justify-between gap-6 items-center">
@@ -88,28 +88,34 @@
         </div>
       </div>
       <p class="text-sm text-orange-primary text-start">
-        {{ course.curriculum }}
+        {{ course.program.name_en }}
       </p>
       <p class="text-sm text-grey-primary text-start">
-        credits : {{ course.credits }}
+        Credits: {{ course.credit }}
       </p>
       <div class="flex flex-row gap-2 mt-4">
         <Lecturer class="w-6 h-6" />
-        <p class="text-sm text-grey-primary">
-          {{ course.user.first_name }}
-        </p>
+        <div
+          v-for="lecturer in course.lecturers"
+          :key="lecturer.id"
+          class="flex flex-row gap-2 items-center"
+        >
+          <p class="text-sm text-grey-primary">
+            {{ lecturer.name_en }}
+          </p>
+        </div>
       </div>
       <div class="grid grid-cols-2 gap-4 items-center mt-1">
         <div class="flex flex-row gap-2">
           <Course class="w-6 h-6" />
           <p class="text-sm text-grey-primary">
-            Acadamic Year : {{ course.academic_year }}
+            Acadamic Year: {{ course.academic_year }}
           </p>
         </div>
         <div class="flex flex-row gap-2 items-center">
           <Course class="w-6 h-6" />
           <p class="text-sm text-grey-primary">
-            Graduate Year : {{ course.graduate_year }}
+            Graduate Year: {{ course.graduate_year }}
           </p>
         </div>
       </div>
@@ -126,6 +132,7 @@ import AddCourseButton from "@/components/button/AddCourseButton.vue";
 import Course from "@/components/icons/Course.vue";
 import Lecturer from "@/components/icons/Lecturer.vue";
 import { useRouter } from "vue-router";
+import base_url from "@/config/api";
 
 const router = useRouter();
 
@@ -144,137 +151,70 @@ const editCourse = (code) => {
 const { t } = useI18n();
 const searchQuery = ref("");
 const selectedProgramOption = ref("");
-const selectedYearOption = ref("2024");
+const selectedYearOption = ref("");
 
-const programOptions = ref(getProgramOptions());
+const courses = ref([]);
+const programs = ref([]);
 const yearsOptions = ref(getYearsOptions());
 
 function getYearsOptions() {
   return ["2021", "2022", "2023", "2024"];
 }
 
-const courses = ref([
-  {
-    id: "CPE123",
-    name: "Computer Engineering",
-    code: "CPE123",
-    curriculum: "Computer Science",
-    description: "This course introduces the fundamentals of programming.",
-    expected_passing_clo_percentage: 85,
-    is_portfolio_completed: false,
-    portfolio_data: {},
-    academic_year: 2024,
-    graduate_year: 2028,
-    credits: 3,
-    program_year: 1,
-    semester_id: "01JD1P61GEB6SE52AW5KZ2ZXW9",
-    user_id: "01",
-    criteria_grade_a: 90,
-    criteria_grade_bp: 85,
-    criteria_grade_b: 80,
-    criteria_grade_cp: 75,
-    criteria_grade_c: 70,
-    criteria_grade_dp: 65,
-    criteria_grade_d: 60,
-    criteria_grade_f: 50,
-    semester: {
-      id: "01JD1P61GEB6SE52AW5KZ2ZXW9",
-      year: 2024,
-      semester_sequence: "1",
-    },
-    user: {
-      id: "01K",
-      email: "lecturer_1@inu.com",
-      password: "$2a$10",
-      first_name: "lecturer",
-      last_name: "1",
-      role: "LECTURER",
-    },
-  },
-  {
-    id: "CPE202",
-    name: "Introduction to Programming",
-    code: "CPE202",
-    curriculum: "Computer Science",
-    description: "This course introduces the fundamentals of programming.",
-    expected_passing_clo_percentage: 85,
-    is_portfolio_completed: false,
-    portfolio_data: {},
-    academic_year: 2024,
-    graduate_year: 2028,
-    credits: 3,
-    program_year: 1,
-    semester_id: "01JD1P61GEB6SE52AW5KZ2ZXW9",
-    user_id: "01",
-    criteria_grade_a: 90,
-    criteria_grade_bp: 85,
-    criteria_grade_b: 80,
-    criteria_grade_cp: 75,
-    criteria_grade_c: 70,
-    criteria_grade_dp: 65,
-    criteria_grade_d: 60,
-    criteria_grade_f: 50,
-    semester: {
-      id: "01JD1P61GEB6SE52AW5KZ2ZXW9",
-      year: 2024,
-      semester_sequence: "1",
-    },
-    user: {
-      id: "01",
-      email: "lecturer_1@inu.com",
-      password: "$2",
-      first_name: "lecturer",
-      last_name: "1",
-      role: "LECTURER",
-    },
-  },
-  {
-    id: "LNG101",
-    name: "Oral Communication in English",
-    code: "LNG101",
-    curriculum: "Computer Science",
-    description: "This course introduces the fundamentals of programming.",
-    expected_passing_clo_percentage: 85,
-    is_portfolio_completed: false,
-    portfolio_data: {},
-    academic_year: 2024,
-    graduate_year: 2028,
-    credits: 3,
-    program_year: 1,
-    semester_id: "01JD1P61GEB6SE52AW5KZ2ZXW9",
-    user_id: "01",
-    criteria_grade_a: 90,
-    criteria_grade_bp: 85,
-    criteria_grade_b: 80,
-    criteria_grade_cp: 75,
-    criteria_grade_c: 70,
-    criteria_grade_dp: 65,
-    criteria_grade_d: 60,
-    criteria_grade_f: 50,
-    semester: {
-      id: "01JD1P61GEB6SE52AW5KZ2ZXW9",
-      year: 2024,
-      semester_sequence: "1",
-    },
-    user: {
-      id: "01",
-      email: "lecturer_1@inu.com",
-      password: "$2",
-      first_name: "lecturer",
-      last_name: "1",
-      role: "LECTURER",
-    },
-  },
-]);
+const fetchCourses = async (query, year, program) => {
+  try {
+    const response = await fetch(
+      `${base_url}courses?query=${query}&year=${year}&program=${program}`,
+      {
+        credentials: "include",
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!response.ok) throw new Error("Failed to fetch semesters");
+    const res = await response.json();
+    courses.value = res.data.courses;
+  } catch (error) {
+    courses.value = [];
+    console.error("Error fetching semesters:", error);
+  }
+};
 
-function getProgramOptions() {
-  return [
-    "Regular",
-    "International",
-    "Health Data Science",
-    "Ratchaburi Campus",
-  ];
-}
+const fetchPrograms = async () => {
+  try {
+    const response = await fetch(`${base_url}programmes`, {
+      credentials: "include",
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Failed to fetch programs");
+    const res = await response.json();
+    programs.value = res.data;
+  } catch (error) {
+    console.error("Error fetching programs:", error);
+  }
+};
+
+watch([searchQuery, selectedProgramOption, selectedYearOption], () => {
+  fetchCourses(
+    searchQuery.value,
+    selectedYearOption.value,
+    selectedProgramOption.value
+  );
+});
+
+onMounted(() => {
+  fetchCourses(
+    searchQuery.value,
+    selectedYearOption.value,
+    selectedProgramOption.value
+  );
+  fetchPrograms();
+});
 
 function handleSearch() {
   console.log("Search query:", searchQuery.value);
