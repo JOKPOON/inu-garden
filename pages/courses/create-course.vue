@@ -54,28 +54,46 @@
         </div>
         <div class="w-full flex flex-col gap-2">
           <div class="text-base text-black-primary font-semibold">
-            Instructor
+            Instructors
           </div>
           <div
-            class="bg-transparent border border-grey-tertiary rounded-xl text-base p-3 hover:cursor-pointer"
+            v-for="(instructor, index) in courseInstructors"
+            :key="index"
+            class="flex items-center gap-2"
           >
-            <select
-              v-model="courseInstructor"
-              class="w-full focus:ring-0 outline-none hover:cursor-pointer"
+            <div
+              class="bg-transparent border border-grey-tertiary rounded-xl text-base p-3 hover:cursor-pointer w-full"
             >
-              <option value="" disabled selected>Select Instructor</option>
-              <option
-                v-for="instructor in instructors"
-                :key="instructor.id"
-                :value="instructor.id"
+              <select
+                v-model="courseInstructors[index]"
+                class="w-full focus:ring-0 outline-none hover:cursor-pointer"
               >
-                {{ instructor.title_th_short }} {{ instructor.first_name_th }}
-                {{ instructor.last_name_th }} / {{ instructor.title_en_short
-                }}{{ instructor.first_name_en }}
-                {{ instructor.last_name_en }}
-              </option>
-            </select>
+                <option value="" disabled selected>Select Instructor</option>
+                <option
+                  v-for="instructor in instructors"
+                  :key="instructor.id"
+                  :value="instructor.id"
+                >
+                  {{ instructor.title_th_short }} {{ instructor.first_name_th }}
+                  {{ instructor.last_name_th }} / {{ instructor.title_en_short
+                  }}{{ instructor.first_name_en }}
+                  {{ instructor.last_name_en }}
+                </option>
+              </select>
+            </div>
+            <button
+              @click="removeInstructor(index)"
+              class="flex items-center justify-center rounded-xl p-2 border hover:bg-red-500 hover:text-white"
+            >
+              <Delete class="w-5 h-5" />
+            </button>
           </div>
+          <button
+            @click="addInstructor"
+            class="flex items-center justify-center rounded-xl p-3 border hover:bg-black-primary hover:text-white"
+          >
+            Add Instructor
+          </button>
         </div>
         <div class="w-full flex flex-col gap-2">
           <div class="text-base text-black-primary font-semibold">Semester</div>
@@ -308,6 +326,7 @@
 import TemplateButton from "@/components/button/TemplateButton.vue";
 import Import from "@/components/button/ImportButton.vue";
 import History from "@/components/button/HistoryButton.vue";
+import Delete from "@/components/icons/Delete.vue";
 import base_url from "@/config/api";
 const { t } = useI18n();
 
@@ -333,6 +352,7 @@ const courseGradeD = ref(50);
 const instructors = ref([]);
 const semesters = ref([]);
 const programs = ref([]);
+const courseInstructors = ref([""]);
 
 const createCourse = async () => {
   try {
@@ -425,6 +445,15 @@ const fetchPrograms = async () => {
     console.error("Error fetching programs:", error);
   }
 };
+
+const addInstructor = () => {
+  courseInstructors.value.push("");
+};
+
+const removeInstructor = (index) => {
+  courseInstructors.value.splice(index, 1);
+};
+
 // Call API functions on component mount
 onMounted(() => {
   fetchInstructors();
