@@ -17,19 +17,17 @@
           </th>
         </tr>
       </thead>
-      <tbody
-        class="bg-white divide-y divide-grey-tertiary"
-      >
-        <tr v-for="(students, range) in scoreRanges" :key="range">
+      <tbody class="bg-white divide-y divide-grey-tertiary">
+        <tr v-for="score in scoreRanges" :key="score.score">
           <td
             class="px-6 py-4 whitespace-nowrap text-base text-gray-primary text-center border border-grey-tertiary"
           >
-            {{ range }}
+            {{ score.score }}
           </td>
           <td
             class="px-6 py-4 whitespace-nowrap text-base text-gray-primary text-center border border-grey-tertiary"
           >
-            {{ students }}
+            {{ score.frequency }}
           </td>
         </tr>
       </tbody>
@@ -38,19 +36,52 @@
 </template>
 
 <script setup>
-const scoreRanges = {
-  "0-50": 10,
-  "50-55": 5,
-  "55-60": 8,
-  "60-65": 12,
-  "65-70": 7,
-  "70-75": 9,
-  "75-80": 6,
-  "80-85": 4,
-  "85-90": 3,
-  "90-100": 2,
-};
+const scoreRanges = [
+  {
+    score: "0-50",
+    frequency: 2,
+  },
+  {
+    score: "51-55",
+    frequency: 0,
+  },
+  {
+    score: "56-60",
+    frequency: 0,
+  },
+  {
+    score: "61-65",
+    frequency: 0,
+  },
+  {
+    score: "66-70",
+    frequency: 1,
+  },
+  {
+    score: "71-75",
+    frequency: 0,
+  },
+  {
+    score: "76-80",
+    frequency: 1,
+  },
+  {
+    score: "81-85",
+    frequency: 0,
+  },
+  {
+    score: "86-90",
+    frequency: 0,
+  },
+  {
+    score: "91-95",
+    frequency: 1,
+  },
+  {
+    score: "96-100",
+    frequency: 0,
+  },
+];
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>
