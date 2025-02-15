@@ -222,6 +222,54 @@ import Add from "@/components/icons/Add.vue";
 import Delete from "@/components/icons/Delete.vue";
 import Include from "@/components/icons/Include.vue";
 
+// {
+//             "id": "01JM4T28J1R62WJPXFBN04WA6F",
+//             "title": "Sample Survey",
+//             "description": "This is a sample survey",
+//             "is_complete": false,
+//             "create_at": "2025-02-15T12:41:49.889Z",
+//             "questions": [
+//                 {
+//                     "id": "01JM4T28J1R62WJPXFBJ2KANM2",
+//                     "question": "What is your opinion?",
+//                     "po_id": "01JKK58CDCMNF4VDR69DGJPQZN",
+//                     "plo_id": "01JKK58K4JD4XNQQ9CVNEF2G6V",
+//                     "so_id": "01JKK586ND59G4E7J0VXJJKRTE",
+//                     "survey_id": "01JM4T28J1R62WJPXFBN04WA6F",
+//                     "q_scores": []
+//                 }
+//             ],
+//             "course_id": "01JKK52H934X4KCRHNBRGY068W"
+//         },
+const CreateSurvey = async (course_id) => {
+  try {
+    const response = await fetch(`${base_url}surveys`, {
+      credentials: "include",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: survey.value.name,
+        description: survey.value.name,
+        is_complete: false,
+        course_id: course_id,
+        questions: map(survey.value.question, (question) => ({
+          question: question.question,
+          po_id: question.po_id,
+          plo_id: question.plo_id,
+          so_id: question.so_id,
+        })),
+      }),
+    });
+    if (!response.ok) throw new Error("Failed to add student scores");
+    const res = await response.json();
+    console.log(res);
+  } catch (error) {
+    console.error("Error adding student scores:", error);
+  }
+};
+
 const survey = ref({
   id: "CPE123",
   name: "Computer Engineering",
