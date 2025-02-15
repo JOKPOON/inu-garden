@@ -449,7 +449,7 @@
           <div class="flex flex-col gap-1 w-full mt-2">
             <div class="col-span-1 text-grey-primary text-sm">
               Courses
-              <span class="text-yellow-primary">({{ courses.length }})</span>
+              <span class="text-yellow-primary">({{ courses?.length }})</span>
             </div>
             <div class="flex flex-row gap-4 mb-2">
               <div
@@ -478,10 +478,10 @@
                   <option value="">All Programs</option>
                   <option
                     v-for="option in programOptions"
-                    :key="option"
-                    :value="option"
+                    :key="option.id"
+                    :value="option.id"
                   >
-                    {{ option }}
+                    {{ option.name_en }} ({{ option.year }})
                   </option>
                 </select>
               </div>
@@ -506,11 +506,11 @@
             <div class="flex gap-4 flex-col">
               <div
                 v-for="course in courses"
-                :key="course.semester_id"
+                :key="course.id"
                 class="bg-white border border-grey-tertiary shadow-sm rounded-xl p-6"
               >
                 <div class="flex flex-row justify-between gap-6 items-center">
-                  <button @click="overviewCourse(course.code)">
+                  <button @click="overviewCourse(course.id)">
                     <p class="text-base text-start font-semibold text-grey-600">
                       {{ course.code }}
                     </p>
@@ -530,16 +530,18 @@
                   </div>
                 </div>
                 <p class="text-sm text-orange-primary text-start">
-                  {{ course.curriculum }}
+                  {{ course.program.name_en }}
                 </p>
                 <p class="text-sm text-grey-primary text-start">
-                  credits : {{ course.credits }}
+                  credits : {{ course.credit }}
                 </p>
                 <div class="flex flex-row gap-2 mt-4">
                   <Lecturer class="w-6 h-6" />
-                  <p class="text-sm text-grey-primary">
-                    {{ course.user.first_name }}
-                  </p>
+                  <div v-for="lecturer in course.lecturers" :key="lecturer.id">
+                    <p class="text-sm text-grey-primary">
+                      {{ lecturer.name_en }}
+                    </p>
+                  </div>
                 </div>
                 <div class="grid grid-cols-2 gap-4 items-center mt-1">
                   <div class="flex flex-row gap-2">
@@ -669,24 +671,6 @@ const user = ref({
   degree_th: [""],
 });
 
-onMounted(() => {
-  fetch(base_url + "users/" + props.userId, {
-    credentials: "include",
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((response) => response.json())
-    .then((json) => {
-      user.value = json.data;
-      user.value.role = json.data.role.split(",");
-      user.value.degree_en = json.data.degree_en.split(",");
-      user.value.degree_th = json.data.degree_th.split(",");
-      console.log(user.value);
-    });
-});
-
 // onActivated(() => {
 //   fetch(base_url + "users/" + props.userId, {
 //     credentials: "include",
@@ -733,7 +717,7 @@ const searchQuery = ref("");
 const selectedProgramOption = ref("");
 const selectedYearOption = ref("");
 
-const programOptions = ref(getProgramOptions());
+const programOptions = ref([]);
 const yearsOptions = ref(getYearsOptions());
 
 function getYearsOptions() {
@@ -747,14 +731,22 @@ const overviewCourse = (code) => {
   router.push(`/courses/overview/${code}`);
 };
 
-function getProgramOptions() {
-  return [
-    "Regular",
-    "International",
-    "Health Data Science",
-    "Ratchaburi Campus",
-  ];
-}
+const fetchPrograms = async () => {
+  try {
+    const response = await fetch(`${base_url}programmes`, {
+      credentials: "include",
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Failed to fetch programs");
+    const res = await response.json();
+    programOptions.value = res.data;
+  } catch (error) {
+    console.error("Error fetching programs:", error);
+  }
+};
 
 function handleSearch() {
   console.log("Search query:", searchQuery.value);
@@ -867,7 +859,6 @@ const handleConfirmDelete = () => {
       });
     deleteMode.value = !deleteMode.value;
     emit("close");
-    router.go();
   } else {
     checkDelete.value = true;
     console.log("Incorrect input");
@@ -881,119 +872,58 @@ const handleCancelDelete = () => {
   checkDelete.value = false;
 };
 
-const courses = ref([
-  {
-    id: "CPE123",
-    name: "Computer Engineering",
-    code: "CPE123",
-    curriculum: "Computer Science",
-    description: "This course introduces the fundamentals of programming.",
-    expected_passing_clo_percentage: 85,
-    is_portfolio_completed: false,
-    portfolio_data: {},
-    academic_year: 2024,
-    graduate_year: 2028,
-    credits: 3,
-    program_year: 1,
-    semester_id: "01JD1P61GEB6SE52AW5KZ2ZXW9",
-    user_id: "01",
-    criteria_grade_a: 90,
-    criteria_grade_bp: 85,
-    criteria_grade_b: 80,
-    criteria_grade_cp: 75,
-    criteria_grade_c: 70,
-    criteria_grade_dp: 65,
-    criteria_grade_d: 60,
-    criteria_grade_f: 50,
-    semester: {
-      id: "01JD1P61GEB6SE52AW5KZ2ZXW9",
-      year: 2024,
-      semester_sequence: "1",
+const courses = ref([]);
+
+const getUserCoures = (query, year, program) => {
+  fetch(
+    `${base_url}users/${props.userId}/course?query=${query}&year=${year}&program=${program}`,
+    {
+      credentials: "include",
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  )
+    .then((response) => response.json())
+    .then((json) => {
+      courses.value = json.data.courses;
+    });
+};
+
+onMounted(() => {
+  fetch(base_url + "users/" + props.userId, {
+    credentials: "include",
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
     },
-    user: {
-      id: "01K",
-      email: "lecturer_1@inu.com",
-      password: "$2a$10",
-      first_name: "lecturer",
-      last_name: "1",
-      role: "LECTURER",
-    },
-  },
-  {
-    id: "CPE202",
-    name: "Introduction to Programming",
-    code: "CPE202",
-    curriculum: "Computer Science",
-    description: "This course introduces the fundamentals of programming.",
-    expected_passing_clo_percentage: 85,
-    is_portfolio_completed: false,
-    portfolio_data: {},
-    academic_year: 2024,
-    graduate_year: 2028,
-    credits: 3,
-    program_year: 1,
-    semester_id: "01JD1P61GEB6SE52AW5KZ2ZXW9",
-    user_id: "01",
-    criteria_grade_a: 90,
-    criteria_grade_bp: 85,
-    criteria_grade_b: 80,
-    criteria_grade_cp: 75,
-    criteria_grade_c: 70,
-    criteria_grade_dp: 65,
-    criteria_grade_d: 60,
-    criteria_grade_f: 50,
-    semester: {
-      id: "01JD1P61GEB6SE52AW5KZ2ZXW9",
-      year: 2024,
-      semester_sequence: "1",
-    },
-    user: {
-      id: "01",
-      email: "lecturer_1@inu.com",
-      password: "$2",
-      first_name: "lecturer",
-      last_name: "1",
-      role: "LECTURER",
-    },
-  },
-  {
-    id: "LNG101",
-    name: "Oral Communication in English",
-    code: "LNG101",
-    curriculum: "Computer Science",
-    description: "This course introduces the fundamentals of programming.",
-    expected_passing_clo_percentage: 85,
-    is_portfolio_completed: false,
-    portfolio_data: {},
-    academic_year: 2024,
-    graduate_year: 2028,
-    credits: 3,
-    program_year: 1,
-    semester_id: "01JD1P61GEB6SE52AW5KZ2ZXW9",
-    user_id: "01",
-    criteria_grade_a: 90,
-    criteria_grade_bp: 85,
-    criteria_grade_b: 80,
-    criteria_grade_cp: 75,
-    criteria_grade_c: 70,
-    criteria_grade_dp: 65,
-    criteria_grade_d: 60,
-    criteria_grade_f: 50,
-    semester: {
-      id: "01JD1P61GEB6SE52AW5KZ2ZXW9",
-      year: 2024,
-      semester_sequence: "1",
-    },
-    user: {
-      id: "01",
-      email: "lecturer_1@inu.com",
-      password: "$2",
-      first_name: "lecturer",
-      last_name: "1",
-      role: "LECTURER",
-    },
-  },
-]);
+  })
+    .then((response) => response.json())
+    .then((json) => {
+      user.value = json.data;
+      user.value.role = json.data.role.split(",");
+      user.value.degree_en = json.data.degree_en.split(",");
+      user.value.degree_th = json.data.degree_th.split(",");
+      console.log(user.value);
+    });
+
+  getUserCoures(
+    searchQuery.value,
+    selectedYearOption.value,
+    selectedProgramOption.value
+  );
+
+  fetchPrograms();
+});
+
+watch([searchQuery, selectedProgramOption, selectedYearOption], () => {
+  getUserCoures(
+    searchQuery.value,
+    selectedYearOption.value,
+    selectedProgramOption.value
+  );
+});
 </script>
 
 <style lang="scss" scoped>

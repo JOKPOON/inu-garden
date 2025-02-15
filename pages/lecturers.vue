@@ -285,6 +285,26 @@ const showAddUserPopup = ref(false);
 const showImportUserPopup = ref(false);
 const selectedUserId = ref(null);
 
+const UpdateUser = (userId) => {
+  fetch(base_url + "users/" + userId, {
+    credentials: "include",
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(user.value),
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      if (res.success) {
+        console.log(res);
+        showUserPopup.value = false;
+      } else {
+        console.log(res.error.message);
+      }
+    });
+};
+
 const getUsers = (query, page, size) => {
   if (!page) {
     page = 1;
