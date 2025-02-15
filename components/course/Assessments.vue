@@ -44,12 +44,12 @@
     <div class="border border-grey-secondary p-4 rounded-2xl">
       <div class="flex flex-row gap-4 pb-2 border-b">
         <div
-          class="w-64 text-sm  text-grey-primary flex items-center justify-center "
+          class="w-64 text-sm text-grey-primary flex items-center justify-center"
         >
           Assessment Name
         </div>
         <div
-          class="w-24 text-sm text-grey-primary flex items-center justify-center text-center "
+          class="w-24 text-sm text-grey-primary flex items-center justify-center text-center"
         >
           Included <br />In CLOs
         </div>
@@ -83,7 +83,7 @@
           <div
             class="h-full w-24 flex items-center justify-center py-2 text-sm"
           >
-            <Include v-if="getActiveAssessment().closStatus === 'Include'" />
+            <Include v-if="getActiveAssessment().is_included_in_clo == true" />
             <NotInclude v-else />
           </div>
           <div
@@ -100,7 +100,7 @@
                 <div class="flex flex-row justify-between gap-4 mt-2">
                   <div class="text-sm font-semibold">Max Score</div>
                   <div class="text-sm text-black-primary">
-                    {{ getActiveAssessment().maxScore }}
+                    {{ getActiveAssessment().max_score }}
                   </div>
                 </div>
                 <div class="flex flex-row justify-between gap-4">
@@ -108,7 +108,9 @@
                     Expected Passing Student (%)
                   </div>
                   <div class="text-sm text-black-primary">
-                    {{ getActiveAssessment().expectedStudent }}
+                    {{
+                      getActiveAssessment().expected_passing_student_percentage
+                    }}
                   </div>
                 </div>
                 <div class="flex flex-row justify-between gap-4 mb-2">
@@ -116,7 +118,7 @@
                     Expected Passing Score (%)
                   </div>
                   <div class="text-sm text-black-primary">
-                    {{ getActiveAssessment().expectScore }}
+                    {{ getActiveAssessment().expected_score_percentage }}
                   </div>
                 </div>
               </div>
@@ -185,21 +187,21 @@
                 </div>
 
                 <div
-                  v-for="clo in getActiveAssessment().clos"
-                  :key="clo"
+                  v-for="clo in CLOs"
+                  :key="clo.clo_id"
                   class="grid grid-cols-4 gap-2 mt-2 border-b pb-2 border-grey-tertiary"
                 >
                   <div class="col-span-1 text-sm flex items-center">
-                    {{ clo }}
+                    {{ clo.clo_code }}
                   </div>
                   <div class="col-span-3 text-sm flex flex-row gap-4">
                     <div class="w-full flex items-center">
-                      {{ getCLODescription(clo) }}
+                      {{ clo.clo_description }}
                     </div>
                     <div class="h-full flex items-center">
                       <button
                         class="flex items-center justify-center rounded-xl h-10 w-10 border hover:bg-red-500 hover:text-white"
-                        @click="removeCLO(clo)"
+                        @click="removeCLO(clo.id)"
                       >
                         <Delete class="w-5 h-5" />
                       </button>
@@ -239,24 +241,24 @@
                   </div>
                 </div>
                 <div
-                  v-for="(student, index) in getActiveAssessment().student"
-                  :key="student.studentID"
+                  v-for="score in scores"
+                  :key="score.id"
                   class="grid grid-cols-7 gap-4 py-2 hover:rounded-xl border-b border-grey-tertiary"
                 >
                   <div
                     class="col-span-2 text-sm text-black-primary text-start flex items-center"
                   >
-                    {{ student.studentID }}
+                    {{ score.student_id }}
                   </div>
                   <div
                     class="col-span-2 text-sm text-black-primary text-start flex items-center"
                   >
-                    {{ student.studentName }}
+                    {{ score.first_name }} {{ score.last_name }}
                   </div>
                   <div
                     class="col-span-1 text-sm text-black-primary flex items-center justify-center"
                   >
-                    {{ student.score }}
+                    {{ score.score }}
                   </div>
                   <div
                     class="col-span-2 text-sm text-black-primary flex items-center justify-end flex-row gap-2"
@@ -311,6 +313,7 @@ import Include from "@/components/icons/Include.vue";
 import NotInclude from "@/components/icons/NotInclude.vue";
 import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
+import base_url from "@/config/api";
 const { t } = useI18n();
 
 ChartJS.register(
@@ -323,7 +326,44 @@ ChartJS.register(
 );
 
 const searchQuery = ref("");
-const assessments = ref([]);
+const assessments = ref([
+  {
+    id: "01JM00TX16HYA8DQYH3TCQ50V9",
+    name: "Midterm exam",
+    description: "This is the Midterm exam of the course",
+    max_score: 100,
+    expected_score_percentage: 75.5,
+    expected_passing_student_percentage: 80,
+    is_included_in_clo: true,
+    assignment_group_id: "01JM00P1NR3HETR9X5Q6DKATBF",
+    course_id: "",
+    course_learning_outcomes: null,
+  },
+  {
+    id: "01JM00W7B5DKVN94KKWQ1ZE2VF",
+    name: "Final exam",
+    description: "This is the Final exam of the course",
+    max_score: 100,
+    expected_score_percentage: 75.5,
+    expected_passing_student_percentage: 80,
+    is_included_in_clo: true,
+    assignment_group_id: "01JM00PBTXMMWQ0G715ET331V3",
+    course_id: "",
+    course_learning_outcomes: null,
+  },
+  {
+    id: "01JM00XHVQ5H9AFNG40V9KX8H9",
+    name: "HW",
+    description: "This is the Final exam of the course",
+    max_score: 100,
+    expected_score_percentage: 75.5,
+    expected_passing_student_percentage: 80,
+    is_included_in_clo: true,
+    assignment_group_id: "01JM00Q160WV1T2PJN7MXKCEE4",
+    course_id: "",
+    course_learning_outcomes: null,
+  },
+]);
 const activeAssessment = ref(1);
 const chartData = ref(null);
 const chartOptions = ref(null);
@@ -636,6 +676,236 @@ onMounted(() => {
       },
     },
   };
+});
+
+// Add CLOs to the assignment
+// clo_ids: Array of CLO IDs
+// assignment_id: ID of the assignment
+const linkCLOs = async (assignment_id, clo_ids) => {
+  try {
+    const response = await fetch(
+      `${base_url}assignments/${assignment_id}/clos`,
+      {
+        credentials: "include",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          course_learning_outcome_ids: clo_ids,
+        }),
+      }
+    );
+    if (!response.ok) throw new Error("Failed to add CLO");
+    const res = await response.json();
+    console.log(res);
+  } catch (error) {
+    console.error("Error adding CLO:", error);
+  }
+};
+
+// Add student score to the assignment
+// student_scores: Array of student scores [{student_id, score}]
+// assignment_id: ID of the assignment
+const addStudentScores = async (assignment_id, student_scores) => {
+  try {
+    const response = await fetch(
+      `${base_url}assignments/${assignment_id}/scores`,
+      {
+        credentials: "include",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          assignment_id: assignment_id,
+          student_scores: student_scores.map((s) => ({
+            student_id: s.student_id,
+            score: s.score,
+          })),
+        }),
+      }
+    );
+    if (!response.ok) throw new Error("Failed to add student scores");
+    const res = await response.json();
+    console.log(res);
+  } catch (error) {
+    console.error("Error adding student scores:", error);
+  }
+};
+
+// Update student score in the assignment
+// score_id: ID of the score
+// score: New score
+const updateStudentScore = async (score_id, score) => {
+  try {
+    const response = await fetch(`${base_url}scores/${score_id}`, {
+      credentials: "include",
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        score: score,
+      }),
+    });
+    if (!response.ok) throw new Error("Failed to update student score");
+    const res = await response.json();
+    console.log(res);
+  } catch (error) {
+    console.error("Error updating student score:", error);
+  }
+};
+
+// Remove student score from the assignment
+// score_id: ID of the score
+const removeStudentScore = async (score_id) => {
+  try {
+    const response = await fetch(`${base_url}scores/${score_id}`, {
+      credentials: "include",
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Failed to remove student score");
+    const res = await response.json();
+    console.log(res);
+  } catch (error) {
+    console.error("Error removing student score:", error);
+  }
+};
+
+// Remove CLO from the assignment
+// clo_id: ID of the CLO
+// assignment_id: ID of the assignment
+const unlinkCLO = async (assignment_id, clo_id) => {
+  try {
+    const response = await fetch(
+      `${base_url}assignments/${assignment_id}/clos/${clo_id}`,
+      {
+        credentials: "include",
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!response.ok) throw new Error("Failed to remove CLO");
+    const res = await response.json();
+    console.log(res);
+  } catch (error) {
+    console.error("Error removing CLO:", error);
+  }
+};
+
+const course_id = ref("01JKNGF1F05NF2TH1JX3BJKAQZ");
+const fetchAssignments = async (course_id) => {
+  try {
+    const response = await fetch(
+      `${base_url}courses/${course_id}/assignments`,
+      {
+        credentials: "include",
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!response.ok) throw new Error("Failed to fetch programs");
+    const res = await response.json();
+    assessments.value = res.data;
+  } catch (error) {
+    console.error("Error fetching programs:", error);
+  }
+};
+
+const scores = ref([
+  {
+    id: "01JM015SHR5HW25GZEG5HMY913",
+    score: 80,
+    student_id: "64070501011",
+    user_id: "01JKK4JP43RVP2PA00R3BYGWJJ",
+    assignment_id: "01JM00TX16HYA8DQYH3TCQ50V9",
+    email: "alice.smith@example.com",
+    first_name: "Alice",
+    last_name: "Smith",
+  },
+  {
+    id: "01JM015SHR5HW25GZEG9386AB5",
+    score: 95,
+    student_id: "64070501012",
+    user_id: "01JKK4JP43RVP2PA00R3BYGWJJ",
+    assignment_id: "01JM00TX16HYA8DQYH3TCQ50V9",
+    email: "michael.johnson@example.com",
+    first_name: "Michael",
+    last_name: "Johnson",
+  },
+  {
+    id: "01JM015SHR5HW25GZEGC7BBS2D",
+    score: 70,
+    student_id: "64070501013",
+    user_id: "01JKK4JP43RVP2PA00R3BYGWJJ",
+    assignment_id: "01JM00TX16HYA8DQYH3TCQ50V9",
+    email: "emma.brown@example.com",
+    first_name: "Emma",
+    last_name: "Brown",
+  },
+  {
+    id: "01JM015SHR5HW25GZEGCF5SBKJ",
+    score: 50,
+    student_id: "64070501014",
+    user_id: "01JKK4JP43RVP2PA00R3BYGWJJ",
+    assignment_id: "01JM00TX16HYA8DQYH3TCQ50V9",
+    email: "daniel.wilson@example.com",
+    first_name: "Daniel",
+    last_name: "Wilson",
+  },
+  {
+    id: "01JM015SHR5HW25GZEGDW7Z55G",
+    score: 30,
+    student_id: "64070501015",
+    user_id: "01JKK4JP43RVP2PA00R3BYGWJJ",
+    assignment_id: "01JM00TX16HYA8DQYH3TCQ50V9",
+    email: "sophia.taylor@example.com",
+    first_name: "Sophia",
+    last_name: "Taylor",
+  },
+]);
+const CLOs = ref([
+  {
+    clo_id: "01JM00RJSJ6CJCCAZ8ZZHYW6BH",
+    clo_code: "CLO1",
+    clo_description: "Understand the fundamentals of computer programming.",
+  },
+]);
+const fetchScore = async (assignment_id) => {
+  try {
+    const response = await fetch(
+      `${base_url}assignments/${assignment_id}/scores`,
+      {
+        credentials: "include",
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!response.ok) throw new Error("Failed to fetch programs");
+    const res = await response.json();
+    scores.value = res.data.scores;
+    CLOs.value = res.data.clos;
+  } catch (error) {
+    console.error("Error fetching programs:", error);
+  }
+};
+
+onMounted(() => {
+  fetchAssignments(course_id.value);
+});
+
+watch(activeAssessment, (newVal) => {
+  fetchScore(newVal);
 });
 </script>
 
