@@ -8,13 +8,13 @@
           <input
             type="text"
             v-model="searchQuery"
-            @keyup.enter="getStudents(searchQuery)"
+            @keyup.enter="fetchEnrollments(course_id, searchQuery)"
             class="bg-transparent border-none focus:ring-0 outline-none text-base w-56"
             placeholder="Search..."
           />
           <button
             class="flex items-center justify-center bg-white rounded-xl"
-            @click="getStudents(searchQuery)"
+            @click="fetchEnrollments(course_id, searchQuery)"
           >
             <Search class="w-6 h-6" />
           </button>
@@ -87,23 +87,19 @@
       <div
         class="max-h-[calc(100vh-490px)] overflow-y-scroll scrollbar-set mt-2"
       >
-        <div
-          v-for="(student, index) in students"
-          :key="student.id"
-          class="contents"
-        >
+        <div v-for="student in students" :key="student.id" class="contents">
           <div
             class="grid grid-cols-5 gap-4 py-2 hover:cursor-pointer hover:bg-[#F6F8F8] hover:rounded-xl border-b border-grey-tertiary"
           >
             <div
               class="col-span-1 text-sm text-black-primary flex items-center justify-center"
             >
-              {{ student.id }}
+              {{ student.student_id }}
             </div>
             <div
               class="col-span-2 text-sm text-black-primary flex items-center justify-center"
             >
-              {{ student.name }}
+              {{ student.first_name }} {{ student.last_name }}
             </div>
             <div
               class="col-span-1 text-sm text-black-primary flex items-center justify-center"
@@ -176,6 +172,7 @@ import ArrowDown from "@/components/icons/ArrowDown.vue";
 import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
 import ShowUser from "@/components/icons/ShowUser.vue";
+import base_url from "@/config/api";
 
 const searchQuery = ref("");
 
@@ -190,13 +187,12 @@ const toggleStatus = () => {
     status.value = "default";
   }
 };
+
 const statusClass = computed(() => {
   return status.value === "default"
     ? "bg-white text-black-primary"
     : " bg-black-primary text-white";
 });
-
-const getStudents = (query) => {};
 
 const onClickAddStudent = () => {};
 
@@ -206,16 +202,13 @@ const onClickImportStudent = () => {};
 
 const onClickExportStudent = () => {};
 
-const students = ref(
-  Array.from({ length: 10 }, (_, i) => ({
-    id: i + 1,
-    name: `Student ${i + 1}`,
-    status: i % 2 === 0 ? "Active" : "Inactive",
-  }))
-);
+const students = ref([]);
 
 const currentPage = ref(1);
 const totalPages = ref(1);
+
+//TODO: Get course id
+const course_id = ref("01JKNGF1F05NF2TH1JX3BJKAQZ");
 
 const nextPage = () => {
   if (currentPage.value < totalPages.value) {
@@ -228,6 +221,100 @@ const prevPage = () => {
     currentPage.value--;
   }
 };
+
+//Create enrollment
+//status: ENROLL OR WITHDRAW
+//student_ids: Array of student ids (6XXXXX)
+const CreateEnrollment = async (student_ids, course_id, status) => {
+  try {
+    const response = await fetch(`${base_url}enrollments`, {
+      credentials: "include",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        course_id: course_id,
+        student_ids: student_ids,
+        status: status,
+      }),
+    });
+
+    if (!response.ok) throw new Error("Failed to create enrollment");
+    const res = await response.json();
+    console.log(res);
+  } catch (error) {
+    console.error("Error fetching students:", error);
+  }
+};
+
+//Delete enrollment
+const DeleteEnrollment = async (id) => {
+  try {
+    const response = await fetch(`${base_url}enrollments/${id}`, {
+      credentials: "include",
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) throw new Error("Failed to delete enrollment");
+    const res = await response.json();
+    console.log(res);
+  } catch (error) {
+    console.error("Error fetching students:", error);
+  }
+};
+
+//Update enrollment status to ENROLL OR WITHDRAW
+const UpdateEnrollment = async (id, status) => {
+  try {
+    const response = await fetch(`${base_url}enrollments/${id}`, {
+      credentials: "include",
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify({
+        status: status,
+      }),
+    });
+
+    if (!response.ok) throw new Error("Failed to update enrollment");
+    const res = await response.json();
+    console.log(res);
+  } catch (error) {
+    console.error("Error fetching students:", error);
+  }
+};
+
+//Fetch enrollments
+const fetchEnrollments = async (course_id, searchQuery) => {
+  try {
+    const response = await fetch(
+      `${base_url}courses/${course_id}/enrollments?query=${searchQuery}`,
+      {
+        credentials: "include",
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) throw new Error("Failed to fetch students");
+    const res = await response.json();
+    students.value = res.data;
+  } catch (error) {
+    console.error("Error fetching students:", error);
+  }
+};
+
+onMounted(() => {
+  fetchEnrollments(course_id.value, searchQuery.value);
+});
 </script>
 
 <style lang="scss" scoped>
