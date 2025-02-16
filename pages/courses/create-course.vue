@@ -23,7 +23,7 @@
           <span class="text-black-primary font-semibold text-base">Import</span>
         </Import>
         <History
-          @click="History"
+          @click="HistoryButton"
           class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
         >
           <span class="text-black-primary font-semibold text-base"
@@ -83,7 +83,7 @@
             </div>
             <button
               @click="removeInstructor(index)"
-              class="flex items-center justify-center rounded-xl p-2 border hover:bg-red-500 hover:text-white"
+              class="flex items-center justify-center rounded-xl p-3 border hover:bg-red-500 hover:text-white"
             >
               <Delete class="w-5 h-5" />
             </button>
@@ -320,6 +320,8 @@
       </button>
     </div>
   </div>
+
+  <CourseHistory v-if="isPopupVisible" @close="isPopupVisible = false" />
 </template>
 
 <script setup>
@@ -327,8 +329,18 @@ import TemplateButton from "@/components/button/TemplateButton.vue";
 import Import from "@/components/button/ImportButton.vue";
 import History from "@/components/button/HistoryButton.vue";
 import Delete from "@/components/icons/Delete.vue";
+import CourseHistory from "@/components/popups/CourseHistory.vue";
 import base_url from "@/config/api";
 const { t } = useI18n();
+
+useHead({
+  title: t("seo.title"),
+  description: t("seo.desc"),
+});
+
+definePageMeta({
+  layout: "landing",
+});
 
 const courseName = ref("");
 const courseCode = ref("");
@@ -346,11 +358,15 @@ const courseGradeCPlus = ref(65);
 const courseGradeC = ref(60);
 const courseGradeDPlus = ref(55);
 const courseGradeD = ref(50);
-
 const instructors = ref([]);
 const semesters = ref([]);
 const programs = ref([]);
 const courseInstructors = ref([""]);
+
+const isPopupVisible = ref(false);
+const HistoryButton = () => {
+  isPopupVisible.value = true;
+};
 
 const createCourse = async () => {
   try {
@@ -458,23 +474,27 @@ onMounted(() => {
   fetchSemesters();
   fetchPrograms();
 });
-
-useHead({
-  title: t("seo.title"),
-  description: t("seo.desc"),
-});
-
-definePageMeta({
-  layout: "landing",
-});
 </script>
 
 <style lang="scss" scoped>
 .hide-scrollbar {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  scrollbar-width: thin;
   &::-webkit-scrollbar {
-    display: none;
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 10px;
+    border: 2px solid #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
   }
 }
 </style>
