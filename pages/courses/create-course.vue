@@ -34,7 +34,7 @@
     </div>
     <div class="max-h-[calc(100vh-365px)] overflow-y-scroll hide-scrollbar">
       <div class="mt-6 grid grid-cols-3 gap-4 w-full">
-        <div class="w-full flex flex-col gap-2">
+        <div class="col-span-2 w-full flex flex-col gap-2">
           <div class="text-base text-black-primary font-semibold">Name</div>
           <input
             v-model="courseName"
@@ -52,7 +52,7 @@
             placeholder="Course code"
           />
         </div>
-        <div class="w-full flex flex-col gap-2">
+        <div class="col-span-3 w-full flex flex-col gap-2">
           <div class="text-base text-black-primary font-semibold">
             Instructors
           </div>
