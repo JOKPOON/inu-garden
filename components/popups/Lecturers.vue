@@ -1000,7 +1000,6 @@ const courses = ref([
 .scrollbar-set {
   scrollbar-width: thin;
 
-
   &::-webkit-scrollbar {
     width: 8px;
   }

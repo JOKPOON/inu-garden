@@ -15,7 +15,7 @@ import Feedback from "@/components/course/Feedback.vue";
 const { t } = useI18n();
 
 useHead({
-  title: t("seo.title"),
+  title: "Inu - Courses Feedback",
   description: t("seo.desc"),
 });
 

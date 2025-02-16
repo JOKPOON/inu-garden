@@ -1,7 +1,6 @@
 <template>
   <div v-if="loading" class="loading-container">
     <div class="spinner"></div>
-    <p class="mt-2">Loading...</p>
   </div>
   <div v-else>
     <SideBar
@@ -17,7 +16,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { useUserStore } from "@/store/user"; 
+import { useUserStore } from "@/store/user";
 import SideBar from "@/components/layouts/SideBar.vue";
 import base_url from "@/config/api";
 
@@ -60,7 +59,6 @@ onMounted(() => {
 }
 
 .spinner {
-
   border: 4px solid rgba(0, 0, 0, 0.1);
   border-left-color: #161616;
   border-radius: 50%;

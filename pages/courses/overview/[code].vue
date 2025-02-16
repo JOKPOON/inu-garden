@@ -14,7 +14,7 @@ import Overview from "@/components/course/Overview.vue";
 const { t } = useI18n();
 
 useHead({
-  title: t("seo.title"),
+  title: "Inu - Courses Overview",
   description: t("seo.desc"),
 });
 

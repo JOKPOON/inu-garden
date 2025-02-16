@@ -165,7 +165,7 @@ watch(Password, () => {
 });
 
 useHead({
-  title: t("seo.title"),
+  title: "Inu - Login",
   description: t("seo.desc"),
 });
 </script>

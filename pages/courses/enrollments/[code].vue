@@ -15,7 +15,7 @@ import Enrollments from "@/components/course/Enrollments.vue";
 const { t } = useI18n();
 
 useHead({
-  title: t("seo.title"),
+  title: "Inu - Courses Enrollments",
   description: t("seo.desc"),
 });
 

@@ -167,6 +167,11 @@ onMounted(() => {
     router.push(`/courses/survey/${code}/thanks`);
   }
 });
+
+useHead({
+  title: "Inu - Courses Survey",
+  description: t("seo.desc"),
+});
 </script>
 
 <style lang="scss" scoped>

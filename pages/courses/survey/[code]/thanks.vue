@@ -15,6 +15,10 @@
 
 <script setup>
 import BannerLogin from "@/components/images/BannerLogin.jpg";
+useHead({
+  title: "Inu - Courses Survey",
+  description: t("seo.desc"),
+});
 </script>
 
 <style lang="scss" scoped></style>

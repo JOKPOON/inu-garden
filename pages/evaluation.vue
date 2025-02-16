@@ -349,7 +349,7 @@ const handleSearch = () => {
 };
 
 useHead({
-  title: t("seo.title"),
+  title: "Inu - Evaluation",
   description: t("seo.desc"),
 });
 
@@ -560,20 +560,22 @@ const filteredTopics = computed(() => {
 
 .set-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #d1d5db #f3f4f6;
   &::-webkit-scrollbar {
-    width: 6px;
+    width: 8px;
   }
+
   &::-webkit-scrollbar-track {
-    background: #f3f4f6;
+    background: #f1f1f1;
   }
+
   &::-webkit-scrollbar-thumb {
-    background-color: #d1d5db;
-    border-radius: 6px;
-    border: 3px solid #f3f4f6;
+    background-color: #888;
+    border-radius: 10px;
+    border: 2px solid #f1f1f1;
   }
+
   &::-webkit-scrollbar-thumb:hover {
-    background-color: #b8c2cc;
+    background: #555;
   }
 }
 </style>

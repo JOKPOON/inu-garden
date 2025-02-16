@@ -386,7 +386,7 @@ const EditCourse = async () => {
     if (!response.ok) throw new Error("Failed to create course");
     const res = await response.json();
     console.log(res);
-    router.push({ name: "courses" });
+    router.push("/");
   } catch (error) {
     console.error("Error creating course:", error);
   }
