@@ -34,7 +34,9 @@
         @click="onClickAddUser"
         class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
       >
-        <span class="text-black-primary font-semibold text-base">Add Student</span>
+        <span class="text-black-primary font-semibold text-base"
+          >Add Student</span
+        >
       </AddUserButton>
     </div>
   </div>
@@ -73,10 +75,24 @@ const setActionButton = (button) => {
 
 <style lang="scss" scoped>
 .scrollbar-set {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  scrollbar-width: thin;
+
   &::-webkit-scrollbar {
-    display: none;
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 10px;
+    border: 2px solid #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
   }
 }
 </style>

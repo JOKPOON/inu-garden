@@ -21,11 +21,11 @@
       class="px-4 py-3 bg-white border border-grey-secondary rounded-xl flex flex-row gap-4 items-center"
     >
       <select
-        v-model="selectedFactoryOption"
+        v-model="selectedFacultyOption"
         class="bg-transparent border-none focus:ring-0 outline-none text-base pr-2 hover:cursor-pointer"
       >
-        <option value="">All Factories</option>
-        <option v-for="option in factoryOptions" :key="option" :value="option">
+        <option value="">All Faculties</option>
+        <option v-for="option in facultyOptions" :key="option" :value="option">
           {{ option }}
         </option>
       </select>
@@ -359,14 +359,14 @@ definePageMeta({
 
 const searchQuery = ref("");
 const selectedDepartmentOption = ref("");
-const selectedFactoryOption = ref("");
+const selectedFacultyOption = ref("");
 const selectedProgramOption = ref("");
 const selectedTopic = ref("");
 const selectedStartAcademicYear = ref("");
 const selectedEndAcademicYear = ref("");
 
 const departmentOptions = ref(["Department 1", "Department 2", "Department 3"]);
-const factoryOptions = ref(["Factory 1", "Factory 2", "Factory 3"]);
+const facultyOptions = ref(["faculty 1", "faculty 2", "faculty 3"]);
 const programOptions = ref(["Program 1", "Program 2", "Program 3"]);
 const academicYearOptions = ref(["2021", "2022", "2023", "2024"]);
 
