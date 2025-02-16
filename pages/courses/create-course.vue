@@ -313,7 +313,7 @@
         >
       </button>
       <button
-        @click="cancelCourse"
+        @click="cancel"
         class="flex items-center flex-row justify-center font-[500] bg-grey-secondary rounded-xl p-3 border hover:bg-black-primary text-black-primary hover:text-white"
       >
         Cancel
@@ -331,6 +331,9 @@ import History from "@/components/button/HistoryButton.vue";
 import Delete from "@/components/icons/Delete.vue";
 import CourseHistory from "@/components/popups/CourseHistory.vue";
 import base_url from "@/config/api";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 const { t } = useI18n();
 
 useHead({
@@ -402,7 +405,7 @@ const createCourse = async () => {
     if (!response.ok) throw new Error("Failed to create course");
     const res = await response.json();
     console.log(res);
-    router.push({ name: "courses" });
+    router.push("/");
   } catch (error) {
     console.error("Error creating course:", error);
   }
@@ -466,6 +469,10 @@ const addInstructor = () => {
 
 const removeInstructor = (index) => {
   courseInstructors.value.splice(index, 1);
+};
+
+const cancel = () => {
+  router.push("/");
 };
 
 // Call API functions on component mount
