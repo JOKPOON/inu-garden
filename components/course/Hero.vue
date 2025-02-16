@@ -57,7 +57,10 @@
       >
     </AddCourseButton>
   </div>
-  <div class="grid grid-cols-2 grid-flex-media gap-4 mt-6 flex-col">
+  <div
+    v-if="courses.length > 0"
+    class="grid grid-cols-2 grid-flex-media gap-4 mt-6 flex-col"
+  >
     <div
       v-for="course in courses"
       :key="course.id"
@@ -121,6 +124,18 @@
       </div>
     </div>
   </div>
+  <div v-else class="flex items-center justify-center w-full h-[90%]">
+    <div class="flex items-center justify-center flex-col p-4">
+      <img
+        :src="BannerLogin"
+        alt="Banner Login"
+        class="w-64 max-w-md object-cover rounded-2xl mb-4"
+      />
+      <div class="text-center font-semibold text-grey-primary">
+        No courses found!
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -131,6 +146,7 @@ import Edit from "@/components/icons/Edit.vue";
 import AddCourseButton from "@/components/button/AddCourseButton.vue";
 import Course from "@/components/icons/Course.vue";
 import Lecturer from "@/components/icons/Lecturer.vue";
+import BannerLogin from "@/components/images/BannerLogin.jpg";
 import { useRouter } from "vue-router";
 import base_url from "@/config/api";
 

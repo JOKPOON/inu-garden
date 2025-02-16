@@ -67,6 +67,7 @@
             </div>
           </div>
           <div
+            v-if="filteredCourses.length"
             class="border border-grey-secondary rounded-xl p-4 grid grid-cols-2 w-full grid-flex-media gap-4 mt-6 flex-col max-h-[calc(100vh-350px)] overflow-y-scroll scrollbar-set"
           >
             <div
@@ -131,6 +132,19 @@
               </div>
             </div>
           </div>
+          <div
+            v-else
+            class="flex items-center justify-center flex-col p-4"
+          >
+            <img
+              :src="BannerLogin"
+              alt="Banner Login"
+              class="w-64 max-w-md object-cover rounded-2xl mb-4"
+            />
+            <div class="text-center font-semibold text-grey-primary">
+              No course found!
+            </div>
+          </div>
           <button
             @click="$emit('close')"
             class="w-full font-medium py-3 bg-gray-300 rounded-xl hover:bg-black-primary hover:text-white mt-4"
@@ -155,6 +169,7 @@ import Import from "@/components/icons/Import.vue";
 import Course from "@/components/icons/Course.vue";
 import Lecturer from "@/components/icons/Lecturer.vue";
 import ImportCourseHistory from "@/components/popups/ImportCourseHistory.vue";
+import BannerLogin from "@/components/images/BannerLogin.jpg";
 import { useRouter } from "vue-router";
 
 const router = useRouter();

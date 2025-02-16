@@ -86,6 +86,7 @@
         </div>
       </div>
       <div
+        v-if="Users.length > 0"
         class="max-h-[calc(100vh-450px)] overflow-y-scroll scrollbar-set mt-2"
       >
         <div v-for="(user, index) in Users" :key="user.id" class="contents">
@@ -151,6 +152,19 @@
           </div>
         </div>
       </div>
+      <div
+        v-else
+        class="flex items-center justify-center flex-col pt-4"
+      >
+        <img
+          :src="BannerLogin"
+          alt="Banner Login"
+          class="w-56 max-w-md object-cover rounded-2xl mb-4"
+        />
+        <div class="text-center font-semibold text-grey-primary">
+          No lecturer found!
+        </div>
+      </div>
     </div>
     <div class="flex justify-center items-center mt-2">
       <button
@@ -210,6 +224,7 @@ import ArrowRight from "@/components/icons/ArrowRight.vue";
 import base_url from "@/config/api";
 import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
+import BannerLogin from "@/components/images/BannerLogin.jpg";
 import * as XLSX from "xlsx";
 const { t } = useI18n();
 
