@@ -337,7 +337,7 @@ const router = useRouter();
 const { t } = useI18n();
 
 useHead({
-  title: t("seo.title"),
+  title: "Inu - Create Course",
   description: t("seo.desc"),
 });
 
