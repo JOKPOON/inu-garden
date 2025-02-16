@@ -15,7 +15,7 @@ import LearningOutcome from "@/components/course/LearningOutcome.vue";
 const { t } = useI18n();
 
 useHead({
-  title: t("seo.title"),
+  title: "Inu - Courses Learning Outcome",
   description: t("seo.desc"),
 });
 

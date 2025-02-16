@@ -429,7 +429,7 @@ onMounted(() => {
 });
 
 useHead({
-  title: t("seo.title"),
+  title: "Inu - Edit Course",
   description: t("seo.desc"),
 });
 

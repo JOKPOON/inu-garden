@@ -445,7 +445,7 @@ const openPopup = (userId, action) => {
 };
 
 useHead({
-  title: t("seo.title"),
+  title: "Inu - Lecturers",
   description: t("seo.desc"),
 });
 

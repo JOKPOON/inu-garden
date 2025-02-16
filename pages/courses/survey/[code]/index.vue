@@ -14,7 +14,7 @@ import Survey from "@/components/course/Survey.vue";
 const { t } = useI18n();
 
 useHead({
-  title: t("seo.title"),
+  title: "Inu - Courses Survey",
   description: t("seo.desc"),
 });
 

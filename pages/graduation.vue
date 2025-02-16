@@ -13,7 +13,7 @@ import BannerLogin from "@/components/images/BannerLogin.jpg";
 const { t } = useI18n();
 
 useHead({
-  title: t("seo.title"),
+  title: "Inu - Graduation",
   description: t("seo.desc"),
 });
 

@@ -289,7 +289,7 @@ watch(OTP, () => {
 });
 
 useHead({
-  title: t("seo.title"),
+  title: "Inu - Forget Password",
   description: t("seo.desc"),
 });
 </script>

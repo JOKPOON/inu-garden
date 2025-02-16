@@ -930,7 +930,6 @@ watch([searchQuery, selectedProgramOption, selectedYearOption], () => {
 .scrollbar-set {
   scrollbar-width: thin;
 
-
   &::-webkit-scrollbar {
     width: 8px;
   }
