@@ -322,6 +322,13 @@
   </div>
 
   <CourseHistory v-if="isPopupVisible" @close="isPopupVisible = false" />
+  <StatusPopup
+    v-if="statusVisible"
+    @close="statusVisible = false"
+    :status="status"
+    :message="message"
+    :path="path"
+  />
 </template>
 
 <script setup>
@@ -331,6 +338,7 @@ import History from "@/components/button/HistoryButton.vue";
 import Delete from "@/components/icons/Delete.vue";
 import CourseHistory from "@/components/popups/CourseHistory.vue";
 import base_url from "@/config/api";
+import StatusPopup from "@/components/popups/StatusPopup.vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -367,6 +375,11 @@ const programs = ref([]);
 const courseInstructors = ref([""]);
 
 const isPopupVisible = ref(false);
+const statusVisible = ref(false);
+const message = ref("");
+const path = ref("");
+const status = ref("");
+
 const HistoryButton = () => {
   isPopupVisible.value = true;
 };
@@ -401,13 +414,19 @@ const createCourse = async () => {
         criteria_grade_d: courseGradeD.value,
       }),
     });
-
     if (!response.ok) throw new Error("Failed to create course");
     const res = await response.json();
     console.log(res);
-    router.push("/");
+    status.value = "success";
+    message.value = "Course created successfully!";
+    path.value = "/";
+    statusVisible.value = true;
   } catch (error) {
     console.error("Error creating course:", error);
+    status.value = "error";
+    message.value = "Failed to create course!";
+    path.value = "/courses/create-course";
+    statusVisible.value = true;
   }
 };
 
