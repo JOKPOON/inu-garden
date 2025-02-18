@@ -264,19 +264,45 @@
               />
             </div>
           </div>
-          <div class="flex flex-col gap-1 min-w-64 mt-2">
+          <div class="flex flex-col gap-1 mt-2">
             <div class="text-grey-primary text-sm">Email</div>
             <div class="border text-black border-grey-tertiary rounded-xl p-3">
               {{ user.email }}
             </div>
           </div>
-          <div class="flex flex-col gap-1 min-w-64 mt-2">
-            <div class="text-grey-primary text-sm">Password</div>
-            <div class="border text-black border-grey-tertiary rounded-xl p-3">
-              ********
+          <div v-if="!showPassword" class="flex items-center gap-2 w-full">
+            <div class="flex flex-col gap-1 mt-2 w-full">
+              <div class="text-grey-primary text-sm">Password</div>
+              <div
+                class="border text-black border-grey-tertiary rounded-xl p-3"
+              >
+                ********
+              </div>
             </div>
+            <button
+              @click="togglePasswordVisibility"
+              class="mt-8 flex items-center justify-center rounded-xl p-2 border"
+            >
+              <HidePassword class="w-6 h-6" />
+            </button>
           </div>
-          <div class="flex flex-col gap-1 min-w-64 mt-2 col-span-2">
+          <div v-if="showPassword" class="flex items-center gap-2 w-full">
+            <div class="flex flex-col gap-1 mt-2 w-full">
+              <div class="text-grey-primary text-sm">Password</div>
+              <div
+                class="border text-black border-grey-tertiary rounded-xl p-3"
+              >
+                {{ user.password }}
+              </div>
+            </div>
+            <button
+              @click="togglePasswordVisibility"
+              class="mt-8 flex items-center justify-center rounded-xl p-2 border bg-black-primary text-white"
+            >
+              <ShowPassword class="w-6 h-6" />
+            </button>
+          </div>
+          <div class="flex flex-col gap-1 mt-2 col-span-2">
             <div class="text-grey-primary text-sm">Role</div>
             <div
               v-if="!editMode"
@@ -417,6 +443,8 @@
 
 <script setup>
 import { ref } from "vue";
+import ShowPassword from "@/components/icons/ShowPassword.vue";
+import HidePassword from "@/components/icons/HidePassword.vue";
 import Delete from "@/components/icons/Delete.vue";
 import EditButton from "@/components/button/EditButton.vue";
 import SaveButton from "@/components/button/SaveButton.vue";
@@ -466,6 +494,12 @@ const handleFileChange = (event) => {
 
 const toggleEditMode = () => {
   editMode.value = !editMode.value;
+};
+
+const showPassword = ref(false);
+
+const togglePasswordVisibility = () => {
+  showPassword.value = !showPassword.value;
 };
 
 const cancelEdit = () => {
