@@ -37,7 +37,7 @@
         >
           {{ message }}
         </h2>
-        <div class="flex items-center justify-center flex-col px-12">
+        <div class="flex items-center justify-center flex-col px-16">
           <img
             :src="Unsuccess"
             alt="Banner Login"
@@ -47,8 +47,8 @@
         <div class="flex gap-4">
           <button
             @click="closeButton"
-            class="w-full font-medium py-3 bg-gray-300 rounded-xl hover:bg-black-primary hover:text-white"
-          >
+            class="w-full font-medium py-3 bg-gray-300 rounded-xl "
+          >hover:bg-black-primary hover:text-white
             Confirm
           </button>
         </div>
@@ -74,7 +74,7 @@ const props = defineProps({
   },
   path: {
     type: String,
-    required: true,
+    required: true, 
   },
 });
 const emit = defineEmits(["close"]);

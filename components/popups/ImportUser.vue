@@ -65,7 +65,7 @@
           </button>
           <button
             @click="$emit('close') && router.go()"
-            class="font-medium text-center py-3 bg-grey-secondary rounded-lg w-full"
+            class="font-medium text-center py-3 bg-grey-secondary rounded-lg w-full hover:bg-black-primary hover:text-white"
           >
             Cancel
           </button>
@@ -125,7 +125,7 @@
             </button>
             <button
               @click="$emit('close')"
-              class="flex items-center justify-center rounded-xl px-3 h-12 border hover:bg-black-primary hover:text-white font-medium"
+              class="flex items-center justify-center rounded-xl px-3 h-12 border hover:bg-black-primary hover:text-white font-medium "
             >
               Close
             </button>
@@ -402,7 +402,7 @@
           </ImportButton>
           <ImportAllButton
             @click="importAll"
-            class="flex items-center flex-row justify-center border bg-black-primary rounded-xl w-full py-3 gap-2"
+            class="flex items-center flex-row justify-center border bg-black-primary rounded-xl w-full py-3 gap-2 "
           >
             <span class="text-white font-semibold text-base">Import All</span>
           </ImportAllButton>

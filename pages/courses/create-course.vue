@@ -137,7 +137,7 @@
             placeholder="Graduate Year"
           />
         </div>
-        <div class="w-full flex flex-col gap-2">
+        <div class="col-span-2 w-full flex flex-col gap-2">
           <div class="text-base text-black-primary font-semibold">Program</div>
           <div
             class="bg-transparent border border-grey-tertiary rounded-xl text-base p-3 hover:cursor-pointer"
@@ -158,6 +158,7 @@
             </select>
           </div>
         </div>
+        <div class=" grid grid-cols-2 gap-4">
         <div class="w-full flex flex-col gap-2">
           <div class="text-base text-black-primary font-semibold">Credit</div>
           <input
@@ -178,7 +179,7 @@
             placeholder="ExpectedPassingCLO"
           />
         </div>
-      </div>
+      </div>  </div>
       <div class="w-full flex flex-col gap-2 mt-4">
         <div class="text-base text-black-primary font-semibold">
           Course Instruction & Description
