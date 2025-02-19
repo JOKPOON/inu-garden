@@ -18,7 +18,7 @@
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-grey-tertiary">
-        <tr v-for="score in scoreRanges" :key="score.score">
+        <tr v-for="score in props.score_frequencies" :key="score.score">
           <td
             class="px-6 py-4 whitespace-nowrap text-base text-gray-primary text-center border border-grey-tertiary"
           >
@@ -36,52 +36,12 @@
 </template>
 
 <script setup>
-const scoreRanges = [
-  {
-    score: "0-50",
-    frequency: 2,
+const props = defineProps({
+  score_frequencies: {
+    type: Array,
+    required: true,
   },
-  {
-    score: "51-55",
-    frequency: 0,
-  },
-  {
-    score: "56-60",
-    frequency: 0,
-  },
-  {
-    score: "61-65",
-    frequency: 0,
-  },
-  {
-    score: "66-70",
-    frequency: 1,
-  },
-  {
-    score: "71-75",
-    frequency: 0,
-  },
-  {
-    score: "76-80",
-    frequency: 1,
-  },
-  {
-    score: "81-85",
-    frequency: 0,
-  },
-  {
-    score: "86-90",
-    frequency: 0,
-  },
-  {
-    score: "91-95",
-    frequency: 1,
-  },
-  {
-    score: "96-100",
-    frequency: 0,
-  },
-];
+});
 </script>
 
 <style lang="scss" scoped></style>

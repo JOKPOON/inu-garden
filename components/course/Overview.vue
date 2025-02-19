@@ -104,10 +104,10 @@
         </div>
       </div>
       <div v-if="activeButton === 'Overview'">
-        <ScoreRange />
+        <ScoreRange :score_frequencies="result.score_frequencies" />
       </div>
       <div v-else-if="activeButton === 'Grade Overview'">
-        <GradeRange />
+        <GradeRange :grade_frequencies="result.grade_frequencies" />
       </div>
     </div>
   </div>
@@ -267,15 +267,6 @@ const course = ref({
   },
 });
 
-const statistics = {
-  min: 9,
-  max: 95,
-  mean: 41.166666666666664,
-  median: 30,
-  mode: 30,
-  sd: 24.46880099682496,
-};
-
 const changeKeyToLabel = (key) => {
   switch (key) {
     case "mean":
@@ -296,13 +287,13 @@ const changeKeyToLabel = (key) => {
 };
 
 const result = ref({
-  student_amount: 5,
-  gpa: 1.8,
+  student_amount: 0,
+  gpa: 0,
   grade_frequencies: [
     {
       name: "A",
       grade_score: 90,
-      frequency: 1,
+      frequency: 0,
     },
     {
       name: "BP",
@@ -312,7 +303,7 @@ const result = ref({
     {
       name: "B",
       grade_score: 80,
-      frequency: 1,
+      frequency: 0,
     },
     {
       name: "CP",
@@ -322,7 +313,7 @@ const result = ref({
     {
       name: "C",
       grade_score: 70,
-      frequency: 1,
+      frequency: 0,
     },
     {
       name: "DP",
@@ -337,13 +328,13 @@ const result = ref({
     {
       name: "F",
       grade_score: 0,
-      frequency: 2,
+      frequency: 0,
     },
   ],
   score_frequencies: [
     {
       score: "0-50",
-      frequency: 2,
+      frequency: 0,
     },
     {
       score: "51-55",
@@ -359,7 +350,7 @@ const result = ref({
     },
     {
       score: "66-70",
-      frequency: 1,
+      frequency: 0,
     },
     {
       score: "71-75",
@@ -367,7 +358,7 @@ const result = ref({
     },
     {
       score: "76-80",
-      frequency: 1,
+      frequency: 0,
     },
     {
       score: "81-85",
@@ -379,7 +370,7 @@ const result = ref({
     },
     {
       score: "91-95",
-      frequency: 1,
+      frequency: 0,
     },
     {
       score: "96-100",
@@ -387,12 +378,12 @@ const result = ref({
     },
   ],
   statistics: {
-    min: 9,
-    max: 95,
-    mean: 41.166666666666664,
-    median: 30,
-    mode: 30,
-    sd: 24.46880099682496,
+    min: 0,
+    max: 0,
+    mean: 0,
+    median: 0,
+    mode: 0,
+    sd: 0,
   },
 });
 

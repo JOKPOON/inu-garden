@@ -16,7 +16,7 @@
               <h2
                 class="text-lg font-semibold w-full text-start text-green-600"
               >
-                Error!
+                Success!
               </h2>
               <div class="flex items-center justify-center flex-col">
                 {{ message }}
