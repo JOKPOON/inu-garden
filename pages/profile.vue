@@ -381,19 +381,7 @@
                   type="text"
                   placeholder="Enter degree"
                 />
-                <button
-                  @click="deleteDegree_en(index)"
-                  class="flex items-center justify-center rounded-xl p-2 border hover:bg-red-500 hover:text-white"
-                >
-                  <Delete class="w-6 h-6" />
-                </button>
               </div>
-              <button
-                @click="addDegree_en"
-                class="flex items-center justify-center rounded-xl p-2 border hover:bg-black-primary hover:text-white"
-              >
-                Add Degree
-              </button>
             </div>
           </div>
           <div class="flex flex-col gap-1 w-full mt-2">
@@ -421,20 +409,31 @@
                   placeholder="Enter degree"
                 />
                 <button
-                  @click="deleteDegree_th(index)"
+                  @click="
+                    () => {
+                      deleteDegree_en(index);
+                      deleteDegree_th(index);
+                    }
+                  "
                   class="flex items-center justify-center rounded-xl p-2 border hover:bg-red-500 hover:text-white"
                 >
                   <Delete class="w-6 h-6" />
                 </button>
               </div>
-              <button
-                @click="addDegree_th"
-                class="flex items-center justify-center rounded-xl p-2 border hover:bg-black-primary hover:text-white"
-              >
-                Add Degree
-              </button>
             </div>
           </div>
+          <button
+            v-if="editMode"
+            @click="
+              () => {
+                addDegree_en();
+                addDegree_th();
+              }
+            "
+            class="col-span-2 flex items-center justify-center rounded-xl p-2 border hover:bg-black-primary hover:text-white"
+          >
+            Add Degree
+          </button>
         </div>
       </div>
     </div>

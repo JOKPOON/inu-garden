@@ -1,15 +1,14 @@
 <template>
-  <div class="flex justify-center items-center flex-col h-full w-full">
-    <img
-      :src="BannerLogin"
-      alt="Banner Login"
-      class="h-[405px] object-cover rounded-2xl"
-    />
+  <div class="flex flex-col gap-4 p-4">
+    <div class="flex flex-col">
+      <div class="text-2xl font-semibold text-black-primary">Criteria</div>
+      <div class="text-sm text-grey-primary">Select Program</div>
+    </div>
+    <div class="flex flex-col p-6 rounded-xl"></div>
   </div>
 </template>
 
 <script setup>
-import BannerLogin from "@/components/images/BannerLogin.jpg";
 const { t } = useI18n();
 
 useHead({
