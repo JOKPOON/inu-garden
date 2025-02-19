@@ -66,6 +66,8 @@
         </div>
       </div>
       <CourseChart
+        :grade_frequencies="result.grade_frequencies"
+        :score_frequencies="result.score_frequencies"
         :activeButton="activeButton"
         @update:activeButton="setActiveButton"
       />
