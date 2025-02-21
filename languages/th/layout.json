@@ -1,11 +1,11 @@
 {
-    "courses": "รายวิชา",
-    "students": "นักศึกษา",
-    "lecturers": "อาจารย์",
-    "graduation":"ประสบการณ์การศึกษา",
-    "prediction":"ตัดสินใจ",
-    "evaluation":"การประเมิน",
-    "criteria":"เกณฑ์",
-    "profile":"โปรไฟล์",
-    "logout":"ออกจากระบบ"
+    "courses": "Courses",
+    "students": "Students",
+    "lecturers": "Lecturers",
+    "graduation":"Graduation",
+    "prediction":"Prediction",
+    "evaluation":"Evaluation",
+    "academic-structure":"Academic Structure",
+    "profile":"Profile",
+    "logout":"Logout"
 }

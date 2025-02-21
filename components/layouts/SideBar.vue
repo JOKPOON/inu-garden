@@ -156,19 +156,19 @@
               class="flex flex-row items-center gap-2 p-2 rounded-xl hover:translate-x-1 transition-transform"
               :class="{
                 'bg-black-primary text-white':
-                  route.path.startsWith('/criteria'),
-                'bg-grey-light text-black-primary': route.path !== '/criteria',
+                  route.path.startsWith('/academic-structure'),
+                'bg-grey-light text-black-primary': route.path !== '/academic-structure',
               }"
-              @click="handleClick('/criteria')"
+              @click="handleClick('/academic-structure')"
             >
               <Criteria
                 :class="{
-                  'text-white': route.path.startsWith('/criteria'),
-                  'text-black-primary': route.path !== '/criteria',
+                  'text-white': route.path.startsWith('/academic-structure'),
+                  'text-black-primary': route.path !== '/academic-structure',
                 }"
               />
               <div v-if="!smallNav" class="font-medium">
-                {{ t("layout.criteria") }}
+                {{ t("layout.academic-structure") }}
               </div>
             </button>
             <div class="h-[1px] bg-grey-secondary w-full"></div>
