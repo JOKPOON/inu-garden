@@ -345,6 +345,7 @@ onMounted(() => {
 
 .hide-scrollbar {
   scrollbar-width: thin;
+  overflow-y: auto;
 
   &::-webkit-scrollbar {
     width: 8px;
