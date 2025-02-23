@@ -11,12 +11,12 @@
           class="bg-white p-4 rounded-2xl shadow-xl border border-grey-tertiary"
         >
           <div class="flex flex-row h-full gap-4">
-            <div class="h-14 w-[6px] text-green-600 rounded-3xl"></div>
+            <div class="h-14 w-[6px] bg-green-600 rounded-3xl"></div>
             <div class="flex flex-col">
               <h2
                 class="text-lg font-semibold w-full text-start text-green-600"
               >
-                Error!
+                Success!
               </h2>
               <div class="flex items-center justify-center flex-col">
                 {{ message }}

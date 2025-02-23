@@ -70,200 +70,30 @@
     <div class="grid grid-cols-4 gap-6">
       <div
         v-if="selectedTopic"
-        class="col-span-3 rounded-xl bg-white border border-grey-secondary overflow-y-scroll set-scrollbar max-h-[calc(100vh-360px)]"
+        class="col-span-3 rounded-xl bg-white border border-grey-secondary overflow-y-scroll min-h-[calc(100vh-360px)] scrollbar-set"
       >
-        <table
-          v-if="selectedTopic"
-          class="min-w-full divide-y divide-grey-secondary"
+        <div
+          class="flex flex-col gap-4 justify-center items-center h-full w-full"
         >
-          <thead class="bg-gray-50">
-            <tr>
-              <th
-                scope="col"
-                class="px-6 py-3 text-center text-xs font-medium text-grey-primary uppercase tracking-wider"
-              >
-                Code
-              </th>
-              <th
-                scope="col"
-                class="px-6 py-3 text-center text-xs font-medium text-grey-primary uppercase tracking-wider"
-              >
-                Course Name
-              </th>
-              <th
-                scope="col"
-                class="px-6 py-3 text-center text-xs font-medium text-grey-primary uppercase tracking-wider"
-              >
-                CLO
-              </th>
-              <th
-                scope="col"
-                class="px-6 py-3 text-center text-xs font-medium text-grey-primary uppercase tracking-wider"
-              >
-                Assessment
-              </th>
-              <th
-                scope="col"
-                class="px-6 py-3 text-center text-xs font-medium text-grey-primary uppercase tracking-wider"
-              >
-                PLO
-              </th>
-              <th
-                scope="col"
-                class="px-6 py-3 text-center text-xs font-medium text-grey-primary uppercase tracking-wider"
-              >
-                PO
-              </th>
-              <th
-                scope="col"
-                class="px-6 py-3 text-center text-xs font-medium text-grey-primary uppercase tracking-wider"
-              >
-                SO
-              </th>
-            </tr>
-          </thead>
-          <thead class="bg-gray-50">
-            <tr>
-              <th
-                scope="col"
-                class="px-6 py-3 text-center text-xs font-medium text-grey-primary uppercase tracking-wider"
-              ></th>
-              <th
-                scope="col"
-                class="px-6 py-3 text-center text-xs font-medium text-grey-primary uppercase tracking-wider"
-              ></th>
-              <th
-                scope="col"
-                class="px-6 py-3 text-center text-xs font-medium text-grey-primary uppercase tracking-wider"
-              ></th>
-              <th
-                scope="col"
-                class="px-6 py-3 text-center text-xs font-medium text-grey-primary uppercase tracking-wider"
-              ></th>
-              <th
-                class="py-3 text-center text-xs font-medium text-grey-primary uppercase tracking-wider"
-              >
-                <div class="flex flex-row gap-4 items-center px-4">
-                  <div v-for="i in checkLongestPLO(filteredTopics[0])" :key="i">
-                    PLO{{ i }}
-                  </div>
-                </div>
-              </th>
-              <th
-                class="py-3 text-center text-xs font-medium text-grey-primary uppercase tracking-wider"
-              >
-                <div class="flex flex-row gap-4 items-center px-4">
-                  <div v-for="i in checkLongestPO(filteredTopics[0])" :key="i">
-                    PO{{ i }}
-                  </div>
-                </div>
-              </th>
-              <th
-                class="py-3 text-center text-xs font-medium text-grey-primary uppercase tracking-wider"
-              >
-                <div class="flex flex-row gap-4 items-center px-4">
-                  <div v-for="i in checkLongestSO(filteredTopics[0])" :key="i">
-                    SO{{ i }}
-                  </div>
-                </div>
-              </th>
-            </tr>
-          </thead>
-          <tbody class="bg-white divide-y divide-grey-secondary">
-            <tr v-for="topic in topics" :key="topic.name">
-              <td
-                class="px-6 py-4 whitespace-nowrap text-sm text-black-primary"
-              >
-                {{ topic.code }}
-              </td>
-              <td
-                class="px-6 py-4 whitespace-nowrap text-sm text-black-primary"
-              >
-                {{ topic.courseName }}
-              </td>
-              <td
-                class="px-6 py-4 whitespace-nowrap text-sm text-black-primary"
-              >
-                <div v-for="(clo, cloKey) in topic.clo" :key="cloKey">
-                  {{ clo.description }}
-                  <div
-                    v-for="(item, index) in clo.Include.length - 1"
-                    :key="index"
-                    class="flex flex-row gap-4 items-center px-4"
-                  >
-                    <div><br /></div>
-                  </div>
-                </div>
-              </td>
-              <td
-                class="px-6 py-4 whitespace-nowrap text-sm text-black-primary"
-              >
-                <div v-for="(clo, cloKey) in topic.clo" :key="cloKey">
-                  <div
-                    v-for="assessment in clo.Include"
-                    :key="assessment.name"
-                    class="flex flex-row gap-4 items-center px-4"
-                  >
-                    <div>{{ assessment.name }}</div>
-                  </div>
-                </div>
-              </td>
-              <td class="py-4 whitespace-nowrap text-sm text-black-primary">
-                <div v-for="(clo, cloKey) in topic.clo" :key="cloKey">
-                  <div
-                    v-for="assessment in clo.Include"
-                    :key="assessment.name"
-                    class="flex flex-row gap-4 items-center px-4"
-                  >
-                    <div
-                      v-for="plo in Object.keys(assessment.plo)"
-                      :key="plo"
-                      class="w-full text-center"
-                    >
-                      {{ assessment.plo[plo] }}
-                    </div>
-                  </div>
-                </div>
-              </td>
-              <td class="py-4 whitespace-nowrap text-sm text-black-primary">
-                <div v-for="(clo, cloKey) in topic.clo" :key="cloKey">
-                  <div
-                    v-for="assessment in clo.Include"
-                    :key="assessment.name"
-                    class="flex flex-row gap-4 items-center px-4"
-                  >
-                    <div
-                      v-for="po in Object.keys(assessment.po)"
-                      :key="po"
-                      class="w-full text-center"
-                    >
-                      {{ assessment.po[po] }}
-                    </div>
-                  </div>
-                </div>
-              </td>
-              <td class="py-4 whitespace-nowrap text-sm text-black-primary">
-                <div v-for="(clo, cloKey) in topic.clo" :key="cloKey">
-                  <div
-                    v-for="assessment in clo.Include"
-                    :key="assessment.name"
-                    class="flex flex-row gap-4 items-center px-4"
-                  >
-                    <div
-                      v-for="so in Object.keys(assessment.so)"
-                      :key="so"
-                      class="w-full text-center"
-                    >
-                      {{ assessment.so[so] }}
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+          <img
+            :src="Exel"
+            alt="Banner Login"
+            class="w-24 max-w-md object-cover rounded-2xl -ml-4 "
+          />
+          <div class="text-center text-black-primary text-sm">
+            {{ selectedTopic }}.xlsx 
+          </div>
+          <ImportButton
+            @click="downloadExel(selectedTopic)"
+            class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
+          >
+            <span class="text-black-primary font-semibold text-base"
+              >Download</span
+            >
+          </ImportButton>
+        </div>
       </div>
-      <div v-else class="col-span-3 flex items-center justify-center flex-col">
+      <div v-else class="col-span-3 flex items-center border-grey-secondary justify-center flex-col overflow-y-scroll min-h-[calc(100vh-360px)] scrollbar-set">
         <img
           :src="BannerLogin"
           alt="Banner Login"
@@ -314,39 +144,26 @@
             </option>
           </select>
         </div>
-        <div class="mt-4 flex flex-col">
-          <div class="text-base text-black- font-medium">Meaning</div>
-          <div class="text-base text-black-primary">
-            <span class="font-semibold">X</span> : Direct Assessment
-          </div>
-          <div class="text-base text-black-primary">
-            <span class="font-semibold">O</span> : Indirect Assessment
-          </div>
-          <div class="border-t mt-4">
-            <ExportButton
-              class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2 mt-4"
-            >
-              <span class="text-black-primary font-semibold text-base"
-                >Export</span
-              >
-            </ExportButton>
-          </div>
-        </div>
       </div>
     </div>
   </div>
+  <StatusPopup
+    v-if="statusVisible"
+    @close="statusVisible = false"
+    :status="status"
+    :message="message"
+    :path="path"
+  />
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { useI18n } from "vue-i18n";
-import ExportButton from "@/components/button/ExportButton.vue";
+import Exel from "@/components/images/Exel.png";
+import ImportButton from "@/components/button/ImportButton.vue";
 import BannerLogin from "@/components/images/BannerLogin.jpg";
+import StatusPopup from "@/components/popups/StatusPopup.vue";
 const { t } = useI18n();
-
-const handleSearch = () => {
-  console.log("Search query:", searchQuery.value);
-};
 
 useHead({
   title: "Inu - Evaluation",
@@ -364,6 +181,10 @@ const selectedProgramOption = ref("");
 const selectedTopic = ref("");
 const selectedStartAcademicYear = ref("");
 const selectedEndAcademicYear = ref("");
+const statusVisible = ref(false);
+const status = ref("");
+const message = ref("");
+const path = ref("");
 
 const departmentOptions = ref(["Department 1", "Department 2", "Department 3"]);
 const facultyOptions = ref(["faculty 1", "faculty 2", "faculty 3"]);
@@ -371,195 +192,52 @@ const programOptions = ref(["Program 1", "Program 2", "Program 3"]);
 const academicYearOptions = ref(["2021", "2022", "2023", "2024"]);
 
 const topics = ref([
-  {
-    name: "Topic 1",
-    code: "CS211",
-    courseName: "Data Structures",
-    description: "Introduction to Data Structures",
-    clo: {
-      CLO1: {
-        description: "CLO1 Example",
-        Include: [
-          {
-            name: "Assessment1",
-            plo: { PLO1: "O", PLO2: "X" },
-            po: { PO1: "X", PO2: "O" },
-            so: { SO1: "X", SO2: "O" },
-          },
-          {
-            name: "Assessment2",
-            plo: { PLO1: "O", PLO2: "X" },
-            po: { PO1: "X", PO2: "O" },
-            so: { SO1: "X", SO2: "O" },
-          },
-        ],
-      },
-      CLO2: {
-        description: "CLO2 Example",
-        Include: [
-          {
-            name: "Assessment1",
-            plo: { PLO1: "O", PLO2: "X" },
-            po: { PO1: "X", PO2: "O" },
-            so: { SO1: "X", SO2: "O" },
-          },
-          {
-            name: "Assessment2",
-            plo: { PLO1: "O", PLO2: "X" },
-            po: { PO1: "X", PO2: "O" },
-            so: { SO1: "X", SO2: "O" },
-          },
-        ],
-      },
-    },
-  },
-  {
-    name: "Topic 2",
-    code: "CS212",
-    courseName: "Algorithms",
-    description: "Introduction to Algorithms",
-    clo: {
-      CLO1: {
-        description: "CLO1 Example",
-        Include: [
-          {
-            name: "Assessment1",
-            plo: { PLO1: "O", PLO2: "X" },
-            po: { PO1: "X", PO2: "O" },
-            so: { SO1: "X", SO2: "O" },
-          },
-          {
-            name: "Assessment2",
-            plo: { PLO1: "O", PLO2: "X" },
-            po: { PO1: "X", PO2: "O" },
-            so: { SO1: "X", SO2: "O" },
-          },
-        ],
-      },
-      CLO2: {
-        description: "CLO2 Example",
-        Include: [
-          {
-            name: "Assessment1",
-            plo: { PLO1: "O", PLO2: "X" },
-            po: { PO1: "X", PO2: "O" },
-            so: { SO1: "X", SO2: "O" },
-          },
-          {
-            name: "Assessment2",
-            plo: { PLO1: "O", PLO2: "X" },
-            po: { PO1: "X", PO2: "O" },
-            so: { SO1: "X", SO2: "O" },
-          },
-        ],
-      },
-    },
-  },
-  {
-    name: "Topic 3",
-    code: "CS213",
-    courseName: "Operating Systems",
-    description: "Introduction to Operating Systems",
-    clo: {
-      CLO1: {
-        description: "CLO1 Example",
-        Include: [
-          {
-            name: "Assessment1",
-            plo: { PLO1: "O", PLO2: "X" },
-            po: { PO1: "X", PO2: "O" },
-            so: { SO1: "X", SO2: "O" },
-          },
-          {
-            name: "Assessment2",
-            plo: { PLO1: "O", PLO2: "X" },
-            po: { PO1: "X", PO2: "O" },
-            so: { SO1: "X", SO2: "O" },
-          },
-        ],
-      },
-      CLO2: {
-        description: "CLO2 Example",
-        Include: [
-          {
-            name: "Assessment1",
-            plo: { PLO1: "O", PLO2: "X" },
-            po: { PO1: "X", PO2: "O" },
-            so: { SO1: "X", SO2: "O" },
-          },
-          {
-            name: "Assessment2",
-            plo: { PLO1: "O", PLO2: "X" },
-            po: { PO1: "X", PO2: "O" },
-            so: { SO1: "X", SO2: "O" },
-          },
-        ],
-      },
-    },
-  },
+  { name: "Course CLO Assessment Table" },
+  { name: "Course Link Outcome Table" },
+  { name: "Course Outcome Success Rate" },
 ]);
 
-const checkLongestPLO = (topic) => {
-  if (!topic) return 0;
-  let longest = 0;
-  for (const cloKey in topic.clo) {
-    const clo = topic.clo[cloKey];
-    for (const assessment of clo.Include) {
-      const ploKeys = Object.keys(assessment.plo);
-      if (ploKeys.length > longest) {
-        longest = ploKeys.length;
-      }
-    }
-  }
-  return longest;
-};
+const downloadExel = (topic) => {
+  console.log("Downloading Exel for topic: ", topic);
 
-const checkLongestPO = (topic) => {
-  if (!topic) return 0;
-  let longest = 0;
-  for (const cloKey in topic.clo) {
-    const clo = topic.clo[cloKey];
-    for (const assessment of clo.Include) {
-      const poKeys = Object.keys(assessment.po);
-      if (poKeys.length > longest) {
-        longest = poKeys.length;
-      }
-    }
-  }
-  return longest;
-};
+  const fileName = topic.toLowerCase().replace(/ /g, '_') + '.xlsx';
+  const filePath = `/store/exel/${fileName}`;
 
-const checkLongestSO = (topic) => {
-  if (!topic) return 0;
-  let longest = 0;
-  for (const cloKey in topic.clo) {
-    const clo = topic.clo[cloKey];
-    for (const assessment of clo.Include) {
-      const soKeys = Object.keys(assessment.so);
-      if (soKeys.length > longest) {
-        longest = soKeys.length;
-      }
-    }
-  }
-  return longest;
-};
+  console.log(`Checking file at: ${filePath}`);
 
-const filteredTopics = computed(() => {
-  if (!selectedTopic.value) return [];
-  return topics.value.filter((topic) => topic.name === selectedTopic.value);
-});
+  fetch(filePath, { method: 'HEAD' })
+    .then(response => {
+      if (response.ok) {
+        console.log(`File found: ${filePath}`);
+        const link = document.createElement("a");
+        link.href = filePath;
+        link.download = `${topic}.xlsx`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        console.error(`File not found: ${filePath}`);
+        status.value = "error";
+        message.value = `File not found: ${filePath}`;
+        path.value = filePath;
+        statusVisible.value = true;
+      }
+    })
+    .catch(error => {
+      console.error(`Error fetching file: ${filePath}`, error);
+      status.value = "error";
+      message.value = `Error fetching file: ${filePath}`;
+      path.value = filePath;
+      statusVisible.value = true;
+    });
+};
 </script>
 
 <style lang="scss" scoped>
 .scrollbar-set {
-  scrollbar-width: none;
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}
-
-.set-scrollbar {
   scrollbar-width: thin;
+  overflow-y: auto;
+
   &::-webkit-scrollbar {
     width: 8px;
   }

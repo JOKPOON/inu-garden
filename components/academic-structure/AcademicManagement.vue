@@ -205,9 +205,8 @@
                       </div>
                       <div class="flex mt-4 w-full items-center justify-center">
                         <SmallEditButton
-                          v-if="!editMode"
-                          @click="toggleEditMode"
-                          class="flex items-center flex-row justify-center border font-[500] border-grey-secondary rounded-xl px-3 py-2 gap-2 hover:bg-black-primary hover:text-white"
+                          @click="manageOutcome"
+                          class="flex items-center flex-row justify-center border font-[500] border-grey-secondary rounded-xl px-4 py-3 gap-2 hover:bg-black-primary hover:text-white"
                         >
                           Manage Outcome
                         </SmallEditButton>
@@ -229,6 +228,9 @@ import { ref, computed, watch } from "vue";
 import SmallAddButton from "@/components/button/SmallAddButton.vue";
 import SmallEditButton from "@/components/button/SmallEditButton.vue";
 import Edit from "@/components/icons/Edit.vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const AcadamicManagement = ref({
   faculty: [
@@ -246,24 +248,30 @@ const AcadamicManagement = ref({
               type: "Regular (2555)",
               type_th: "ปกติ (2555)",
               details: {
-                description: "Bachelor of Engineering in Computer Engineering",
-                description_th: "วิศวกรรมศาสตร์ วิศวกรรมคอมพิวเตอร์",
+                description:
+                  "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
+                description_th:
+                  "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้ ",
               },
             },
             {
               type: "Regular (2556)",
               type_th: "ปกติ (2556)",
               details: {
-                description: "Bachelor of Engineering in Computer Engineering",
-                description_th: "วิศวกรรมศาสตร์ วิศวกรรมคอมพิวเตอร์",
+                description:
+                  "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
+                description_th:
+                  "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้ ",
               },
             },
             {
               type: "Regular (2557)",
               type_th: "ปกติ (2557)",
               details: {
-                description: "Bachelor of Engineering in Computer Engineering",
-                description_th: "วิศวกรรมศาสตร์ วิศวกรรมคอมพิวเตอร์",
+                description:
+                  "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
+                description_th:
+                  "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้ ",
               },
             },
           ],
@@ -276,8 +284,10 @@ const AcadamicManagement = ref({
               type: "Regular (2555)",
               type_th: "ปกติ (2555)",
               details: {
-                description: "Bachelor of Engineering in Software Engineering",
-                description_th: "วิศวกรรมศาสตร์ วิศวกรรมซอฟต์แวร์",
+                description:
+                  "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
+                description_th:
+                  "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้ ",
               },
             },
           ],
@@ -298,8 +308,10 @@ const AcadamicManagement = ref({
               type: "Regular (2555)",
               type_th: "ปกติ (2555)",
               details: {
-                description: "Bachelor of Science in Computer Science",
-                description_th: "วิทยาศาสตร์ วิทยาการคอมพิวเตอร์",
+                description:
+                  "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
+                description_th:
+                  "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้ ",
               },
             },
           ],
@@ -384,6 +396,12 @@ watch(
   },
   { deep: true }
 );
+
+const path = "7casdas547ads45s56a45d6s4ad";
+
+const manageOutcome = () => {
+  router.push(`/academic-structure/mange-outcome/${path}`);
+};
 </script>
 
 <style lang="scss" scoped>
