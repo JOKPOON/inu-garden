@@ -151,7 +151,7 @@ const setActiveButton = (button) => {
   activeButton.value = button;
 };
 
-const course_id = ref("01JKNGF1F05NF2TH1JX3BJKAQZ");
+const course_id = ref("01JMFFMN8TVPXRV6FN32WZYY1P");
 const course = ref({
   id: "01JKNGF1F05NF2TH1JX3BJKAQZ",
   name: "Introduction to Programming",

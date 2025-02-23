@@ -253,7 +253,7 @@
                   <div
                     class="col-span-2 text-sm text-black-primary text-start flex items-center"
                   >
-                    {{ score.first_name }} {{ score.last_name }}
+                    {{ score.first_name_en }} {{ score.last_name_en }}
                   </div>
                   <div
                     class="col-span-1 text-sm text-black-primary flex items-center justify-center"
@@ -613,6 +613,11 @@ onMounted(() => {
   getStudents(searchQuery.value);
 
   const active = getActiveAssessment();
+  const assessment_chart_data = active.scores.reduce((acc, score) => {
+    const range = Math.floor(score / 5) * 5;
+    acc[range] = acc[range] ? acc[range] + 1 : 1;
+    return acc;
+  }, {});
   chartData.value = {
     labels: [
       "0-5",
@@ -641,7 +646,7 @@ onMounted(() => {
         label: "Scores",
         backgroundColor: "#FEC232",
         borderRadius: 5,
-        data: active.scores,
+        data: assessment_chart_data || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       },
     ],
   };
@@ -799,7 +804,7 @@ const unlinkCLO = async (assignment_id, clo_id) => {
   }
 };
 
-const course_id = ref("01JKNGF1F05NF2TH1JX3BJKAQZ");
+const course_id = ref("01JMFFMN8TVPXRV6FN32WZYY1P");
 const fetchAssignments = async (course_id) => {
   try {
     const response = await fetch(
@@ -904,8 +909,72 @@ onMounted(() => {
   fetchAssignments(course_id.value);
 });
 
-watch(activeAssessment, (newVal) => {
-  fetchScore(newVal);
+watch(activeAssessment, async (newVal) => {
+  await fetchScore(newVal);
+});
+//scores frequency data
+
+watch(scores, async (newVal) => {
+  let score_freq = {
+    0: 0,
+    5: 0,
+    10: 0,
+    15: 0,
+    20: 0,
+    25: 0,
+    30: 0,
+    35: 0,
+    40: 0,
+    45: 0,
+    50: 0,
+    55: 0,
+    60: 0,
+    65: 0,
+    70: 0,
+    75: 0,
+    80: 0,
+    85: 0,
+    90: 0,
+    95: 0,
+  };
+  newVal.forEach((score) => {
+    if (score.score >= 0 && score.score <= 100) {
+      score_freq[Math.floor(score.score / 5) * 5] += 1;
+    }
+  });
+  chartData.value = {
+    labels: [
+      "0-5",
+      "5-10",
+      "10-15",
+      "15-20",
+      "20-25",
+      "25-30",
+      "30-35",
+      "35-40",
+      "40-45",
+      "45-50",
+      "50-55",
+      "55-60",
+      "60-65",
+      "65-70",
+      "70-75",
+      "75-80",
+      "80-85",
+      "85-90",
+      "90-95",
+      "95-100",
+    ],
+    datasets: [
+      {
+        label: "Scores",
+        backgroundColor: "#FEC232",
+        borderRadius: 5,
+        //scores frequency data
+        data: Object.values(score_freq),
+      },
+    ],
+  };
 });
 </script>
 
