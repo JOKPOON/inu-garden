@@ -1,11 +1,4 @@
 {
-  "courses": "Courses",
-  "students": "Students",
-  "lecturers": "Lecturers",
-  "graduation":"Graduation",
-  "prediction":"Prediction",
-  "evaluation":"Evaluation",
-  "academic-structure":"academic-structure",
-  "profile":"Profile",
-  "logout":"Logout"
+  "title": "Inu",
+  "desc":"Inu is a student feedback platform that allows students to give feedback about their learning experience in university."
 }
