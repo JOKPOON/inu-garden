@@ -28,11 +28,9 @@
 import { ref } from "vue";
 import AcademicManagement from "@/components/academic-structure/AcademicManagement.vue";
 import Semester from "@/components/academic-structure/Semester.vue";
-import { useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
-const router = useRouter();
 
 useHead({
   title: "Inu - Criteria",
