@@ -267,6 +267,7 @@ const filteredCourses = computed(() => {
 <style lang="scss" scoped>
 .scrollbar-set {
   scrollbar-width: thin;
+  overflow-y: auto;
 
   &::-webkit-scrollbar {
     width: 8px;
