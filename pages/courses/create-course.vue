@@ -158,28 +158,29 @@
             </select>
           </div>
         </div>
-        <div class=" grid grid-cols-3 gap-4">
-        <div class="w-full flex flex-col gap-2">
-          <div class="text-base text-black-primary font-semibold">Credit</div>
-          <input
-            v-model="courseCredit"
-            class="w-full border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
-            type="text"
-            placeholder="Credit"
-          />
-        </div>
-        <div class="w-full flex flex-col gap-2 col-span-2">
-          <div class="text-base text-black-primary font-semibold">
-            Expected Passing CLO %
+        <div class="grid grid-cols-3 gap-4">
+          <div class="w-full flex flex-col gap-2">
+            <div class="text-base text-black-primary font-semibold">Credit</div>
+            <input
+              v-model="courseCredit"
+              class="w-full border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
+              type="text"
+              placeholder="Credit"
+            />
           </div>
-          <input
-            v-model="courseExpectedPassingCLOPercentage"
-            class="w-full border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
-            type="text"
-            placeholder="ExpectedPassingCLO"
-          />
+          <div class="w-full flex flex-col gap-2 col-span-2">
+            <div class="text-base text-black-primary font-semibold">
+              Expected Passing CLO %
+            </div>
+            <input
+              v-model="courseExpectedPassingCLOPercentage"
+              class="w-full border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
+              type="text"
+              placeholder="ExpectedPassingCLO"
+            />
+          </div>
         </div>
-      </div>  </div>
+      </div>
       <div class="w-full flex flex-col gap-2 mt-4">
         <div class="text-base text-black-primary font-semibold">
           Course Instruction & Description

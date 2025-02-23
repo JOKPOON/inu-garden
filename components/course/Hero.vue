@@ -67,7 +67,7 @@
       class="bg-white border border-grey-tertiary shadow-sm rounded-xl p-6"
     >
       <div class="flex flex-row justify-between gap-6 items-center">
-        <button @click="overviewCourse(course.code)">
+        <button @click="overviewCourse(course.id)">
           <p class="text-base text-start font-semibold text-grey-600">
             {{ course.code }}
           </p>
@@ -76,13 +76,13 @@
         <div>
           <div class="flex flex-row gap-2">
             <button
-              @click="overviewCourse(course.code)"
+              @click="overviewCourse(course.id)"
               class="flex items-center flex-row justify-center border border-grey-secondary hover:bg-black-primary text-black-primary hover:text-white rounded-xl px-4 py-3 gap-2"
             >
               <span class="font-semibold text-base">Overview</span>
             </button>
             <button
-              @click="editCourse(course.code)"
+              @click="editCourse(course.id)"
               class="flex items-center justify-center relative z-50 bg-white rounded-xl p-3 border border-grey-secondary hover:bg-black-primary text-black-primary hover:text-white"
             >
               <Edit class="w-6 h-6" />
