@@ -99,7 +99,8 @@
             <div
               class="col-span-2 text-sm text-black-primary flex items-center justify-center"
             >
-              {{ student.first_name }} {{ student.last_name }}
+              {{ student.first_name_th }} {{ student.last_name_th }} /
+              {{ student.first_name_en }} {{ student.last_name_en }}
             </div>
             <div
               class="col-span-1 text-sm text-black-primary flex items-center justify-center"
@@ -208,7 +209,7 @@ const currentPage = ref(1);
 const totalPages = ref(1);
 
 //TODO: Get course id
-const course_id = ref("01JKNGF1F05NF2TH1JX3BJKAQZ");
+const course_id = ref("01JMFFMN8TVPXRV6FN32WZYY1P");
 
 const nextPage = () => {
   if (currentPage.value < totalPages.value) {

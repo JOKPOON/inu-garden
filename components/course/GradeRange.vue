@@ -18,7 +18,7 @@
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-grey-tertiary">
-        <tr v-for="grade in gradeData" :key="grade.name">
+        <tr v-for="grade in props.grade_frequencies" :key="grade.name">
           <td
             class="px-6 py-4 whitespace-nowrap text-base text-gray-primary text-center border border-grey-tertiary"
           >
@@ -36,48 +36,12 @@
 </template>
 
 <script setup>
-const gradeData = [
-  {
-    name: "A",
-    grade_score: 90,
-    frequency: 1,
+const props = defineProps({
+  grade_frequencies: {
+    type: Array,
+    required: true,
   },
-  {
-    name: "BP",
-    grade_score: 85,
-    frequency: 0,
-  },
-  {
-    name: "B",
-    grade_score: 80,
-    frequency: 1,
-  },
-  {
-    name: "CP",
-    grade_score: 75,
-    frequency: 0,
-  },
-  {
-    name: "C",
-    grade_score: 70,
-    frequency: 1,
-  },
-  {
-    name: "DP",
-    grade_score: 65,
-    frequency: 0,
-  },
-  {
-    name: "D",
-    grade_score: 60,
-    frequency: 0,
-  },
-  {
-    name: "F",
-    grade_score: 0,
-    frequency: 2,
-  },
-];
+});
 </script>
 
 <style lang="scss" scoped></style>

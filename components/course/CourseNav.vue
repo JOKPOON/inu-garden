@@ -30,7 +30,7 @@ const buttons = [
   "Learning Outcome",
   "Assessments",
   "Feedback",
-  "Survey"
+  "Survey",
 ];
 
 const buttonRoutes = {
@@ -39,15 +39,15 @@ const buttonRoutes = {
   "Learning Outcome": "learning-outcome",
   Assessments: "assessments",
   Feedback: "feedback",
-  Survey: "survey"
+  Survey: "survey",
 };
 
 const activeButton = ref(props.currentRouteName);
 const router = useRouter();
-const code = router.currentRoute.value.params.code;
+const id = router.currentRoute.value.params.id;
 
 const setActionButton = (button) => {
-  const routePath = `/courses/${buttonRoutes[button]}/${code}`;
+  const routePath = `/courses/${buttonRoutes[button]}/${id}`;
   router.push(routePath);
   activeButton.value = button;
 };
