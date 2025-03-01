@@ -138,7 +138,8 @@
               :class="{
                 'bg-black-primary text-white':
                   route.path.startsWith('/evaluation'),
-                'bg-grey-light text-black-primary': route.path !== '/evaluation',
+                'bg-grey-light text-black-primary':
+                  route.path !== '/evaluation',
               }"
               @click="handleClick('/evaluation')"
             >
@@ -155,9 +156,11 @@
             <button
               class="flex flex-row items-center gap-2 p-2 rounded-xl hover:translate-x-1 transition-transform"
               :class="{
-                'bg-black-primary text-white':
-                  route.path.startsWith('/academic-structure'),
-                'bg-grey-light text-black-primary': route.path !== '/academic-structure',
+                'bg-black-primary text-white': route.path.startsWith(
+                  '/academic-structure'
+                ),
+                'bg-grey-light text-black-primary':
+                  route.path !== '/academic-structure',
               }"
               @click="handleClick('/academic-structure')"
             >

@@ -209,7 +209,9 @@ const currentPage = ref(1);
 const totalPages = ref(1);
 
 //TODO: Get course id
-const course_id = ref("01JMFFMN8TVPXRV6FN32WZYY1P");
+import { useRouter } from "vue-router";
+const router = useRouter();
+const course_id = ref(router.currentRoute.value.params.id);
 
 const nextPage = () => {
   if (currentPage.value < totalPages.value) {
