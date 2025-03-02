@@ -46,6 +46,12 @@
   <div v-else-if="activeButton === 'Student Results'">
     <StudentResult />
   </div>
+  <AddStudent
+    v-if="showAddStudentPopup"
+    :id="id"
+    :course="course"
+    @close="showAddStudentPopup = false"
+  />
 </template>
 
 <script setup>
@@ -53,6 +59,10 @@ import { ref } from "vue";
 import AddUserButton from "@/components/button/AddUserButton.vue";
 import StudentEnrollments from "@/components/course/StudentEnrollments.vue";
 import StudentResult from "@/components/course/StudentResult.vue";
+import AddStudent from "@/components/popups/AddStudent.vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const { t } = useI18n();
 
@@ -71,6 +81,15 @@ const activeButton = ref("Student Enrollments");
 const setActionButton = (button) => {
   activeButton.value = button;
 };
+
+
+const showAddStudentPopup = ref(false);
+const id = ref("");
+
+const onClickAddUser = () => {
+  id.value = router.currentRoute.value.params.id;
+  showAddStudentPopup.value = true;
+}
 </script>
 
 <style lang="scss" scoped>

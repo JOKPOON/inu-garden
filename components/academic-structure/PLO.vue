@@ -38,7 +38,7 @@
     </div>
 
     <div
-      class="flex h-[calc(100vh-295px)] border border-grey-secondary rounded-xl"
+      class="flex h-[calc(100vh-300px)] border border-grey-secondary rounded-xl"
     >
       <div class="grid grid-cols-9 w-full h-full text-sm">
         <div class="col-span-1 h-full border-r">
