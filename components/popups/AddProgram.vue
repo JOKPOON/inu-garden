@@ -7,40 +7,54 @@
         class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center border border-grey-secondary"
       >
         <div class="flex flex-col w-[28rem]">
-          <div class="text-2xl font-semibold text-black-primary">
-            Add Sub PLO
+          <div
+            class="text-2xl font-semibold text-black-primary w-full text-start"
+          >
+            Add Faculty
           </div>
           <div class="text-sm text-grey-primary mt-1">
-            Add Sub PLO of
-            <span class="font-semibold text-black-primary">{{ plo }}</span> <br /> of
-            <span class="font-semibold text-black-primary">{{ name }}</span>
+            Add Program for
+            <span class="font-semibold text-black-primary">{{ faculty }}</span>
           </div>
         </div>
         <div class="mt-4 text-center flex gap-4 flex-col text-sm">
           <input
-            v-model="newSubPLO.name"
+            v-model="program.name_th"
             type="text"
-            placeholder="Sub PLO Name"
+            placeholder="Program Name (TH)"
+            class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
+          />
+
+          <input
+            v-model="program.name"
+            type="text"
+            placeholder="Program Name"
             class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
           />
           <textarea
-            v-model="newSubPLO.desc"
+            v-model="program.desc_th"
             rows="3"
-            placeholder="Sub PLO Description"
+            placeholder="Program Description (TH)"
             class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
           ></textarea>
           <textarea
-            v-model="newSubPLO.desc_th"
+            v-model="program.desc"
             rows="3"
-            placeholder="Sub PLO Description (TH)"
-            class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl mb-4 outline-none"
+            placeholder="Program Description"
+            class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
           ></textarea>
+          <input
+            v-model="program.year"
+            type="text"
+            placeholder="Year"
+            class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
+          />
         </div>
         <div
-          class="flex flex-row items-center justify-center gap-4 w-full mt-4"
+          class="flex flex-row items-center justify-center gap-2 w-full mt-4 border border-grey-secondary rounded-xl"
         >
           <button
-            @click="addSubPLO"
+            @click="addProgram"
             class="py-2 font-medium border border-grey-secondary text-black-primary rounded-xl w-full bg-yellow-primary hover:bg-black-primary hover:text-white"
           >
             Add
@@ -61,36 +75,24 @@
 import { ref } from "vue";
 import { defineProps, defineEmits } from "vue";
 
-const props = defineProps({
-  id: {
-    type: String,
-    required: true,
-  },
-  plo: {
-    type: String,
-    required: true,
-  },
-  name: {
-    type: String,
-    required: true,
-  },
-});
+const emit = defineEmits(["close"]);
 
-const emit = defineEmits(["close", "add"]);
-
-const newSubPLO = ref({
+const program = ref({
+  name_th: "",
   name: "",
-  desc: "",
   desc_th: "",
+  desc: "",
+  year: "",
 });
 
-const addSubPLO = () => {
-  emit("add", newPLO.value);
-  newPLO.value = {
-    name: "",
-    desc: "",
-    desc_th: "",
-  };
+const props = defineProps({
+  faculty: {
+    type: String,
+    required: true,
+  },
+});
+
+const addProgram = () => {
   emit("close");
 };
 </script>
