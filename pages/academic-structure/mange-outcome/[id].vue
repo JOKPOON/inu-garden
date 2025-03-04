@@ -17,9 +17,6 @@
     </div>
   </div>
   <div v-if="activeButton === 'PLO'">
-    <CLO />
-  </div>
-  <div v-if="activeButton === 'PLO'">
     <PLO />
   </div>
   <div v-else-if="activeButton === 'PO'">
@@ -32,11 +29,9 @@
 
 <script setup>
 import { ref } from "vue";
-import CLO from "@/components/course/student/CLO.vue";
-import PLO from "@/components/course/student/PLO.vue";
-import PO from "@/components/course/student/PO.vue";
-import SO from "@/components/course/student/SO.vue";
-
+import PLO from "@/components/academic-structure/PLO.vue";
+import PO from "@/components/academic-structure/PO.vue";
+import SO from "@/components/academic-structure/SO.vue";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -50,8 +45,8 @@ definePageMeta({
   layout: "landing",
 });
 
-const buttons = ["CLO", "PLO", "PO", "SO"];
-const activeButton = ref("CLO");
+const buttons = ["PLO", "PO", "SO"];
+const activeButton = ref("PLO");
 
 const setActionButton = (button) => {
   activeButton.value = button;
