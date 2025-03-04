@@ -82,14 +82,13 @@ const setActionButton = (button) => {
   activeButton.value = button;
 };
 
-
 const showAddStudentPopup = ref(false);
-const id = ref("");
+const id = ref(router.currentRoute.value.params.id);
 
 const onClickAddUser = () => {
   id.value = router.currentRoute.value.params.id;
   showAddStudentPopup.value = true;
-}
+};
 </script>
 
 <style lang="scss" scoped>
