@@ -445,7 +445,8 @@
                 Add Degree
               </button>
             </div>
-          </div>    <div class="flex flex-col gap-1 w-full mt-2">
+          </div>
+          <div class="flex flex-col gap-1 w-full mt-2">
             <div class="col-span-1 text-grey-primary text-sm">Degree - ไทย</div>
             <div
               v-if="!editMode"
@@ -544,11 +545,11 @@
             <div class="flex gap-4 flex-col">
               <div
                 v-for="course in courses"
-                :key="course.semester_id"
+                :key="course.id"
                 class="bg-white border border-grey-tertiary shadow-sm rounded-xl p-6"
               >
                 <div class="flex flex-row justify-between gap-6 items-center">
-                  <button @click="overviewCourse(course.code)">
+                  <button @click="overviewCourse(course.id)">
                     <p class="text-base text-start font-semibold text-grey-600">
                       {{ course.code }}
                     </p>
@@ -559,7 +560,7 @@
                   <div>
                     <div class="flex flex-row gap-2">
                       <button
-                        @click="overviewCourse(course.code)"
+                        @click="overviewCourse(course.id)"
                         class="flex items-center flex-row justify-center border border-grey-secondary hover:bg-black-primary text-black-primary hover:text-white rounded-xl px-4 py-3 gap-2"
                       >
                         <span class="font-semibold text-base">Overview</span>
@@ -568,16 +569,18 @@
                   </div>
                 </div>
                 <p class="text-sm text-orange-primary text-start">
-                  {{ course.curriculum }}
+                  {{ course.program.name_en }}
                 </p>
                 <p class="text-sm text-grey-primary text-start">
-                  credits : {{ course.credits }}
+                  credits : {{ course.credit }}
                 </p>
                 <div class="flex flex-row gap-2 mt-4">
                   <Lecturer class="w-6 h-6" />
-                  <p class="text-sm text-grey-primary">
-                    {{ course.user.first_name }}
-                  </p>
+                  <div v-for="lecturer in course.lecturers" :key="lecturer.id">
+                    <p class="text-sm text-grey-primary">
+                      {{ lecturer.name_en }}
+                    </p>
+                  </div>
                 </div>
                 <div class="grid grid-cols-2 gap-4 items-center mt-1">
                   <div class="flex flex-row gap-2">
@@ -707,7 +710,36 @@ const user = ref({
   degree_th: [""],
 });
 
-onMounted(() => {
+const courses = ref([
+  {
+    id: "01JKNGF1F05NF2TH1JX3BJKAQZ",
+    code: "CS112",
+    name: "Introduction to Programming 123",
+    program: {
+      id: "01JKK501SMEE3K9NYKBVAKHER6",
+      name_th: "หลักสูตรปกติ",
+      name_en: "Regular Program",
+    },
+    lecturers: [
+      {
+        id: "01JKNG75Z05JKPVZA9C33Y1JNV",
+        name_th: "รศ.สมชาย ทองดี",
+        name_en: "Assoc. Prof.Somchai Thongdee",
+      },
+      {
+        id: "01JKNG760KWMREGH31G9ME65XV",
+        name_th: "ผศ.กานดา วิชัย",
+        name_en: "Asst. Prof.Kanda Wichai",
+      },
+    ],
+    description: "This course introduces the fundamentals of programming.",
+    credit: 3,
+    academic_year: "2024",
+    graduate_year: "2028",
+  },
+]);
+
+const getUser = () => {
   fetch(base_url + "users/" + props.userId, {
     credentials: "include",
     method: "GET",
@@ -723,6 +755,26 @@ onMounted(() => {
       user.value.degree_th = json.data.degree_th.split(",");
       console.log(user.value);
     });
+};
+
+const getCourse = () => {
+  fetch(base_url + "users/" + props.userId + "/course", {
+    credentials: "include",
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .then((json) => {
+      courses.value = json.data.courses;
+      console.log(courses.value);
+    });
+};
+
+onMounted(() => {
+  getUser();
+  getCourse();
 });
 
 // onActivated(() => {
@@ -918,120 +970,6 @@ const handleCancelDelete = () => {
   deleteUser.value = "";
   checkDelete.value = false;
 };
-
-const courses = ref([
-  {
-    id: "CPE123",
-    name: "Computer Engineering",
-    code: "CPE123",
-    curriculum: "Computer Science",
-    description: "This course introduces the fundamentals of programming.",
-    expected_passing_clo_percentage: 85,
-    is_portfolio_completed: false,
-    portfolio_data: {},
-    academic_year: 2024,
-    graduate_year: 2028,
-    credits: 3,
-    program_year: 1,
-    semester_id: "01JD1P61GEB6SE52AW5KZ2ZXW9",
-    user_id: "01",
-    criteria_grade_a: 90,
-    criteria_grade_bp: 85,
-    criteria_grade_b: 80,
-    criteria_grade_cp: 75,
-    criteria_grade_c: 70,
-    criteria_grade_dp: 65,
-    criteria_grade_d: 60,
-    criteria_grade_f: 50,
-    semester: {
-      id: "01JD1P61GEB6SE52AW5KZ2ZXW9",
-      year: 2024,
-      semester_sequence: "1",
-    },
-    user: {
-      id: "01K",
-      email: "lecturer_1@inu.com",
-      password: "$2a$10",
-      first_name: "lecturer",
-      last_name: "1",
-      role: "LECTURER",
-    },
-  },
-  {
-    id: "CPE202",
-    name: "Introduction to Programming",
-    code: "CPE202",
-    curriculum: "Computer Science",
-    description: "This course introduces the fundamentals of programming.",
-    expected_passing_clo_percentage: 85,
-    is_portfolio_completed: false,
-    portfolio_data: {},
-    academic_year: 2024,
-    graduate_year: 2028,
-    credits: 3,
-    program_year: 1,
-    semester_id: "01JD1P61GEB6SE52AW5KZ2ZXW9",
-    user_id: "01",
-    criteria_grade_a: 90,
-    criteria_grade_bp: 85,
-    criteria_grade_b: 80,
-    criteria_grade_cp: 75,
-    criteria_grade_c: 70,
-    criteria_grade_dp: 65,
-    criteria_grade_d: 60,
-    criteria_grade_f: 50,
-    semester: {
-      id: "01JD1P61GEB6SE52AW5KZ2ZXW9",
-      year: 2024,
-      semester_sequence: "1",
-    },
-    user: {
-      id: "01",
-      email: "lecturer_1@inu.com",
-      password: "$2",
-      first_name: "lecturer",
-      last_name: "1",
-      role: "LECTURER",
-    },
-  },
-  {
-    id: "LNG101",
-    name: "Oral Communication in English",
-    code: "LNG101",
-    curriculum: "Computer Science",
-    description: "This course introduces the fundamentals of programming.",
-    expected_passing_clo_percentage: 85,
-    is_portfolio_completed: false,
-    portfolio_data: {},
-    academic_year: 2024,
-    graduate_year: 2028,
-    credits: 3,
-    program_year: 1,
-    semester_id: "01JD1P61GEB6SE52AW5KZ2ZXW9",
-    user_id: "01",
-    criteria_grade_a: 90,
-    criteria_grade_bp: 85,
-    criteria_grade_b: 80,
-    criteria_grade_cp: 75,
-    criteria_grade_c: 70,
-    criteria_grade_dp: 65,
-    criteria_grade_d: 60,
-    criteria_grade_f: 50,
-    semester: {
-      id: "01JD1P61GEB6SE52AW5KZ2ZXW9",
-      year: 2024,
-      semester_sequence: "1",
-    },
-    user: {
-      id: "01",
-      email: "lecturer_1@inu.com",
-      password: "$2",
-      first_name: "lecturer",
-      last_name: "1",
-      role: "LECTURER",
-    },
-  },
-]);
 </script>
 
 <style lang="scss" scoped>

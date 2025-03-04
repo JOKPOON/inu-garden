@@ -152,10 +152,7 @@
           </div>
         </div>
       </div>
-      <div
-        v-else
-        class="flex items-center justify-center flex-col pt-4"
-      >
+      <div v-else class="flex items-center justify-center flex-col pt-4">
         <img
           :src="BannerLogin"
           alt="Banner Login"
@@ -288,7 +285,6 @@ const exportUser = () => {
   const worksheet = XLSX.utils.aoa_to_sheet(data);
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, worksheet, "Lecturers");
-
   XLSX.writeFile(workbook, "lecturer.xlsx");
 };
 
