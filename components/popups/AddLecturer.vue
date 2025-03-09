@@ -302,7 +302,6 @@ import { ref, defineEmits } from "vue";
 import { useRouter } from "vue-router";
 import Delete from "@/components/icons/Delete.vue";
 import * as XLSX from "xlsx";
-import base_url from "@/config/api";
 
 const emit = defineEmits(["close"]);
 const router = useRouter();
@@ -396,7 +395,7 @@ const userJSON = (user) => {
 
 const addLecturer = () => {
   console.log(userJSON(user));
-  fetch(base_url + "users", {
+  fetch(BaseURL + "users", {
     credentials: "include",
     method: "POST",
     headers: {

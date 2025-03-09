@@ -666,7 +666,7 @@ import Lecturer from "@/components/icons/Lecturer.vue";
 import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
 import Search from "@/components/icons/Search.vue";
-import base_url from "@/config/api";
+import BaseURL from "@/config/api";
 const emit = defineEmits(["close"]);
 
 const invalidPicture = ref(false);
@@ -739,42 +739,9 @@ const courses = ref([
   },
 ]);
 
-const getUser = () => {
-  fetch(base_url + "users/" + props.userId, {
-    credentials: "include",
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((response) => response.json())
-    .then((json) => {
-      user.value = json.data;
-      user.value.role = json.data.role.split(",");
-      user.value.degree_en = json.data.degree_en.split(",");
-      user.value.degree_th = json.data.degree_th.split(",");
-      console.log(user.value);
-    });
-};
-
-const getCourse = () => {
-  fetch(base_url + "users/" + props.userId + "/course", {
-    credentials: "include",
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((response) => response.json())
-    .then((json) => {
-      courses.value = json.data.courses;
-      console.log(courses.value);
-    });
-};
-
 onMounted(() => {
-  getUser();
-  getCourse();
+  fetchInstructor(user, props.userId);
+  fetchInstructorCourses(courses, props.userId);
 });
 
 // onActivated(() => {
@@ -831,6 +798,7 @@ function getYearsOptions() {
 }
 
 import { useRouter } from "vue-router";
+import { fetchInstructor, fetchInstructorCourses } from "@/api/api";
 const router = useRouter();
 
 const overviewCourse = (code) => {
@@ -914,7 +882,7 @@ const handleSaveEdit = () => {
     (degree_th) => degree_th !== ""
   );
 
-  fetch(base_url + "users/" + props.userId, {
+  fetch(BaseURL + "users/" + props.userId, {
     credentials: "include",
     method: "PATCH",
     headers: {
@@ -944,7 +912,7 @@ const handleConfirmDelete = () => {
   if (deleteUser.value === `delete/${user.value.first_name_en}`) {
     console.log("Confirm Delete");
 
-    fetch(base_url + "users/" + props.userId, {
+    fetch(BaseURL + "users/" + props.userId, {
       credentials: "include",
       method: "DELETE",
       headers: {

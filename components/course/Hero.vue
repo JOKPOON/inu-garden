@@ -149,7 +149,8 @@ import Course from "@/components/icons/Course.vue";
 import Lecturer from "@/components/icons/Lecturer.vue";
 import BannerLogin from "@/components/images/BannerLogin.jpg";
 import { useRouter } from "vue-router";
-import base_url from "@/config/api";
+import { onMounted, watch } from "vue";
+import { fetchCourses, fetchPrograms, fetchSerms } from "@/api/api";
 
 const router = useRouter();
 
@@ -174,63 +175,9 @@ const courses = ref([]);
 const programs = ref([]);
 const serms = ref([]);
 
-const fetchCourses = async (query, serm, program) => {
-  try {
-    const response = await fetch(
-      `${base_url}courses?query=${query}&serm=${serm}&program=${program}`,
-      {
-        credentials: "include",
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    if (!response.ok) throw new Error("Failed to fetch courses");
-    const res = await response.json();
-    courses.value = res.data.courses;
-  } catch (error) {
-    courses.value = [];
-    console.error("Error fetching courses:", error);
-  }
-};
-
-const fetchPrograms = async () => {
-  try {
-    const response = await fetch(`${base_url}programmes`, {
-      credentials: "include",
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!response.ok) throw new Error("Failed to fetch programs");
-    const res = await response.json();
-    programs.value = res.data;
-  } catch (error) {
-    console.error("Error fetching programs:", error);
-  }
-};
-
-const fetchSerms = async () => {
-  try {
-    const response = await fetch(`${base_url}semesters`, {
-      credentials: "include",
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!response.ok) throw new Error("Failed to fetch semesters");
-    const res = await response.json();
-    serms.value = res.data;
-  } catch (error) {
-    console.error("Error fetching semesters:", error);
-  }
-};
-
 watch([selectedProgramOption, selectedSermOption], () => {
   fetchCourses(
+    courses,
     searchQuery.value,
     selectedSermOption.value,
     selectedProgramOption.value
@@ -239,17 +186,19 @@ watch([selectedProgramOption, selectedSermOption], () => {
 
 onMounted(() => {
   fetchCourses(
+    courses,
     searchQuery.value,
     selectedSermOption.value,
     selectedProgramOption.value
   );
-  fetchPrograms();
-  fetchSerms();
+  fetchPrograms(programs);
+  fetchSerms(serms);
 });
 
 function handleSearch() {
   console.log("Search query:", searchQuery.value);
   fetchCourses(
+    courses,
     searchQuery.value,
     selectedSermOption.value,
     selectedProgramOption.value

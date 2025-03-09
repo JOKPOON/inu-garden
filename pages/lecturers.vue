@@ -218,7 +218,7 @@ import Import from "@/components/button/ImportButton.vue";
 import Search from "@/components/icons/Search.vue";
 import ShowUser from "@/components/icons/ShowUser.vue";
 import ArrowRight from "@/components/icons/ArrowRight.vue";
-import base_url from "@/config/api";
+import BaseURL from "@/config/api";
 import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
 import BannerLogin from "@/components/images/BannerLogin.jpg";
@@ -297,7 +297,7 @@ const showImportUserPopup = ref(false);
 const selectedUserId = ref(null);
 
 const UpdateUser = (userId) => {
-  fetch(base_url + "users/" + userId, {
+  fetch(BaseURL + "users/" + userId, {
     credentials: "include",
     method: "PUT",
     headers: {
@@ -329,7 +329,7 @@ const getUsers = (query, page, size) => {
   }
 
   fetch(
-    base_url +
+    BaseURL +
       "users?pageIndex=" +
       page +
       "&pageSize=" +

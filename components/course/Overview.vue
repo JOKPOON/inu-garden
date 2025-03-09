@@ -132,11 +132,11 @@ import ScoreRange from "@/components/course/ScoreRange.vue";
 import GradeRange from "@/components/course/GradeRange.vue";
 import CourseChart from "@/components/course/CourseChart.vue";
 import Edit from "@/components/icons/Edit.vue";
-import AddCourseButton from "@/components/button/AddCourseButton.vue";
 import Course from "@/components/icons/Course.vue";
 import Lecturer from "@/components/icons/Lecturer.vue";
 import { useRouter } from "vue-router";
-import base_url from "@/config/api";
+import { fetchCourse, fetchCourseResult } from "@/api/api";
+
 const { t } = useI18n();
 
 useHead({
@@ -285,48 +285,9 @@ const result = ref({
   },
 });
 
-const fetchCourse = async () => {
-  try {
-    const response = await fetch(`${base_url}courses/${course_id.value}`, {
-      credentials: "include",
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!response.ok) throw new Error("Failed to fetch semesters");
-    const res = await response.json();
-    course.value = res.data;
-    console.log(course.value);
-  } catch (error) {
-    console.error("Error fetching semesters:", error);
-  }
-};
-
-const fetchResult = async () => {
-  try {
-    const response = await fetch(
-      `${base_url}courses/${course_id.value}/result`,
-      {
-        credentials: "include",
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    if (!response.ok) throw new Error("Failed to fetch semesters");
-    const res = await response.json();
-    result.value = res.data;
-    console.log(result.value);
-  } catch (error) {
-    console.error("Error fetching semesters:", error);
-  }
-};
-
 onMounted(() => {
-  fetchResult();
-  fetchCourse();
+  fetchCourseResult(result, course_id.value);
+  fetchCourse(course, course_id.value);
 });
 </script>
 

@@ -98,7 +98,7 @@
 import { ref, computed } from "vue";
 import { defineProps, defineEmits } from "vue";
 import Delete from "@/components/icons/Delete.vue";
-import base_url from "@/config/api";
+import BaseURL from "@/config/api";
 
 const emit = defineEmits(["close", "addStudent"]);
 
@@ -254,7 +254,7 @@ onMounted(() => {
 });
 
 const queryStudents = () => {
-  fetch(base_url + "students", {
+  fetch(BaseURL + "students", {
     credentials: "include",
   })
     .then((response) => response.json())
@@ -264,7 +264,7 @@ const queryStudents = () => {
 };
 
 const addStudentEnrollment = async (students) => {
-  await fetch(base_url + "enrollments", {
+  await fetch(BaseURL + "enrollments", {
     credentials: "include",
     method: "POST",
     headers: {

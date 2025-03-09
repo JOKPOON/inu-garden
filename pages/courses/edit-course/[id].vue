@@ -304,8 +304,14 @@
 
 <script setup>
 import Delete from "@/components/icons/Delete.vue";
-import base_url from "@/config/api";
+import BaseURL from "@/config/api";
 import { useRouter } from "vue-router";
+import {
+  fetchCourse,
+  fetchInstructors,
+  fetchPrograms,
+  fetchSerms,
+} from "@/api/api";
 const { t } = useI18n();
 
 const router = useRouter();
@@ -326,7 +332,7 @@ const cancelCourse = () => {
 
 const EditCourse = async () => {
   try {
-    const response = await fetch(`${base_url}courses/${course_id.value}`, {
+    const response = await fetch(`${BaseURL}courses/${course_id.value}`, {
       credentials: "include",
       method: "PATCH",
       headers: {
@@ -363,75 +369,6 @@ const EditCourse = async () => {
   }
 };
 
-const fetchInstructors = async () => {
-  try {
-    const response = await fetch(`${base_url}users`, {
-      credentials: "include",
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) throw new Error("Failed to fetch instructors");
-    const res = await response.json(); // Adjust based on API response structure
-    instructors.value = res.data.data;
-  } catch (error) {
-    console.error("Error fetching instructors:", error);
-  }
-};
-
-const fetchSemesters = async () => {
-  try {
-    const response = await fetch(`${base_url}semesters`, {
-      credentials: "include",
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!response.ok) throw new Error("Failed to fetch semesters");
-    const res = await response.json();
-    semesters.value = res.data;
-  } catch (error) {
-    console.error("Error fetching semesters:", error);
-  }
-};
-
-const fetchPrograms = async () => {
-  try {
-    const response = await fetch(`${base_url}programmes`, {
-      credentials: "include",
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!response.ok) throw new Error("Failed to fetch programs");
-    const res = await response.json();
-    programs.value = res.data;
-  } catch (error) {
-    console.error("Error fetching programs:", error);
-  }
-};
-
-const fetchCourse = async () => {
-  try {
-    const response = await fetch(`${base_url}courses/${course_id.value}`, {
-      credentials: "include",
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!response.ok) throw new Error("Failed to fetch programs");
-    const res = await response.json();
-    course.value = res.data;
-  } catch (error) {
-    console.error("Error fetching programs:", error);
-  }
-};
-
 const addInstructor = () => {
   courseInstructors.value.push("");
 };
@@ -442,10 +379,10 @@ const removeInstructor = (index) => {
 
 // Call API functions on component mount
 onMounted(() => {
-  fetchCourse();
-  fetchInstructors();
-  fetchSemesters();
-  fetchPrograms();
+  fetchCourse(course, course_id.value);
+  fetchInstructors(instructors);
+  fetchSerms(semesters);
+  fetchPrograms(programs);
 });
 
 watch(course, () => {

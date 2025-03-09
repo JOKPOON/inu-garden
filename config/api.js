@@ -1,2 +1,2 @@
-const base_url = "https://localhost/";
-export default base_url;
+const BaseURL = "https://localhost/";
+export default BaseURL;

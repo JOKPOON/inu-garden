@@ -339,9 +339,10 @@ import Import from "@/components/button/ImportButton.vue";
 import History from "@/components/button/HistoryButton.vue";
 import Delete from "@/components/icons/Delete.vue";
 import CourseHistory from "@/components/popups/CourseHistory.vue";
-import base_url from "@/config/api";
+import BaseURL from "@/config/api";
 import StatusPopup from "@/components/popups/StatusPopup.vue";
 import { useRouter } from "vue-router";
+import { fetchInstructors, fetchPrograms, fetchSerms } from "~/api/api";
 
 const router = useRouter();
 const { t } = useI18n();
@@ -388,7 +389,7 @@ const HistoryButton = () => {
 
 const createCourse = async () => {
   try {
-    const response = await fetch(`${base_url}courses`, {
+    const response = await fetch(`${BaseURL}courses`, {
       credentials: "include",
       method: "POST",
       headers: {
@@ -432,58 +433,6 @@ const createCourse = async () => {
   }
 };
 
-const fetchInstructors = async () => {
-  try {
-    const response = await fetch(`${base_url}users`, {
-      credentials: "include",
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) throw new Error("Failed to fetch instructors");
-    const res = await response.json(); // Adjust based on API response structure
-    instructors.value = res.data.data;
-  } catch (error) {
-    console.error("Error fetching instructors:", error);
-  }
-};
-
-const fetchSemesters = async () => {
-  try {
-    const response = await fetch(`${base_url}semesters`, {
-      credentials: "include",
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!response.ok) throw new Error("Failed to fetch semesters");
-    const res = await response.json();
-    semesters.value = res.data;
-  } catch (error) {
-    console.error("Error fetching semesters:", error);
-  }
-};
-
-const fetchPrograms = async () => {
-  try {
-    const response = await fetch(`${base_url}programmes`, {
-      credentials: "include",
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!response.ok) throw new Error("Failed to fetch programs");
-    const res = await response.json();
-    programs.value = res.data;
-  } catch (error) {
-    console.error("Error fetching programs:", error);
-  }
-};
-
 const addInstructor = () => {
   courseInstructors.value.push("");
 };
@@ -496,11 +445,10 @@ const cancel = () => {
   router.push("/");
 };
 
-// Call API functions on component mount
 onMounted(() => {
-  fetchInstructors();
-  fetchSemesters();
-  fetchPrograms();
+  fetchInstructors(instructors);
+  fetchSerms(semesters);
+  fetchPrograms(programs);
 });
 </script>
 

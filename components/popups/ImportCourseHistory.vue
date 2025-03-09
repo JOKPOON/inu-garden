@@ -320,7 +320,9 @@
 
 <script setup>
 import Delete from "@/components/icons/Delete.vue";
-import base_url from "@/config/api";
+import BaseURL from "@/config/api";
+import { fetchSerms, fetchPrograms, fetchInstructors } from "@/api/api";
+
 const { t } = useI18n();
 
 const courseName = ref("");
@@ -354,7 +356,7 @@ const cancelCourse = () => {
 
 const EditCourse = async () => {
   try {
-    const response = await fetch(`${base_url}courses`, {
+    const response = await fetch(`${BaseURL}courses`, {
       credentials: "include",
       method: "POST",
       headers: {
@@ -392,58 +394,6 @@ const EditCourse = async () => {
   }
 };
 
-const fetchInstructors = async () => {
-  try {
-    const response = await fetch(`${base_url}users`, {
-      credentials: "include",
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) throw new Error("Failed to fetch instructors");
-    const res = await response.json(); // Adjust based on API response structure
-    instructors.value = res.data.data;
-  } catch (error) {
-    console.error("Error fetching instructors:", error);
-  }
-};
-
-const fetchSemesters = async () => {
-  try {
-    const response = await fetch(`${base_url}semesters`, {
-      credentials: "include",
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!response.ok) throw new Error("Failed to fetch semesters");
-    const res = await response.json();
-    semesters.value = res.data;
-  } catch (error) {
-    console.error("Error fetching semesters:", error);
-  }
-};
-
-const fetchPrograms = async () => {
-  try {
-    const response = await fetch(`${base_url}programmes`, {
-      credentials: "include",
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!response.ok) throw new Error("Failed to fetch programs");
-    const res = await response.json();
-    programs.value = res.data;
-  } catch (error) {
-    console.error("Error fetching programs:", error);
-  }
-};
-
 const addInstructor = () => {
   courseInstructors.value.push("");
 };
@@ -454,9 +404,9 @@ const removeInstructor = (index) => {
 
 // Call API functions on component mount
 onMounted(() => {
-  fetchInstructors();
-  fetchSemesters();
-  fetchPrograms();
+  fetchInstructors(instructors);
+  fetchSerms(semesters);
+  fetchPrograms(programs);
 });
 
 useHead({

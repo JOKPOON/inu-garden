@@ -173,7 +173,7 @@ import ArrowDown from "@/components/icons/ArrowDown.vue";
 import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
 import ShowUser from "@/components/icons/ShowUser.vue";
-import base_url from "@/config/api";
+import { fetchEnrollments } from "@/api/api";
 
 const searchQuery = ref("");
 
@@ -230,7 +230,7 @@ const prevPage = () => {
 //student_ids: Array of student ids (6XXXXX)
 const CreateEnrollment = async (student_ids, course_id, status) => {
   try {
-    const response = await fetch(`${base_url}enrollments`, {
+    const response = await fetch(`${BaseURL}enrollments`, {
       credentials: "include",
       method: "POST",
       headers: {
@@ -254,7 +254,7 @@ const CreateEnrollment = async (student_ids, course_id, status) => {
 //Delete enrollment
 const DeleteEnrollment = async (id) => {
   try {
-    const response = await fetch(`${base_url}enrollments/${id}`, {
+    const response = await fetch(`${BaseURL}enrollments/${id}`, {
       credentials: "include",
       method: "DELETE",
       headers: {
@@ -273,7 +273,7 @@ const DeleteEnrollment = async (id) => {
 //Update enrollment status to ENROLL OR WITHDRAW
 const UpdateEnrollment = async (id, status) => {
   try {
-    const response = await fetch(`${base_url}enrollments/${id}`, {
+    const response = await fetch(`${BaseURL}enrollments/${id}`, {
       credentials: "include",
       method: "PATCH",
       headers: {
@@ -293,30 +293,8 @@ const UpdateEnrollment = async (id, status) => {
   }
 };
 
-//Fetch enrollments
-const fetchEnrollments = async (course_id, searchQuery) => {
-  try {
-    const response = await fetch(
-      `${base_url}courses/${course_id}/enrollments?query=${searchQuery}`,
-      {
-        credentials: "include",
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    if (!response.ok) throw new Error("Failed to fetch students");
-    const res = await response.json();
-    students.value = res.data;
-  } catch (error) {
-    console.error("Error fetching students:", error);
-  }
-};
-
 onMounted(() => {
-  fetchEnrollments(course_id.value, searchQuery.value);
+  fetchEnrollments(students, course_id.value, searchQuery.value);
 });
 </script>
 

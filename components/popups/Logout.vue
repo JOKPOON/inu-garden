@@ -29,13 +29,13 @@
 
 <script setup>
 import { useRouter } from "vue-router";
-import base_url from "@/config/api";
+import BaseURL from "@/config/api";
 
 const router = useRouter();
 const emit = defineEmits(["close"]);
 
 const handleLogout = () => {
-  fetch(base_url + "auth/logout", {
+  fetch(BaseURL + "auth/logout", {
     credentials: "include",
     method: "GET",
   })
