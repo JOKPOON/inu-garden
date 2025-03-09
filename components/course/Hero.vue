@@ -9,6 +9,7 @@
           v-model="searchQuery"
           class="bg-transparent border-none focus:ring-0 outline-none text-base w-40"
           placeholder="Search..."
+          @keydown.enter="handleSearch"
         />
         <button
           class="flex items-center justify-center bg-white rounded-xl"
@@ -24,7 +25,7 @@
           v-model="selectedProgramOption"
           class="bg-transparent border-none focus:ring-0 outline-none text-base pr-2 hover:cursor-pointer"
         >
-          <option value="">All Programs</option>
+          <option value="">Programs</option>
           <option
             v-for="option in programs"
             :key="option.id"
@@ -38,12 +39,12 @@
         class="px-4 py-3 bg-white border border-grey-secondary rounded-xl flex flex-row gap-4 items-center"
       >
         <select
-          v-model="selectedYearOption"
+          v-model="selectedSermOption"
           class="bg-transparent border-none focus:ring-0 outline-none text-base pr-2 hover:cursor-pointer"
         >
-          <option value="">All Years</option>
-          <option v-for="option in yearsOptions" :key="option" :value="option">
-            {{ option }}
+          <option value="">Semesters</option>
+          <option v-for="option in serms" :key="option.id" :value="option.id">
+            {{ option.year }}/{{ option.semester_sequence }}
           </option>
         </select>
       </div>
@@ -167,20 +168,16 @@ const editCourse = (code) => {
 const { t } = useI18n();
 const searchQuery = ref("");
 const selectedProgramOption = ref("");
-const selectedYearOption = ref("");
+const selectedSermOption = ref("");
 
 const courses = ref([]);
 const programs = ref([]);
-const yearsOptions = ref(getYearsOptions());
+const serms = ref([]);
 
-function getYearsOptions() {
-  return ["2021", "2022", "2023", "2024"];
-}
-
-const fetchCourses = async (query, year, program) => {
+const fetchCourses = async (query, serm, program) => {
   try {
     const response = await fetch(
-      `${base_url}courses?query=${query}&year=${year}&program=${program}`,
+      `${base_url}courses?query=${query}&serm=${serm}&program=${program}`,
       {
         credentials: "include",
         method: "GET",
@@ -189,12 +186,12 @@ const fetchCourses = async (query, year, program) => {
         },
       }
     );
-    if (!response.ok) throw new Error("Failed to fetch semesters");
+    if (!response.ok) throw new Error("Failed to fetch courses");
     const res = await response.json();
     courses.value = res.data.courses;
   } catch (error) {
     courses.value = [];
-    console.error("Error fetching semesters:", error);
+    console.error("Error fetching courses:", error);
   }
 };
 
@@ -215,10 +212,27 @@ const fetchPrograms = async () => {
   }
 };
 
-watch([searchQuery, selectedProgramOption, selectedYearOption], () => {
+const fetchSerms = async () => {
+  try {
+    const response = await fetch(`${base_url}semesters`, {
+      credentials: "include",
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Failed to fetch semesters");
+    const res = await response.json();
+    serms.value = res.data;
+  } catch (error) {
+    console.error("Error fetching semesters:", error);
+  }
+};
+
+watch([selectedProgramOption, selectedSermOption], () => {
   fetchCourses(
     searchQuery.value,
-    selectedYearOption.value,
+    selectedSermOption.value,
     selectedProgramOption.value
   );
 });
@@ -226,14 +240,20 @@ watch([searchQuery, selectedProgramOption, selectedYearOption], () => {
 onMounted(() => {
   fetchCourses(
     searchQuery.value,
-    selectedYearOption.value,
+    selectedSermOption.value,
     selectedProgramOption.value
   );
   fetchPrograms();
+  fetchSerms();
 });
 
 function handleSearch() {
   console.log("Search query:", searchQuery.value);
+  fetchCourses(
+    searchQuery.value,
+    selectedSermOption.value,
+    selectedProgramOption.value
+  );
 }
 </script>
 
