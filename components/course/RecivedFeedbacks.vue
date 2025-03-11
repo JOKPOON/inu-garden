@@ -66,7 +66,7 @@
               {{ feedback.user.last_name_en }}
             </p>
             <p class="text-sm text-grey-secondary">
-              {{ Date(feedback.created_at).toString() }}
+              {{ formatBangkokTime(feedback.created_at) }}
             </p>
           </div>
         </div>
@@ -105,6 +105,18 @@ import { useI18n } from "vue-i18n";
 import Send from "@/components/icons/Send.vue";
 import { fetchReceivedFeedbacks } from "~/api/api";
 import { useRouter } from "vue-router";
+
+const formatBangkokTime = (dateString) => {
+  return new Intl.DateTimeFormat("en-TH", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZone: "Asia/Bangkok",
+  }).format(new Date(dateString));
+};
 
 const { t } = useI18n();
 
@@ -194,6 +206,30 @@ const addFeedback = () => {
 
 onMounted(() => {
   fetchReceivedFeedbacks(received_feedbacks, course_id.value);
+});
+
+watch(dateTimeStatus, () => {
+  if (dateTimeStatus.value === "ascending") {
+    received_feedbacks.value.sort(
+      (a, b) => new Date(a.created_at) - new Date(b.created_at)
+    );
+  } else if (dateTimeStatus.value === "descending") {
+    received_feedbacks.value.sort(
+      (a, b) => new Date(b.created_at) - new Date(a.created_at)
+    );
+  }
+});
+
+watch(steamStatus, () => {
+  if (steamStatus.value === "ascending") {
+    received_feedbacks.value.sort((a, b) =>
+      a.stream_type.localeCompare(b.stream_type)
+    );
+  } else if (steamStatus.value === "descending") {
+    received_feedbacks.value.sort((a, b) =>
+      b.stream_type.localeCompare(a.stream_type)
+    );
+  }
 });
 </script>
 
