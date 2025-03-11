@@ -10,7 +10,7 @@
           <div
             class="text-2xl font-semibold text-black-primary w-full text-start"
           >
-            Add Faculty
+            Add Programme
           </div>
           <div class="text-sm text-grey-primary mt-1">
             Add Program for

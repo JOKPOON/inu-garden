@@ -11,67 +11,132 @@
             Add Student
           </div>
           <div class="text-sm text-grey-primary mt-1">
-            Type student ID to add
+            Please select : <span class="font-medium text-black-primary">Program, Department, Year </span> 
           </div>
         </div>
-        <div class="mt-4 text-center flex gap-4 flex-col text-sm">
-          <input
-            v-model="student.id"
-            type="text"
-            placeholder="Enter Student ID"
-            class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
-          />
-          <h3
-            v-if="student.id && filteredStudents.length"
-            class="text-base font-semibold border-b border-grey-secondary py-1 text-start"
-          >
-            Results
-          </h3>
-          <ul
-            v-if="student.id && filteredStudents.length"
-            class="max-h-60 overflow-y-scroll scrollbar-set w-[28rem] bg-white border border-grey-secondary rounded-xl mt-2"
-          >
-            <li
-              v-for="student in filteredStudents"
-              :key="student.id"
-              @click="selectStudent(student)"
-              class="px-4 py-2 cursor-pointer hover:bg-grey-secondary"
+        <div class="max-h-[28rem] overflow-y-scroll scrollbar-set">
+          <div class="mt-4 text-center flex gap-4 flex-col text-sm">
+            <div
+              class="px-4 py-3 bg-white border border-grey-secondary rounded-xl flex flex-row gap-4 items-center"
             >
-              {{ student.id }} - {{ student.first_name_en }}
-              {{ student.last_name_en }}
-            </li>
-          </ul>
-          <div v-else-if="student.id" class="text-black-primary mt-2">
-            No results found
+              <select
+                v-model="selectedProgram"
+                class="bg-transparent w-[26rem] border-none focus:ring-0 outline-none text-base pr-2 hover:cursor-pointer"
+              >
+                <option value="">All Programs</option>
+                <option
+                  v-for="program in programs"
+                  :key="program"
+                  :value="program"
+                >
+                  {{ program }}
+                </option>
+              </select>
+            </div>
+            <div
+              class="px-4 py-3 bg-white border border-grey-secondary rounded-xl flex flex-row gap-4 items-center"
+            >
+              <select
+                v-model="selectedDepartment"
+                class="bg-transparent w-[26rem] border-none focus:ring-0 outline-none text-base pr-2 hover:cursor-pointer"
+              >
+                <option value="">All Departments</option>
+                <option
+                  v-for="department in departments"
+                  :key="department"
+                  :value="department"
+                >
+                  {{ department }}
+                </option>
+              </select>
+            </div>
+            <div
+              class="px-4 py-3 bg-white border border-grey-secondary rounded-xl flex flex-row gap-4 items-center"
+            >
+              <select
+                v-model="selectedYear"
+                class="bg-transparent w-[26rem] border-none focus:ring-0 outline-none text-base pr-2 hover:cursor-pointer"
+              >
+                <option value="">All Years</option>
+                <option v-for="year in years" :key="year" :value="year">
+                  {{ year }}
+                </option>
+              </select>
+            </div>
+            <input
+              v-if="
+                selectedYear != '' &&
+                selectedDepartment != '' &&
+                selectedProgram != '' &&
+                filteredStudents.length
+              "
+              v-model="student.id"
+              type="text"
+              placeholder="Enter Student ID"
+              class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
+            />
+            <h3
+              v-if="student.id && filteredStudents.length"
+              class="text-base font-semibold border-b border-grey-secondary py-1 text-start"
+            >
+              Results
+            </h3>
+            <div>
+              <ul
+                v-if="filteredStudents.length"
+                class="max-h-60 overflow-y-scroll scrollbar-set w-[28rem] bg-white border border-grey-secondary rounded-xl mt-2"
+              >
+                <li
+                  v-for="student in displayedStudents"
+                  :key="student.id"
+                  @click="selectStudent(student)"
+                  class="px-4 py-2 cursor-pointer hover:bg-grey-secondary"
+                >
+                  {{ student.id }} - {{ student.first_name_en }}
+                  {{ student.last_name_en }}
+                </li>
+              </ul>
+              <div v-else class="text-black-primary mt-2">
+                <div
+                  v-if="
+                    selectedYear != '' &&
+                    selectedDepartment != '' &&
+                    selectedProgram != ''
+                  "
+                >
+                  No results found
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div v-if="selectedStudents.length" class="mt-6 w-[28rem]">
-          <h3
-            class="text-base font-semibold border-b border-grey-secondary py-1"
-          >
-            Selected Students
-            <span class="font-normal text-grey-primary"
-              >({{ selectedStudents.length }})
-            </span>
-          </h3>
-          <ul class="mt-2">
-            <li
-              v-for="student in selectedStudents"
-              :key="student.id"
-              class="pt-1 flex justify-between items-center"
+          <div v-if="selectedStudents.length" class="mt-6 w-[28rem]">
+            <h3
+              class="text-base font-semibold border-b border-grey-secondary py-1"
             >
-              <span
-                >{{ student.id }} - {{ student.first_name_en }}
-                {{ student.last_name_en }}</span
+              Selected Students
+              <span class="font-normal text-grey-primary"
+                >({{ selectedStudents.length }})
+              </span>
+            </h3>
+            <ul class="mt-2 max-h-60 overflow-y-scroll scrollbar-set">
+              <li
+                v-for="student in selectedStudents"
+                :key="student.id"
+                class="pt-1 flex justify-between items-center"
               >
-              <button
-                @click="removeStudent(student.id)"
-                class="flex items-center justify-center bg-white rounded-xl p-2 border border-grey-secondary hover:bg-red-500 text-black-primary hover:text-white"
-              >
-                <Delete class="w-5 h-5" />
-              </button>
-            </li>
-          </ul>
+                <span
+                  >{{ student.id }} - {{ student.first_name_en }}
+                  {{ student.last_name_en }}</span
+                >
+                <button
+                  @click="removeStudent(student.id)"
+                  class="flex items-center justify-center bg-white rounded-xl p-2 border border-grey-secondary hover:bg-red-500 text-black-primary hover:text-white"
+                >
+                  <Delete class="w-5 h-5" />
+                </button>
+              </li>
+            </ul>
+          </div>
         </div>
         <div
           class="flex flex-row items-center justify-center gap-2 w-full mt-6 border border-grey-secondary rounded-xl"
@@ -114,6 +179,22 @@ const props = defineProps({
     required: true,
   },
 });
+
+const programs = ref([
+  "Computer Engineering",
+  "Electrical Engineering",
+  "Mechanical Engineering",
+]);
+const departments = ref([
+  "Computer Engineering",
+  "Electrical Engineering",
+  "Mechanical Engineering",
+]);
+const years = ref(["2023", "2024", "2025"]);
+
+const selectedProgram = ref("");
+const selectedDepartment = ref("");
+const selectedYear = ref("");
 
 const AllStudent = ref([
   {
@@ -219,10 +300,25 @@ const AllStudent = ref([
 ]);
 
 const filteredStudents = computed(() => {
-  const searchTerm = student.value.id.toLowerCase();
-  return AllStudent.value.filter((s) =>
-    s.id.toLowerCase().includes(searchTerm)
-  );
+  return AllStudent.value.filter((s) => {
+    const matchesProgram =
+      selectedProgram.value === "none" ||
+      s.programme_name === selectedProgram.value;
+    const matchesDepartment =
+      selectedDepartment.value === "none" ||
+      s.department_name === selectedDepartment.value;
+    const matchesYear =
+      selectedYear.value === "none" || s.year === selectedYear.value;
+    const matchesStudentId =
+      student.value.id === "" || s.id.includes(student.value.id);
+    return (
+      matchesProgram && matchesDepartment && matchesYear && matchesStudentId
+    );
+  });
+});
+
+const displayedStudents = computed(() => {
+  return student.value.id ? filteredStudents.value : filteredStudents.value;
 });
 
 const selectStudent = (selectedStudent) => {
@@ -233,12 +329,16 @@ const selectStudent = (selectedStudent) => {
 const addStudent = () => {
   if (student.value.id) {
     selectedStudents.value.push({ ...student.value });
-    student.value = { id: "" };
+    student.value = {
+      id: "",
+      programme_name: "",
+      department_name: "",
+      year: "",
+    };
   }
 };
 
-const addStudentAll = async () => {
-  await addStudentEnrollment(selectedStudents.value);
+const addStudentAll = () => {
   emit("addStudent", selectedStudents.value);
   selectedStudents.value = [];
 };

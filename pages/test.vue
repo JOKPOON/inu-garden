@@ -8,7 +8,7 @@
   </template>
   
   <script setup>
-  import { useI18n } from "vue-i18n";
+  import { useI18n } from "vue-i18n";114
   import CourseNav from "@/components/course/CourseNav.vue";
   import Enrollments from "@/components/course/Enrollments.vue";
   
