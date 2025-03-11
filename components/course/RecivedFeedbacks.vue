@@ -1,20 +1,6 @@
 <template>
   <div class="flex flex-col">
     <div class="flex items-center gap-4 flex-row">
-      <div class="flex">
-        <div
-          class="px-4 py-2 bg-white border border-grey-secondary rounded-xl flex flex-row gap-4 items-center"
-        >
-          <input
-            type="text"
-            class="bg-transparent border-none focus:ring-0 outline-none text-base w-48"
-            placeholder="Search..."
-          />
-          <button class="flex items-center justify-center bg-white rounded-xl">
-            <Search class="w-6 h-6" />
-          </button>
-        </div>
-      </div>
       <div class="flex flex-row gap-4">
         <button
           @click="toggleSteam"
@@ -116,7 +102,6 @@ import Status from "@/components/icons/Status.vue";
 import ArrowUp from "@/components/icons/ArrowUp.vue";
 import ArrowDown from "@/components/icons/ArrowDown.vue";
 import { useI18n } from "vue-i18n";
-import Search from "@/components/icons/Search.vue";
 import Send from "@/components/icons/Send.vue";
 import { fetchReceivedFeedbacks } from "~/api/api";
 import { useRouter } from "vue-router";
