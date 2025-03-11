@@ -1,20 +1,6 @@
 <template>
   <div class="flex flex-col">
     <div class="flex items-center gap-4 flex-row">
-      <div class="flex">
-        <div
-          class="px-4 py-2 bg-white border border-grey-secondary rounded-xl flex flex-row gap-4 items-center"
-        >
-          <input
-            type="text"
-            class="bg-transparent border-none focus:ring-0 outline-none text-base w-48"
-            placeholder="Search..."
-          />
-          <button class="flex items-center justify-center bg-white rounded-xl">
-            <Search class="w-6 h-6" />
-          </button>
-        </div>
-      </div>
       <div class="flex flex-row gap-4">
         <button
           @click="toggleSteam"
@@ -60,16 +46,28 @@
       >
         <div class="p-3 rounded-xl border border-grey-tertiary">
           <div
-            v-for="feedback in feedbacks"
+            v-for="feedback in received_feedbacks"
             :key="feedback.id"
             class="bg-white border border-grey-tertiary shadow-sm rounded-xl p-3 mb-4"
           >
-            <p class="text-sm font-semibold">{{ feedback.courseName }}</p>
-            <p class="text-sm text-grey-primary">{{ feedback.message }}</p>
-            <p class="text-sm text-grey-secondary">
-              From: {{ feedback.sender }}
+            <p class="text-sm font-semibold">
+              {{ feedback.from_course.code }} - {{ feedback.from_course.name }}
             </p>
-            <p class="text-sm text-grey-secondary">{{ feedback.date }}</p>
+            <p class="text-sm text-grey-primary">{{ feedback.comment }}</p>
+
+            // TODO: Make type a tag on upper right side of the card
+            <p class="text-sm text-grey-secondary">
+              Type: {{ feedback.stream_type }}
+            </p>
+            <p class="text-sm text-grey-secondary">
+              From:
+              {{ feedback.user.title_en_short }}
+              {{ feedback.user.first_name_en }}
+              {{ feedback.user.last_name_en }}
+            </p>
+            <p class="text-sm text-grey-secondary">
+              {{ formatBangkokTime(feedback.created_at) }}
+            </p>
           </div>
         </div>
       </div>
@@ -104,10 +102,21 @@ import Status from "@/components/icons/Status.vue";
 import ArrowUp from "@/components/icons/ArrowUp.vue";
 import ArrowDown from "@/components/icons/ArrowDown.vue";
 import { useI18n } from "vue-i18n";
-import Course from "@/components/icons/Course.vue";
-import Lecturer from "@/components/icons/Lecturer.vue";
-import Search from "@/components/icons/Search.vue";
 import Send from "@/components/icons/Send.vue";
+import { fetchReceivedFeedbacks } from "~/api/api";
+import { useRouter } from "vue-router";
+
+const formatBangkokTime = (dateString) => {
+  return new Intl.DateTimeFormat("en-TH", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZone: "Asia/Bangkok",
+  }).format(new Date(dateString));
+};
 
 const { t } = useI18n();
 
@@ -120,6 +129,7 @@ definePageMeta({
   layout: "landing",
 });
 
+const router = useRouter();
 const buttons = ["Received Feedbacks", "Manage Feedback"];
 
 const activeButton = ref("Received Feedbacks");
@@ -129,155 +139,8 @@ const setActionButton = (button) => {
 
 const steamStatus = ref("default");
 const dateTimeStatus = ref("default");
-
-const courses = ref([
-  {
-    id: "CPE123",
-    name: "Computer Engineering",
-    code: "CPE123",
-    curriculum: "Computer Science",
-    description: "This course introduces the fundamentals of programming.",
-    expected_passing_clo_percentage: 85,
-    is_portfolio_completed: false,
-    portfolio_data: {},
-    academic_year: 2024,
-    graduate_year: 2028,
-    credits: 3,
-    program_year: 1,
-    semester_id: "01JD1P61GEB6SE52AW5KZ2ZXW9",
-    user_id: "01",
-    criteria_grade_a: 90,
-    criteria_grade_bp: 85,
-    criteria_grade_b: 80,
-    criteria_grade_cp: 75,
-    criteria_grade_c: 70,
-    criteria_grade_dp: 65,
-    criteria_grade_d: 60,
-    criteria_grade_f: 50,
-    semester: {
-      id: "01JD1P61GEB6SE52AW5KZ2ZXW9",
-      year: 2024,
-      semester_sequence: "1",
-    },
-    user: {
-      id: "01K",
-      email: "lecturer_1@inu.com",
-      password: "$2a$10",
-      first_name: "lecturer",
-      last_name: "1st",
-      role: "LECTURER",
-    },
-  },
-  {
-    id: "CPE202",
-    name: "Introduction to Programming",
-    code: "CPE202",
-    curriculum: "Computer Science",
-    description: "This course introduces the fundamentals of programming.",
-    expected_passing_clo_percentage: 85,
-    is_portfolio_completed: false,
-    portfolio_data: {},
-    academic_year: 2024,
-    graduate_year: 2028,
-    credits: 3,
-    program_year: 1,
-    semester_id: "01JD1P61GEB6SE52AW5KZ2ZXW9",
-    user_id: "01",
-    criteria_grade_a: 90,
-    criteria_grade_bp: 85,
-    criteria_grade_b: 80,
-    criteria_grade_cp: 75,
-    criteria_grade_c: 70,
-    criteria_grade_dp: 65,
-    criteria_grade_d: 60,
-    criteria_grade_f: 50,
-    semester: {
-      id: "01JD1P61GEB6SE52AW5KZ2ZXW9",
-      year: 2024,
-      semester_sequence: "1",
-    },
-    user: {
-      id: "01",
-      email: "lecturer_1@inu.com",
-      password: "$2",
-      first_name: "lecturer",
-      last_name: "1",
-      role: "LECTURER",
-    },
-  },
-  {
-    id: "LNG101",
-    name: "Oral Communication in English",
-    code: "LNG101",
-    curriculum: "Computer Science",
-    description: "This course introduces the fundamentals of programming.",
-    expected_passing_clo_percentage: 85,
-    is_portfolio_completed: false,
-    portfolio_data: {},
-    academic_year: 2024,
-    graduate_year: 2028,
-    credits: 3,
-    program_year: 1,
-    semester_id: "01JD1P61GEB6SE52AW5KZ2ZXW9",
-    user_id: "01",
-    criteria_grade_a: 90,
-    criteria_grade_bp: 85,
-    criteria_grade_b: 80,
-    criteria_grade_cp: 75,
-    criteria_grade_c: 70,
-    criteria_grade_dp: 65,
-    criteria_grade_d: 60,
-    criteria_grade_f: 50,
-    semester: {
-      id: "01JD1P61GEB6SE52AW5KZ2ZXW9",
-      year: 2024,
-      semester_sequence: "1",
-    },
-    user: {
-      id: "01",
-      email: "lecturer_1@inu.com",
-      password: "$2",
-      first_name: "lecturer",
-      last_name: "1",
-      role: "LECTURER",
-    },
-  },
-]);
-
-const feedbacks = ref([
-  {
-    id: "1",
-    courseId: "CPE123",
-    courseName: "Computer Engineering",
-    message: "Great course, very informative!",
-    sender: "Student A",
-    date: "2023-10-01 10:00 AM",
-  },
-  {
-    id: "2",
-    courseId: "CPE124",
-    courseName: "Software Engineering",
-    message: "The course content was very well structured.",
-    sender: "Student B",
-    date: "2023-10-02 11:30 AM",
-  },
-  {
-    id: "3",
-    courseId: "CPE125",
-    courseName: "Upstream Course",
-    message: "The course was challenging but rewarding.",
-    sender: "Student C",
-    date: "2023-10-03 09:00 AM",
-  },
-  {
-    id: "4",
-    courseId: "CPE126",
-    courseName: "Upstream Course",
-    message: "Excellent teaching methods.",
-    sender: "Student D",
-    date: "2023-10-04 02:00 PM",
-  },
-]);
+const course_id = ref(router.currentRoute.value.params.id);
+const received_feedbacks = ref([]);
 
 const toggleSteam = () => {
   if (steamStatus.value === "default") {
@@ -340,6 +203,34 @@ const addFeedback = () => {
     };
   }
 };
+
+onMounted(() => {
+  fetchReceivedFeedbacks(received_feedbacks, course_id.value);
+});
+
+watch(dateTimeStatus, () => {
+  if (dateTimeStatus.value === "ascending") {
+    received_feedbacks.value.sort(
+      (a, b) => new Date(a.created_at) - new Date(b.created_at)
+    );
+  } else if (dateTimeStatus.value === "descending") {
+    received_feedbacks.value.sort(
+      (a, b) => new Date(b.created_at) - new Date(a.created_at)
+    );
+  }
+});
+
+watch(steamStatus, () => {
+  if (steamStatus.value === "ascending") {
+    received_feedbacks.value.sort((a, b) =>
+      a.stream_type.localeCompare(b.stream_type)
+    );
+  } else if (steamStatus.value === "descending") {
+    received_feedbacks.value.sort((a, b) =>
+      b.stream_type.localeCompare(a.stream_type)
+    );
+  }
+});
 </script>
 
 <style lang="scss" scoped>

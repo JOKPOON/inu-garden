@@ -18,7 +18,7 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useUserStore } from "@/store/user";
 import SideBar from "@/components/layouts/SideBar.vue";
-import base_url from "@/config/api";
+import { fetchMe } from "@/api/api";
 
 const openLangOptions = ref(true);
 const loading = ref(true);
@@ -26,26 +26,7 @@ const router = useRouter();
 const userStore = useUserStore();
 
 onMounted(() => {
-  fetch(base_url + "auth/me", {
-    credentials: "include",
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      if (data.success) {
-        userStore.setUserData(data.data);
-        console.log(userStore.userData);
-      } else {
-        router.push("/login");
-        console.log(data.error.message);
-      }
-    })
-    .finally(() => {
-      loading.value = false;
-    });
+  fetchMe(userStore, router, loading);
 });
 </script>
 

@@ -191,7 +191,7 @@
                   </div>
 
                   <div
-                    v-for="clo in CLOs"
+                    v-for="clo in clos"
                     :key="clo.clo_id"
                     class="grid grid-cols-4 gap-2 mt-2 border-b pb-2 border-grey-tertiary"
                   >
@@ -318,7 +318,9 @@ import Include from "@/components/icons/Include.vue";
 import NotInclude from "@/components/icons/NotInclude.vue";
 import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
-import base_url from "@/config/api";
+import { BaseURL } from "@/api/api";
+import { fetchAssignments, fetchScores } from "@/api/api";
+
 import { useRouter } from "vue-router";
 const router = useRouter();
 const { t } = useI18n();
@@ -339,7 +341,7 @@ const activeAssessment = ref(null);
 const chartData = ref(null);
 const chartOptions = ref(null);
 const scores = ref(null);
-const CLOs = ref(null);
+const clos = ref(null);
 
 useHead({
   title: t("seo.title"),
@@ -466,7 +468,7 @@ const onClickImportUser = () => {};
 const linkCLOs = async (assignment_id, clo_ids) => {
   try {
     const response = await fetch(
-      `${base_url}assignments/${assignment_id}/clos`,
+      `${BaseURL}assignments/${assignment_id}/clos`,
       {
         credentials: "include",
         method: "POST",
@@ -492,7 +494,7 @@ const linkCLOs = async (assignment_id, clo_ids) => {
 const addStudentScores = async (assignment_id, student_scores) => {
   try {
     const response = await fetch(
-      `${base_url}assignments/${assignment_id}/scores`,
+      `${BaseURL}assignments/${assignment_id}/scores`,
       {
         credentials: "include",
         method: "POST",
@@ -521,7 +523,7 @@ const addStudentScores = async (assignment_id, student_scores) => {
 // score: New score
 const updateStudentScore = async (score_id, score) => {
   try {
-    const response = await fetch(`${base_url}scores/${score_id}`, {
+    const response = await fetch(`${BaseURL}scores/${score_id}`, {
       credentials: "include",
       method: "PUT",
       headers: {
@@ -543,7 +545,7 @@ const updateStudentScore = async (score_id, score) => {
 // score_id: ID of the score
 const removeStudentScore = async (score_id) => {
   try {
-    const response = await fetch(`${base_url}scores/${score_id}`, {
+    const response = await fetch(`${BaseURL}scores/${score_id}`, {
       credentials: "include",
       method: "DELETE",
       headers: {
@@ -564,7 +566,7 @@ const removeStudentScore = async (score_id) => {
 const unlinkCLO = async (assignment_id, clo_id) => {
   try {
     const response = await fetch(
-      `${base_url}assignments/${assignment_id}/clos/${clo_id}`,
+      `${BaseURL}assignments/${assignment_id}/clos/${clo_id}`,
       {
         credentials: "include",
         method: "DELETE",
@@ -578,47 +580,6 @@ const unlinkCLO = async (assignment_id, clo_id) => {
     console.log(res);
   } catch (error) {
     console.error("Error removing CLO:", error);
-  }
-};
-
-const fetchAssignments = async (course_id) => {
-  try {
-    const response = await fetch(
-      `${base_url}courses/${course_id}/assignments`,
-      {
-        credentials: "include",
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    if (!response.ok) throw new Error("Failed to fetch programs");
-    const res = await response.json();
-    assessments.value = res.data;
-  } catch (error) {
-    console.error("Error fetching programs:", error);
-  }
-};
-
-const fetchScore = async (assignment_id) => {
-  try {
-    const response = await fetch(
-      `${base_url}assignments/${assignment_id}/scores`,
-      {
-        credentials: "include",
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    if (!response.ok) throw new Error("Failed to fetch programs");
-    const res = await response.json();
-    scores.value = res.data.scores;
-    CLOs.value = res.data.clos;
-  } catch (error) {
-    console.error("Error fetching programs:", error);
   }
 };
 
@@ -687,7 +648,7 @@ onMounted(() => {
     },
   };
 
-  fetchAssignments(course_id.value);
+  fetchAssignments(assessments, course_id.value);
 });
 
 watch(assessments, async (newVal) => {
@@ -697,7 +658,7 @@ watch(assessments, async (newVal) => {
 });
 
 watch(activeAssessment, async (newVal) => {
-  await fetchScore(newVal);
+  await fetchScores(scores, clos, newVal);
 });
 
 watch(scores, async (newVal) => {

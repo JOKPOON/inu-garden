@@ -9,6 +9,7 @@
           v-model="searchQuery"
           class="bg-transparent border-none focus:ring-0 outline-none text-base w-40"
           placeholder="Search..."
+          @keydown.enter="handleSearch"
         />
         <button
           class="flex items-center justify-center bg-white rounded-xl"
@@ -24,7 +25,7 @@
           v-model="selectedProgramOption"
           class="bg-transparent border-none focus:ring-0 outline-none text-base pr-2 hover:cursor-pointer"
         >
-          <option value="">All Programs</option>
+          <option value="">Programs</option>
           <option
             v-for="option in programs"
             :key="option.id"
@@ -38,12 +39,12 @@
         class="px-4 py-3 bg-white border border-grey-secondary rounded-xl flex flex-row gap-4 items-center"
       >
         <select
-          v-model="selectedYearOption"
+          v-model="selectedSermOption"
           class="bg-transparent border-none focus:ring-0 outline-none text-base pr-2 hover:cursor-pointer"
         >
-          <option value="">All Years</option>
-          <option v-for="option in yearsOptions" :key="option" :value="option">
-            {{ option }}
+          <option value="">Semesters</option>
+          <option v-for="option in serms" :key="option.id" :value="option.id">
+            {{ option.year }}/{{ option.semester_sequence }}
           </option>
         </select>
       </div>
@@ -148,7 +149,8 @@ import Course from "@/components/icons/Course.vue";
 import Lecturer from "@/components/icons/Lecturer.vue";
 import BannerLogin from "@/components/images/BannerLogin.jpg";
 import { useRouter } from "vue-router";
-import base_url from "@/config/api";
+import { onMounted, watch } from "vue";
+import { fetchCourses, fetchPrograms, fetchSerms } from "@/api/api";
 
 const router = useRouter();
 
@@ -167,73 +169,40 @@ const editCourse = (code) => {
 const { t } = useI18n();
 const searchQuery = ref("");
 const selectedProgramOption = ref("");
-const selectedYearOption = ref("");
+const selectedSermOption = ref("");
 
 const courses = ref([]);
 const programs = ref([]);
-const yearsOptions = ref(getYearsOptions());
+const serms = ref([]);
 
-function getYearsOptions() {
-  return ["2021", "2022", "2023", "2024"];
-}
-
-const fetchCourses = async (query, year, program) => {
-  try {
-    const response = await fetch(
-      `${base_url}courses?query=${query}&year=${year}&program=${program}`,
-      {
-        credentials: "include",
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    if (!response.ok) throw new Error("Failed to fetch semesters");
-    const res = await response.json();
-    courses.value = res.data.courses;
-  } catch (error) {
-    courses.value = [];
-    console.error("Error fetching semesters:", error);
-  }
-};
-
-const fetchPrograms = async () => {
-  try {
-    const response = await fetch(`${base_url}programmes`, {
-      credentials: "include",
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!response.ok) throw new Error("Failed to fetch programs");
-    const res = await response.json();
-    programs.value = res.data;
-  } catch (error) {
-    console.error("Error fetching programs:", error);
-  }
-};
-
-watch([searchQuery, selectedProgramOption, selectedYearOption], () => {
+watch([selectedProgramOption, selectedSermOption], () => {
   fetchCourses(
+    courses,
     searchQuery.value,
-    selectedYearOption.value,
+    selectedSermOption.value,
     selectedProgramOption.value
   );
 });
 
 onMounted(() => {
   fetchCourses(
+    courses,
     searchQuery.value,
-    selectedYearOption.value,
+    selectedSermOption.value,
     selectedProgramOption.value
   );
-  fetchPrograms();
+  fetchPrograms(programs);
+  fetchSerms(serms);
 });
 
 function handleSearch() {
   console.log("Search query:", searchQuery.value);
+  fetchCourses(
+    courses,
+    searchQuery.value,
+    selectedSermOption.value,
+    selectedProgramOption.value
+  );
 }
 </script>
 

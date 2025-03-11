@@ -205,7 +205,7 @@ import BannerLogin from "@/components/images/BannerLogin.jpg";
 import EmailLogin from "@/components/icons/EmailLogin.vue";
 import PasswordLogin from "@/components/icons/PasswordLogin.vue";
 import LoginButton from "@/components/button/LoginButton.vue";
-import base_url from "@/config/api";
+import BaseURL from "@/config/api";
 import ArrowRight from "@/components/icons/ArrowRight.vue";
 
 const { t } = useI18n();
@@ -225,7 +225,7 @@ const handleRequestOTP = () => {
   checkEmail.value = !emailPattern.test(Email.value);
 
   if (!checkEmail.value) {
-    fetch(base_url + "auth/forgot-password", {
+    fetch(BaseURL + "auth/forgot-password", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -251,7 +251,7 @@ const handlePasswordChange = () => {
   checkPassword.value = newPassword.value !== confirmPassword.value;
 
   if (!checkOTP.value && !checkPassword.value) {
-    fetch(base_url + "auth/reset-password", {
+    fetch(BaseURL + "auth/reset-password", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

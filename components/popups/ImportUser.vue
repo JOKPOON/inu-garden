@@ -125,7 +125,7 @@
             </button>
             <button
               @click="$emit('close')"
-              class="flex items-center justify-center rounded-xl px-3 h-12 border hover:bg-black-primary hover:text-white font-medium "
+              class="flex items-center justify-center rounded-xl px-3 h-12 border hover:bg-black-primary hover:text-white font-medium"
             >
               Close
             </button>
@@ -402,7 +402,7 @@
           </ImportButton>
           <ImportAllButton
             @click="importAll"
-            class="flex items-center flex-row justify-center border bg-black-primary rounded-xl w-full py-3 gap-2 "
+            class="flex items-center flex-row justify-center border bg-black-primary rounded-xl w-full py-3 gap-2"
           >
             <span class="text-white font-semibold text-base">Import All</span>
           </ImportAllButton>
@@ -420,7 +420,7 @@ import ImportAllButton from "@/components/button/ImportAllButton.vue";
 import ArrowRight from "@/components/icons/ArrowRight.vue";
 import Delete from "@/components/icons/Delete.vue";
 import Import from "@/components/icons/Import.vue";
-import base_url from "@/config/api";
+import BaseURL from "@/config/api";
 import * as XLSX from "xlsx";
 
 const emit = defineEmits(["close"]);
@@ -516,7 +516,7 @@ const handleDrop = (event) => {
 };
 
 const ImportUser = (user) => {
-  fetch(base_url + "users", {
+  fetch(BaseURL + "users", {
     credentials: "include",
     method: "POST",
     headers: {
@@ -564,7 +564,7 @@ const deleteUser = () => {
 
 const importAll = () => {
   const promises = users.value.map((user) => {
-    fetch(base_url + "users", {
+    fetch(BaseURL + "users", {
       credentials: "include",
       method: "POST",
       headers: {

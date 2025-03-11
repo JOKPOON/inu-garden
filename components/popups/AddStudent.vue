@@ -163,6 +163,7 @@
 import { ref, computed } from "vue";
 import { defineProps, defineEmits } from "vue";
 import Delete from "@/components/icons/Delete.vue";
+import BaseURL from "@/config/api";
 
 const emit = defineEmits(["close", "addStudent"]);
 
@@ -346,6 +347,43 @@ const removeStudent = (id) => {
   selectedStudents.value = selectedStudents.value.filter(
     (student) => student.id !== id
   );
+};
+
+onMounted(() => {
+  queryStudents();
+});
+
+const queryStudents = () => {
+  fetch(BaseURL + "students", {
+    credentials: "include",
+  })
+    .then((response) => response.json())
+    .then((json) => {
+      AllStudent.value = json.data;
+    });
+};
+
+const addStudentEnrollment = async (students) => {
+  await fetch(BaseURL + "enrollments", {
+    credentials: "include",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      course_id: props.id,
+      student_ids: students.map((student) => student.id),
+      status: "ENROLL",
+    }),
+  })
+    .then((response) => response.json())
+    .then((json) => {
+      if (json.error) {
+        console.error(json.error);
+        return;
+      }
+      console.log(json);
+    });
 };
 </script>
 
