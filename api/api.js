@@ -241,6 +241,26 @@ const fetchInstructorCourses = async (courses, user_id) => {
   }
 };
 
+const fetchReceivedFeedbacks = async (received_feedbacks, course_id) => {
+  try {
+    const response = await fetch(
+      `${BaseURL}course-streams?targetCourseId=${course_id}`,
+      {
+        credentials: "include",
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!response.ok) throw new Error("Failed to fetch courses");
+    const res = await response.json();
+    received_feedbacks.value = res.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export {
   BaseURL,
   fetchMe,
@@ -255,4 +275,5 @@ export {
   fetchInstructors,
   fetchInstructor,
   fetchInstructorCourses,
+  fetchReceivedFeedbacks,
 };
