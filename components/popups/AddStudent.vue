@@ -11,7 +11,10 @@
             Add Student
           </div>
           <div class="text-sm text-grey-primary mt-1">
-            Please select : <span class="font-medium text-black-primary">Program, Department, Year </span> 
+            Please select :
+            <span class="font-medium text-black-primary"
+              >Program, Department, Year
+            </span>
           </div>
         </div>
         <div class="max-h-[28rem] overflow-y-scroll scrollbar-set">

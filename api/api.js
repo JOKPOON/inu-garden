@@ -225,7 +225,7 @@ const fetchInstructor = (instructor, user_id) => {
 
 const fetchInstructorCourses = async (courses, user_id) => {
   try {
-    const response = await fetch(`${BaseURL}users/${user_id}/courses`, {
+    const response = await fetch(`${BaseURL}users/${user_id}/course`, {
       credentials: "include",
       method: "GET",
       headers: {
@@ -235,7 +235,7 @@ const fetchInstructorCourses = async (courses, user_id) => {
 
     if (!response.ok) throw new Error("Failed to fetch courses");
     const res = await response.json();
-    courses.value = res.data;
+    courses.value = res.data.courses;
   } catch (error) {
     console.error("Error fetching courses:", error);
   }
