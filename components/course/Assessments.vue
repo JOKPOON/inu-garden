@@ -86,8 +86,11 @@
             >
               <Include
                 v-if="getActiveAssessment().is_included_in_clo == true"
+                class="text-green-700"
               />
-              <NotInclude v-else />
+              <NotInclude v-else 
+                class="text-red-700"
+              />
             </div>
             <div
               class="h-full w-full grid grid-cols-2 gap-6 max-h-[calc(100vh-410px)] overflow-y-scroll scrollbar-set"

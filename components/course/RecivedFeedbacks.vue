@@ -5,7 +5,7 @@
         <button
           @click="toggleSteam"
           :class="[
-            'flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-2 gap-2 transition-all duration-300',
+            'flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2 transition-all duration-300',
             steamStatusClass,
           ]"
         >
