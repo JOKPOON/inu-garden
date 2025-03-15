@@ -36,13 +36,12 @@
           <p class="text-sm text-orange-primary text-start">
             {{ course.programme.name_en }}
           </p>
-          <p class="text-sm text-grey-primary text-start">
+          <p class="text-sm text-grey-primary text-start mb-4">
             credits : {{ course.credit }}
           </p>
-          <div class="flex flex-row gap-2 mt-4">
+          <div  v-for="lecturer in course.lecturers" class="flex flex-row gap-2 ">
             <Lecturer class="w-6 h-6" />
             <div
-              v-for="lecturer in course.lecturers"
               :key="lecturer.id"
               class="flex flex-row gap-2 items-center"
             >
@@ -115,12 +114,14 @@
       </div>
     </div>
   </div>
-  <div v-else>
-    <div class="flex justify-center items-center h-[calc(100vh-270px)]">
-      <div class="flex flex-col items-center gap-4">
-        <p class="text-2xl text-grey-primary">Loading...</p>
-        <div class="loader"></div>
-      </div>
+  <div v-else class="flex items-center justify-center flex-col pt-4 mt-12">
+    <img
+      :src="BannerLogin"
+      alt="Banner Login"
+      class="w-56 max-w-md object-cover rounded-2xl mb-4"
+    />
+    <div class="text-center font-semibold text-grey-primary">
+      No Student found!
     </div>
   </div>
 </template>
@@ -135,6 +136,7 @@ import Edit from "@/components/icons/Edit.vue";
 import Course from "@/components/icons/Course.vue";
 import Lecturer from "@/components/icons/Lecturer.vue";
 import { useRouter } from "vue-router";
+import BannerLogin from "@/components/images/BannerLogin.jpg";
 import { fetchCourse, fetchCourseResult } from "@/api/api";
 
 const { t } = useI18n();

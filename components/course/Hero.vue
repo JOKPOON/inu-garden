@@ -94,16 +94,12 @@
       <p class="text-sm text-orange-primary text-start">
         {{ course.program.name_en }}
       </p>
-      <p class="text-sm text-grey-primary text-start">
+      <p class="text-sm text-grey-primary text-start mb-4">
         Credits: {{ course.credit }}
       </p>
-      <div class="flex flex-row gap-2 mt-4">
+      <div v-for="lecturer in course.lecturers" class="flex flex-row gap-2">
         <Lecturer class="w-6 h-6" />
-        <div
-          v-for="lecturer in course.lecturers"
-          :key="lecturer.id"
-          class="flex flex-row gap-2 items-center"
-        >
+        <div :key="lecturer.id" class="flex flex-row gap-2 items-center">
           <p class="text-sm text-grey-primary">
             {{ lecturer.name_en }}
           </p>
