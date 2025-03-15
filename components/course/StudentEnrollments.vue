@@ -105,22 +105,25 @@
             <div
               class="col-span-1 text-sm text-black-primary flex items-center justify-center"
             >
-              {{ student.status }}
+              {{ getStatusText(student.status) }}
             </div>
             <div
               class="col-span-1 flex-row gap-4 flex items-center justify-center"
             >
               <button
+                @click="studentDetails(student.student_id)"
                 class="flex items-center justify-center bg-white rounded-xl p-2 border hover:bg-black-primary hover:text-white"
               >
                 <ShowUser class="w-5 h-5" />
               </button>
               <button
+                @click="editStudentEnroll(student.student_id)"
                 class="flex items-center justify-center rounded-xl p-2 border bg-white hover:bg-black-primary hover:text-white"
               >
                 <Edit class="w-5 h-5" />
               </button>
               <button
+                @click="deleteStudent(student.student_id)"
                 class="flex items-center justify-center rounded-xl p-2 border hover:bg-red-500 hover:text-white"
               >
                 <Delete class="w-5 h-5" />
@@ -159,6 +162,33 @@
       </button>
     </div>
   </div>
+  <StudentEnroll
+    v-if="isStudentEnrollVisible"
+    :studentID="studentID"
+    :courseID="courseID"
+    :courseName="courseName"
+    :studentName="studentName"
+    :studentStatus="studentStatus"
+    @close="isStudentEnrollVisible = false"
+  />
+  <EditStudentEnroll
+    v-if="isEditStudentEnrollVisible"
+    :studentID="studentID"
+    :courseID="courseID"
+    :courseName="courseName"
+    :studentName="studentName"
+    :studentStatus="studentStatus"
+    @close="isEditStudentEnrollVisible = false"
+  />
+  <DeleteStudent
+    v-if="isDeleteStudentVisible"
+    :studentID="studentID"
+    :courseID="courseID"
+    :courseName="courseName"
+    :studentName="studentName"
+    :studentStatus="studentStatus"
+    @close="isDeleteStudentVisible = false"
+  />
 </template>
 
 <script setup>
@@ -174,9 +204,47 @@ import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
 import ShowUser from "@/components/icons/ShowUser.vue";
 import { fetchEnrollments } from "@/api/api";
+import StudentEnroll from "@/components/popups/StudentEnroll.vue";
+import EditStudentEnroll from "@/components/popups/EditStudentEnroll.vue";
+import DeleteStudent from "@/components/popups/DeleteStudent.vue";
+
+const isStudentEnrollVisible = ref(false);
+const isEditStudentEnrollVisible = ref(false);
+const isDeleteStudentVisible = ref(false);
+const studentID = ref("");
+const courseID = ref("");
+const courseName = ref("");
+const studentName = ref("");
+const studentStatus = ref("");
+
+const studentDetails = (id) => {
+  studentID.value = id;
+  courseID.value = course_id.value;
+  courseName.value = "Example Course";
+  studentName.value = "Example Student";
+  studentStatus.value = "ENROLL";
+  isStudentEnrollVisible.value = true;
+};
+
+const editStudentEnroll = (id) => {
+  studentID.value = id;
+  courseID.value = course_id.value;
+  courseName.value = "Example Course";
+  studentName.value = "Example Student";
+  studentStatus.value = "ENROLL";
+  isEditStudentEnrollVisible.value = true;
+};
+
+const deleteStudent = (id) => {
+  studentID.value = id;
+  courseID.value = course_id.value;
+  courseName.value = "Example Course";
+  studentName.value = "Example Student";
+  studentStatus.value = "ENROLL";
+  isDeleteStudentVisible.value = true;
+};
 
 const searchQuery = ref("");
-
 const status = ref("default");
 
 const toggleStatus = () => {
@@ -291,6 +359,10 @@ const UpdateEnrollment = async (id, status) => {
   } catch (error) {
     console.error("Error fetching students:", error);
   }
+};
+
+const getStatusText = (status) => {
+  return status === "ENROLL" ? "Enroll" : "Not Enroll";
 };
 
 onMounted(() => {
