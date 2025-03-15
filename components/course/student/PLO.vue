@@ -34,6 +34,7 @@
           >
             <component
               :is="student.PLO[plo] ? Include : NotInclude"
+              :class="student.PLO[plo] ? 'text-green-700' : 'text-red-700'"
               class="w-5 h-5"
             />
           </div>
