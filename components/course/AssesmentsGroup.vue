@@ -67,12 +67,6 @@
               <ShowUser class="w-5 h-5" />
             </button>
             <button
-              @click="editGroup(group.id)"
-              class="flex items-center justify-center bg-white rounded-xl p-2 border hover:bg-black-primary hover:text-white"
-            >
-              <Edit class="w-5 h-5" />
-            </button>
-            <button
               @click="deleteGroup(group.id)"
               class="flex items-center justify-center rounded-xl p-2 border hover:bg-red-500 hover:text-white"
             >
@@ -83,6 +77,12 @@
       </div>
     </div>
   </div>
+  <DeleteAssignmentGroup
+    v-if="isDeleteAssignmentGroupPopupOpen"
+    :groupID="groupID"
+    :groupName="groupName"
+    @close="isDeleteAssignmentGroupPopupOpen = false"
+  />
 </template>
 
 <script setup>
@@ -95,6 +95,7 @@ import Search from "@/components/icons/Search.vue";
 import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
 import ShowUser from "@/components/icons/ShowUser.vue";
+import DeleteAssignmentGroup from "@/components/popups/DeleteAssignmentGroup.vue";
 
 const searchQuery = ref("");
 const course_id = ref(1);
@@ -114,8 +115,16 @@ const showGroup = (groupId, groupName) => {
   });
 };
 
+const isDeleteAssignmentGroupPopupOpen = ref(false);
+const groupID = ref("");
+const groupName = ref("");
+
 const editGroup = (groupId) => {};
-const deleteGroup = (groupId) => {};
+const deleteGroup = (groupId) => {
+  groupID.value = groupId;
+  groupName.value = "Ex Group";
+  isDeleteAssignmentGroupPopupOpen.value = true;
+};
 </script>
 
 <style lang="scss" scoped>
