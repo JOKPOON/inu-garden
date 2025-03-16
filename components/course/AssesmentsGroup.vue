@@ -61,16 +61,10 @@
           </div>
           <div class="flex flex-row gap-2 items-center justify-center">
             <button
-              @click="showGroup(group.id)"
+              @click="showGroup(group.id, group.name)"
               class="flex items-center justify-center bg-white rounded-xl p-2 border hover:bg-black-primary hover:text-white"
             >
               <ShowUser class="w-5 h-5" />
-            </button>
-            <button
-              @click="editGroup(group.id)"
-              class="flex items-center justify-center bg-white rounded-xl p-2 border hover:bg-black-primary hover:text-white"
-            >
-              <Edit class="w-5 h-5" />
             </button>
             <button
               @click="deleteGroup(group.id)"
@@ -83,10 +77,17 @@
       </div>
     </div>
   </div>
+  <DeleteAssignmentGroup
+    v-if="isDeleteAssignmentGroupPopupOpen"
+    :groupID="groupID"
+    :groupName="groupName"
+    @close="isDeleteAssignmentGroupPopupOpen = false"
+  />
 </template>
 
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import TemplateButton from "@/components/button/TemplateButton.vue";
 import Import from "@/components/button/ImportButton.vue";
 import Export from "@/components/button/ExportButton.vue";
@@ -94,6 +95,7 @@ import Search from "@/components/icons/Search.vue";
 import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
 import ShowUser from "@/components/icons/ShowUser.vue";
+import DeleteAssignmentGroup from "@/components/popups/DeleteAssignmentGroup.vue";
 
 const searchQuery = ref("");
 const course_id = ref(1);
@@ -104,9 +106,25 @@ const assessmentGroups = ref([
 
 const fetchEnrollments = (courseId, query) => {};
 
-const showGroup = (groupId) => {};
+const router = useRouter();
+
+const showGroup = (groupId, groupName) => {
+  router.push({
+    path: `/courses/assessments/groups/${groupId}`,
+    query: { name: groupName },
+  });
+};
+
+const isDeleteAssignmentGroupPopupOpen = ref(false);
+const groupID = ref("");
+const groupName = ref("");
+
 const editGroup = (groupId) => {};
-const deleteGroup = (groupId) => {};
+const deleteGroup = (groupId) => {
+  groupID.value = groupId;
+  groupName.value = "Ex Group";
+  isDeleteAssignmentGroupPopupOpen.value = true;
+};
 </script>
 
 <style lang="scss" scoped>

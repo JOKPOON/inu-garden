@@ -12,22 +12,31 @@
           <div
             class="text-2xl font-semibold text-black-primary w-full text-start"
           >
-            Delete Student
+            Add CLO
           </div>
           <div class="text-sm text-grey-primary mt-1">
-            from course
+            <span class="font-semibold text-black-primary"> {{ name }} </span>
+            in
             <span class="font-semibold text-black-primary">{{
-              courseName
+              groupName
             }}</span>
           </div>
         </div>
         <div class="mt-4 text-center flex gap-4 flex-col text-sm w-[28rem]">
           <div class="flex flex-col items-start w-full gap-2">
-            <label class="font-semibold text-black-primary">Student ID</label>
+            <label class="font-semibold text-black-primary">Select CLO</label>
             <div
-              class="w-full px-4 py-2 border border-grey-secondary rounded-xl"
+              class="bg-transparent border border-grey-secondary rounded-xl text-base p-3 hover:cursor-pointer w-full"
             >
-              {{ studentID }}
+              <select
+                v-model="selectCLO"
+                class="w-full border-none outline-none hover:cursor-pointer"
+                placeholder="Select CLO"
+              >
+                <option value="">Select CLO</option>
+                <option value="ID251">ID251</option>
+                <option value="ID252">ID252</option>
+              </select>
             </div>
           </div>
         </div>
@@ -35,10 +44,10 @@
           class="flex flex-row items-center justify-center gap-2 w-full mt-4 rounded-xl"
         >
           <button
-            @click="confirmDelete"
-            class="py-2 font-medium border border-grey-secondary text-white rounded-xl w-full bg-red-500"
+            @click="updateStatus"
+            class="py-2 font-medium border border-grey-secondary text-black-primary rounded-xl w-full bg-yellow-primary hover:bg-black-primary hover:text-white"
           >
-            Delete
+            Add
           </button>
           <button
             @click="$emit('close')"
@@ -53,35 +62,34 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
 import { defineProps, defineEmits } from "vue";
 
-const emit = defineEmits(["close", "confirmDelete"]);
+const emit = defineEmits(["close"]);
 
 const props = defineProps({
-  studentID: {
+  groupID: {
     type: String,
     required: true,
   },
-  courseID: {
+  groupName: {
     type: String,
     required: true,
   },
-  courseName: {
+  id: {
     type: String,
     required: true,
   },
-  studentName: {
-    type: String,
-    required: true,
-  },
-  studentStatus: {
+  name: {
     type: String,
     required: true,
   },
 });
 
-const confirmDelete = () => {
-  emit("confirmDelete");
+const selectCLO = ref("");
+
+const updateStatus = () => {
+  emit("close");
 };
 </script>
 

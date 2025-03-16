@@ -4,7 +4,6 @@
       <CourseNav :currentRouteName="'Assessments'" />
     </div>
     <AssesmentsGroup />
-    <Assessments />
   </div>
 </template>
 
