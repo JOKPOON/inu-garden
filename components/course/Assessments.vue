@@ -338,7 +338,7 @@ import Include from "@/components/icons/Include.vue";
 import NotInclude from "@/components/icons/NotInclude.vue";
 import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
-import AddCLO from "@/components/popups/AddCLO.vue";
+import AddCLO from "~/components/popups/AddCLOAssessment.vue";
 import AddStudentToAssessment from "@/components/popups/AddStudentToAssessment.vue";
 const { t } = useI18n();
 

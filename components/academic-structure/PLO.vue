@@ -83,7 +83,7 @@
 
           <div class="grid grid-cols-2 w-full h-full">
             <div
-              class="col-span-1 h-full border-r max-h-[calc(100vh-347px)] overflow-y-scroll scrollbar-set"
+              class="col-span-1 h-full border-r max-h-[calc(100vh-342px)] overflow-y-scroll scrollbar-set"
             >
               <div
                 class="w-full flex flex-col gap-2 py-3 border-b border-grey-secondary"
@@ -208,7 +208,7 @@
               </div>
             </div>
             <div
-              class="col-span-1 h-full border-r max-h-[calc(100vh-347px)] overflow-y-scroll scrollbar-set"
+              class="col-span-1 h-full border-r max-h-[calc(100vh-342px)] overflow-y-scroll scrollbar-set"
             >
               <div
                 class="w-full flex flex-col gap-2 py-3 border-b border-grey-secondary"
