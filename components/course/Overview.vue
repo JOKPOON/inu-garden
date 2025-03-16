@@ -8,7 +8,7 @@
           class="shadow-sm rounded-xl p-6 bg-white border border-grey-tertiary"
         >
           <div class="flex flex-row justify-between gap-6 items-center">
-            <button @click="overviewCourse(course.id)">
+            <button @click="overviewCourse(course.id , course.code)">
               <p class="text-base text-start font-semibold text-grey-600">
                 {{ course.code }}
               </p>
@@ -19,13 +19,13 @@
             <div>
               <div class="flex flex-row gap-2">
                 <button
-                  @click="overviewCourse(course.id)"
+                  @click="overviewCourse(course.id , course.code)"
                   class="flex items-center flex-row justify-center bg-yellow-primary hover:bg-black-primary text-black-primary hover:text-white rounded-xl px-4 py-3 gap-2"
                 >
                   <span class="font-semibold text-base">Course Portfolio</span>
                 </button>
                 <button
-                  @click="editCourse(course.id)"
+                  @click="editCourse(course.id, course.code)"
                   class="flex items-center justify-center relative z-50 bg-white rounded-xl p-3 border border-grey-secondary hover:bg-black-primary text-black-primary hover:text-white"
                 >
                   <Edit class="w-6 h-6" />
@@ -151,12 +151,18 @@ definePageMeta({
 });
 
 const router = useRouter();
-const overviewCourse = (id) => {
-  router.push(`/courses/portfolio/${id}`);
+const overviewCourse = (id, code) => {
+  router.push({
+    path:`/courses/portfolio/${id}`,
+    query: { code: code },
+  });
 };
 
-const editCourse = (id) => {
-  router.push(`/courses/edit-course/${id}`);
+const editCourse = (id, code) => {
+    router.push({
+    path: `/courses/edit-course/${id}`,
+    query: { code: code },
+  });
 };
 
 const buttons = ["Overview", "Grade Overview"];

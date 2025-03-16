@@ -61,7 +61,7 @@
           </div>
           <div class="flex flex-row gap-2 items-center justify-center">
             <button
-              @click="showGroup(group.id)"
+              @click="showGroup(group.id, group.name)"
               class="flex items-center justify-center bg-white rounded-xl p-2 border hover:bg-black-primary hover:text-white"
             >
               <ShowUser class="w-5 h-5" />
@@ -87,6 +87,7 @@
 
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import TemplateButton from "@/components/button/TemplateButton.vue";
 import Import from "@/components/button/ImportButton.vue";
 import Export from "@/components/button/ExportButton.vue";
@@ -104,7 +105,15 @@ const assessmentGroups = ref([
 
 const fetchEnrollments = (courseId, query) => {};
 
-const showGroup = (groupId) => {};
+const router = useRouter();
+
+const showGroup = (groupId, groupName) => {
+  router.push({
+    path: `/courses/assessments/groups/${groupId}`,
+    query: { name: groupName },
+  });
+};
+
 const editGroup = (groupId) => {};
 const deleteGroup = (groupId) => {};
 </script>

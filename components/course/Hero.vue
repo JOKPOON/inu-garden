@@ -77,13 +77,13 @@
         <div>
           <div class="flex flex-row gap-2">
             <button
-              @click="overviewCourse(course.id)"
+              @click="overviewCourse(course.id, course.code)"
               class="flex items-center flex-row justify-center border border-grey-secondary hover:bg-black-primary text-black-primary hover:text-white rounded-xl px-4 py-3 gap-2"
             >
               <span class="font-semibold text-base">Overview</span>
             </button>
             <button
-              @click="editCourse(course.id)"
+              @click="editCourse(course.id, course.code)"
               class="flex items-center justify-center relative z-50 bg-white rounded-xl p-3 border border-grey-secondary hover:bg-black-primary text-black-primary hover:text-white"
             >
               <Edit class="w-6 h-6" />
@@ -154,12 +154,18 @@ const addCourse = () => {
   router.push("/courses/create-course");
 };
 
-const overviewCourse = (code) => {
-  router.push(`/courses/overview/${code}`);
+const overviewCourse = (id, code) => {
+  router.push({
+    path: `/courses/overview/${id}`,
+    query: { code: code },
+  });
 };
 
-const editCourse = (code) => {
-  router.push(`/courses/edit-course/${code}`);
+const editCourse = (id, code) => {
+  router.push({
+    path: `/courses/edit-course/${id}`,
+    query: { code: code },
+  });
 };
 
 const { t } = useI18n();

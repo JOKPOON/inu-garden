@@ -318,10 +318,23 @@ const stylePath = (path) => {
 const routeSegments = computed(() => {
   const segments = route.path
     .split("/")
-    .filter((segment) => segment)
+    .filter(
+      (segment) =>
+        segment &&
+        !segment.startsWith("[") &&
+        !segment.endsWith("]") &&
+        !segment.includes(":") &&
+        !/\d/.test(segment)
+    )
     .map((segment) => stylePath(segment));
   if (route.path === "/") {
     segments.unshift("Courses");
+  }
+  if (route.query.code) {
+    segments.push(route.query.code);
+  }
+  if (route.query.name) {
+    segments.push(route.query.name);
   }
   return segments;
 });

@@ -3,7 +3,7 @@
     <button
       v-for="button in buttons"
       :key="button"
-      :class="[
+      :class="[ 
         'px-6 py-3 rounded-xl',
         activeButton === button
           ? 'bg-black-primary text-white'
@@ -18,8 +18,9 @@
 
 <script setup>
 import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { defineProps } from "vue";
+
 const props = defineProps({
   currentRouteName: String,
 });
@@ -44,11 +45,12 @@ const buttonRoutes = {
 
 const activeButton = ref(props.currentRouteName);
 const router = useRouter();
-const id = router.currentRoute.value.params.id;
+const route = useRoute();
+const id = route.params.id;
 
 const setActionButton = (button) => {
   const routePath = `/courses/${buttonRoutes[button]}/${id}`;
-  router.push(routePath);
+  router.push({ path: routePath, query: route.query });
   activeButton.value = button;
 };
 </script>
