@@ -9,7 +9,7 @@ export function stage() {
 
 export function api() {
   if (stage() === "dev") {
-    return "https://localhost/";
+    return "http://localhost:3001/";
   } else {
     return "https://api.example.com";
   }
@@ -112,15 +112,18 @@ const fetchEnrollments = async (students, course_id, searchQuery) => {
   }
 };
 
-const fetchPrograms = async (programs) => {
+const fetchPrograms = async (programs, department) => {
   try {
-    const response = await fetch(`${BaseURL}programmes`, {
-      credentials: "include",
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await fetch(
+      `${BaseURL}programmes?department_name=${department}`,
+      {
+        credentials: "include",
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     if (!response.ok) throw new Error("Failed to fetch programs");
     const res = await response.json();
     programs.value = res.data;
@@ -261,12 +264,56 @@ const fetchReceivedFeedbacks = async (received_feedbacks, course_id) => {
   }
 };
 
+const fetchDepartments = async (departments) => {
+  try {
+    const response = await fetch(`${BaseURL}departments`, {
+      credentials: "include",
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Failed to fetch departments");
+    const res = await response.json();
+    departments.value = res.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const fetchStudents = async (
+  students,
+  query,
+  programme_id,
+  department_name,
+  year
+) => {
+  try {
+    const response = await fetch(
+      `${BaseURL}students?query=${query}&programme_id=${programme_id}&department_name=${department_name}&year=${year}`,
+      {
+        credentials: "include",
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!response.ok) throw new Error("Failed to fetch students");
+    const res = await response.json();
+    students.value = res.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export {
   BaseURL,
   fetchMe,
   fetchCourses,
   fetchPrograms,
   fetchSerms,
+  fetchStudents,
   fetchAssignments,
   fetchScores,
   fetchCourse,
@@ -276,4 +323,5 @@ export {
   fetchInstructor,
   fetchInstructorCourses,
   fetchReceivedFeedbacks,
+  fetchDepartments,
 };
