@@ -54,6 +54,7 @@
 
 <script setup>
 import { defineProps, defineEmits } from "vue";
+import { BaseURL } from "~/api/api";
 
 const emit = defineEmits(["close", "confirmDelete"]);
 
@@ -78,10 +79,34 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  enrollmentId: {
+    type: String,
+    required: true,
+  },
 });
 
 const confirmDelete = () => {
-  emit("confirmDelete");
+  DeleteEnrollment(props.enrollmentId);
+  emit("close");
+};
+
+//Delete enrollment
+const DeleteEnrollment = async (id) => {
+  try {
+    const response = await fetch(`${BaseURL}enrollments/${id}`, {
+      credentials: "include",
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) throw new Error("Failed to delete enrollment");
+    const res = await response.json();
+    console.log(res);
+  } catch (error) {
+    console.error("Error fetching students:", error);
+  }
 };
 </script>
 

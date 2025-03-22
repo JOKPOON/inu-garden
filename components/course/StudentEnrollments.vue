@@ -117,13 +117,13 @@
                 <ShowUser class="w-5 h-5" />
               </button>
               <button
-                @click="editStudentEnroll(student.student_id)"
+                @click="editStudentEnroll(student.id, student.student_id)"
                 class="flex items-center justify-center rounded-xl p-2 border bg-white hover:bg-black-primary hover:text-white"
               >
                 <Edit class="w-5 h-5" />
               </button>
               <button
-                @click="deleteStudent(student.student_id)"
+                @click="deleteStudent(student.id, student.student_id)"
                 class="flex items-center justify-center rounded-xl p-2 border hover:bg-red-500 hover:text-white"
               >
                 <Delete class="w-5 h-5" />
@@ -178,6 +178,7 @@
     :courseName="courseName"
     :studentName="studentName"
     :studentStatus="studentStatus"
+    :enrollmentId="enrollmentId"
     @close="isEditStudentEnrollVisible = false"
   />
   <DeleteStudent
@@ -187,6 +188,7 @@
     :courseName="courseName"
     :studentName="studentName"
     :studentStatus="studentStatus"
+    :enrollmentId="enrollmentId"
     @close="isDeleteStudentVisible = false"
   />
 </template>
@@ -211,6 +213,7 @@ import DeleteStudent from "@/components/popups/DeleteStudent.vue";
 const isStudentEnrollVisible = ref(false);
 const isEditStudentEnrollVisible = ref(false);
 const isDeleteStudentVisible = ref(false);
+const enrollmentId = ref("");
 const studentID = ref("");
 const courseID = ref("");
 const courseName = ref("");
@@ -226,8 +229,9 @@ const studentDetails = (id) => {
   isStudentEnrollVisible.value = true;
 };
 
-const editStudentEnroll = (id) => {
-  studentID.value = id;
+const editStudentEnroll = (id, student_id) => {
+  studentID.value = student_id;
+  enrollmentId.value = id;
   courseID.value = course_id.value;
   courseName.value = "Example Course";
   studentName.value = "Example Student";
@@ -235,8 +239,9 @@ const editStudentEnroll = (id) => {
   isEditStudentEnrollVisible.value = true;
 };
 
-const deleteStudent = (id) => {
-  studentID.value = id;
+const deleteStudent = (id, student_id) => {
+  studentID.value = student_id;
+  enrollmentId.value = id;
   courseID.value = course_id.value;
   courseName.value = "Example Course";
   studentName.value = "Example Student";
@@ -319,50 +324,8 @@ const CreateEnrollment = async (student_ids, course_id, status) => {
   }
 };
 
-//Delete enrollment
-const DeleteEnrollment = async (id) => {
-  try {
-    const response = await fetch(`${BaseURL}enrollments/${id}`, {
-      credentials: "include",
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) throw new Error("Failed to delete enrollment");
-    const res = await response.json();
-    console.log(res);
-  } catch (error) {
-    console.error("Error fetching students:", error);
-  }
-};
-
-//Update enrollment status to ENROLL OR WITHDRAW
-const UpdateEnrollment = async (id, status) => {
-  try {
-    const response = await fetch(`${BaseURL}enrollments/${id}`, {
-      credentials: "include",
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-
-      body: JSON.stringify({
-        status: status,
-      }),
-    });
-
-    if (!response.ok) throw new Error("Failed to update enrollment");
-    const res = await response.json();
-    console.log(res);
-  } catch (error) {
-    console.error("Error fetching students:", error);
-  }
-};
-
 const getStatusText = (status) => {
-  return status === "ENROLL" ? "Enroll" : "Not Enroll";
+  return status === "ENROLL" ? "Enroll" : "Withdraw";
 };
 
 onMounted(() => {

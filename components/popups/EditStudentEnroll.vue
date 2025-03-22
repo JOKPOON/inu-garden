@@ -40,7 +40,7 @@
                 class="w-full border-none outline-none hover:cursor-pointer"
               >
                 <option value="ENROLL">Enroll</option>
-                <option value="NOT_ENROLL">Not Enroll</option>
+                <option value="WITHDRAW">Withdraw</option>
               </select>
             </div>
           </div>
@@ -69,6 +69,7 @@
 <script setup>
 import { ref } from "vue";
 import { defineProps, defineEmits } from "vue";
+import { BaseURL } from "~/api/api";
 
 const emit = defineEmits(["close"]);
 
@@ -93,12 +94,40 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  enrollmentId: {
+    type: String,
+    required: true,
+  },
 });
 
 const selectedStatus = ref(props.studentStatus);
 
 const updateStatus = () => {
+  updateStudentStatus();
   emit("close");
+};
+
+const updateStudentStatus = async () => {
+  try {
+    const response = await fetch(
+      `${BaseURL}enrollments/${props.enrollmentId}`,
+      {
+        credentials: "include",
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          status: selectedStatus.value,
+        }),
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Failed to update student status");
+    }
+  } catch (error) {
+    console.error(error);
+  }
 };
 </script>
 
