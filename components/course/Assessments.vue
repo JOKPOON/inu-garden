@@ -1,32 +1,52 @@
 <template>
   <div class="flex flex-col gap-4">
     <div class="flex flex-row justify-between items-center gap-4">
-      <div
-        class="px-4 py-3 bg-white border border-grey-secondary rounded-xl flex flex-row gap-4 items-center"
-      >
-        <input
-          type="text"
-          v-model="searchQuery"
-          @keyup.enter="getStudents(searchQuery)"
-          class="bg-transparent border-none focus:ring-0 outline-none text-base w-48"
-          placeholder="Search..."
-        />
-        <button
-          class="flex items-center justify-center bg-white rounded-xl"
-          @click="getStudents(searchQuery)"
+      <div class="flex flex-row gap-4">
+        <div
+          class="px-4 py-3 bg-white border border-grey-secondary rounded-xl flex flex-row gap-4 items-center"
         >
-          <Search class="w-6 h-6" />
-        </button>
+          <input
+            type="text"
+            v-model="searchQuery"
+            @keyup.enter="getStudents(searchQuery)"
+            class="bg-transparent border-none focus:ring-0 outline-none text-base w-48"
+            placeholder="Search..."
+          />
+          <button
+            class="flex items-center justify-center bg-white rounded-xl"
+            @click="getStudents(searchQuery)"
+          >
+            <Search class="w-6 h-6" />
+          </button>
+        </div>
+        <div
+          class="flex flex-col gap-1 items-center py-2 px-4 rounded-xl bg-black-primary"
+        >
+          <div class="text-sm font-semibold text-start w-full">
+            <span v-if="normalizedWeight !== 100" class="text-yellow-primary">
+              In Progress ({{ normalizedWeight }}%)
+            </span>
+            <span v-else class="text-green-700">Completed! </span>
+          </div>
+          <div class="w-48 bg-grey-tertiary rounded-full h-2">
+            <div
+              :class="{
+                'bg-yellow-primary rounded-full h-2': normalizedWeight < 100,
+                'bg-green-700 rounded-full h-2': normalizedWeight === 100,
+              }"
+              :style="{ width: normalizedWeight + '%' }"
+            ></div>
+          </div>
+        </div>
       </div>
       <div class="flex flex-row gap-4">
         <AddButton
-          @click="onClickAddUser"
+          @click="addAssesments"
           class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
         >
           <span class="text-black-primary font-semibold text-base">Add</span>
         </AddButton>
         <TemplateButton
-          @click="exportUser"
           class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
         >
           <span class="text-black-primary font-semibold text-base"
@@ -34,7 +54,6 @@
           >
         </TemplateButton>
         <Import
-          @click="onClickImportUser"
           class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
         >
           <span class="text-black-primary font-semibold text-base">Import</span>
@@ -72,13 +91,28 @@
                 :key="assessment.id"
                 @click="setActiveAssessment(assessment.id)"
                 :class="[
-                  'flex items-center justify-center py-2 rounded-xl w-full hover:cursor-pointer',
+                  'flex items-center  py-3 rounded-xl w-full hover:cursor-pointer  flex-row gap-2 px-3 justify-between text-sm',
                   activeAssessment === assessment.id
                     ? 'bg-black-primary text-white'
                     : 'border border-grey-secondary',
                 ]"
               >
-                {{ assessment.name }}
+                <div
+                  v-if="!editMode"
+                  class="text-sm bg-yellow-primary rounded-lg text-black-primary p-1"
+                >
+                  {{ assessment.weight }}%
+                </div>
+                <div v-if="!editMode" class="text-start w-full flex items-center h-full">
+                  {{ assessment.name }}
+                </div>
+                <div v-if="editMode" class="text-start w-full flex items-center h-full">
+                  <input
+                    type="text"
+                    class="bg-transparent focus:ring-0 outline-none text-base w-full text-sm"
+                    v-model="assessment.name"
+                  />
+                </div>
               </button>
             </div>
             <div
@@ -88,45 +122,94 @@
                 v-if="getActiveAssessment().is_included_in_clo == true"
                 class="text-green-700"
               />
-              <NotInclude v-else 
-                class="text-red-700"
-              />
+              <NotInclude v-else class="text-red-700" />
             </div>
             <div
               class="h-full w-full grid grid-cols-2 gap-6 max-h-[calc(100vh-470px)] overflow-y-scroll scrollbar-set"
             >
               <div class="flex flex-col gap-2">
+                <div class="flex justify-end w-full">
+                  <SmallEditButton
+                    v-if="!editMode"
+                    @click="editAssessment"
+                    class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-3 py-2 gap-2"
+                  >
+                    <span class="text-black-primary font-semibold text-base"
+                      >Edit</span
+                    >
+                  </SmallEditButton>
+                  <SmallSaveButton
+                    v-else
+                    @click="saveAssessment"
+                    class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-3 py-2 gap-2"
+                  >
+                    <span class="text-black-primary font-semibold text-base"
+                      >Save</span
+                    >
+                  </SmallSaveButton>
+                </div>
                 <div
                   class="p-4 border border-grey-tertiary rounded-xl flex flex-col gap-2"
                 >
+                  <div v-if="editMode" class="text-sm font-semibold">
+                    Weighted Score
+                  </div>
+                  <input
+                    v-if="editMode"
+                    v-model="getActiveAssessment().weight"
+                    type="number"
+                    class="w-full px-4 py-2 border border-grey-secondary rounded-xl outline-none"
+                    placeholder="Weighted Score"
+                  />
                   <div class="text-sm font-semibold">Description</div>
-                  <div class="text-sm text-grey-primary">
+                  <div v-if="!editMode" class="text-sm text-grey-primary">
                     {{ getActiveAssessment().description }}
                   </div>
+                  <textarea
+                    v-if="editMode"
+                    v-model="getActiveAssessment().description"
+                    rows="5"
+                    class="w-full px-4 py-2 border border-grey-secondary rounded-xl outline-none text-sm"
+                    placeholder="Description"
+                  ></textarea>
                   <div class="flex flex-row justify-between gap-4 mt-2">
                     <div class="text-sm font-semibold">Max Score</div>
                     <div class="text-sm text-black-primary">
                       {{ getActiveAssessment().max_score }}
                     </div>
                   </div>
-                  <div class="flex flex-row justify-between gap-4">
+                  <div class="flex flex-row justify-between gap-4  items-center">
                     <div class="text-sm font-semibold">
                       Expected Passing Student (%)
                     </div>
-                    <div class="text-sm text-black-primary">
+                    <div v-if="!editMode" class="text-sm text-black-primary">
                       {{
                         getActiveAssessment()
                           .expected_passing_student_percentage
                       }}
                     </div>
+                    <input
+                      v-if="editMode"
+                      v-model="getActiveAssessment().expected_passing_student_percentage"
+                      type="number"
+                      class=" px-4 py-2 border border-grey-secondary rounded-xl outline-none w-24"
+                      placeholder="(%)"
+                    />
                   </div>
-                  <div class="flex flex-row justify-between gap-4 mb-2">
+                  <div class="flex flex-row justify-between gap-4 mb-2 items-center">
                     <div class="text-sm font-semibold">
                       Expected Passing Score (%)
                     </div>
-                    <div class="text-sm text-black-primary">
+                    <div v-if="!editMode" class="text-sm text-black-primary">
                       {{ getActiveAssessment().expected_score_percentage }}
                     </div>
+                    <input
+                      v-if="editMode"
+                      v-model="getActiveAssessment().expected_score_percentage"
+                      type="number"
+                      class=" px-4 py-2 border border-grey-secondary rounded-xl outline-none w-24"
+                      placeholder="(%)"
+                    />
                   </div>
                 </div>
                 <div class="chart-container">
@@ -300,22 +383,28 @@
       </div>
     </div>
   </div>
-    <AddCLO
-      v-if="isAddCLOShow"
-      @close="isAddCLOShow = false"
-      :groupID="assesmentsGroupID"
-      :groupName="assesmentsGroupName"
-      :id="assesmentsID"
-      :name="assesmentsName"
-    />
-    <AddStudentToAssessment
-      v-if="isAddStudentShow"
-      @close="isAddStudentShow = false"
-      :groupID="assesmentsGroupID"
-      :groupName="assesmentsGroupName"
-      :id="assesmentsID"
-      :name="assesmentsName"
-    />
+  <AddAssesments
+    v-if="isAddAssesmentsShow"
+    @close="isAddAssesmentsShow = false"
+    :id="assesmentsGroupID"
+    :name="assesmentsGroupName"
+  />
+  <AddCLO
+    v-if="isAddCLOShow"
+    @close="isAddCLOShow = false"
+    :groupID="assesmentsGroupID"
+    :groupName="assesmentsGroupName"
+    :id="assesmentsID"
+    :name="assesmentsName"
+  />
+  <AddStudentToAssessment
+    v-if="isAddStudentShow"
+    @close="isAddStudentShow = false"
+    :groupID="assesmentsGroupID"
+    :groupName="assesmentsGroupName"
+    :id="assesmentsID"
+    :name="assesmentsName"
+  />
 </template>
 
 <script setup>
@@ -338,8 +427,11 @@ import Include from "@/components/icons/Include.vue";
 import NotInclude from "@/components/icons/NotInclude.vue";
 import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
-import AddCLO from "~/components/popups/AddCLOAssessment.vue";
+import AddCLO from "@/components/popups/AddCLOAssessment.vue";
 import AddStudentToAssessment from "@/components/popups/AddStudentToAssessment.vue";
+import AddAssesments from "@/components/popups/AddAssesments.vue";
+import SmallEditButton from "@/components/button/SmallEditButton.vue";
+import SmallSaveButton from "@/components/button/SmallSaveButton.vue";
 const { t } = useI18n();
 
 ChartJS.register(
@@ -350,6 +442,29 @@ ChartJS.register(
   CategoryScale,
   LinearScale
 );
+
+const normalizeWeights = (assessments) => {
+  const totalWeight = 1;
+
+  return assessments.map((assessment) => ({
+    ...assessment,
+    weight: assessment.weight / totalWeight,
+    weightPercentage: ((assessment.weight / totalWeight) * 100).toFixed(2),
+  }));
+};
+const normalizedWeight = computed(() => {
+  const normalized = normalizeWeights(assessments.value);
+  return normalized.reduce((sum, assessment) => sum + assessment.weight, 0);
+});
+
+const editMode = ref(false);
+const editAssessment = () => {
+  editMode.value = !editMode.value;
+};
+
+const saveAssessment = () => {
+  editMode.value = false;
+};
 
 const searchQuery = ref("");
 const assessments = ref([]);
@@ -375,8 +490,8 @@ const setActionButton = (button) => {
 
 const router = useRouter();
 const route = useRoute();
-const groupID =route.query.groupId;
-const groupName =route.query.name;
+const groupID = route.query.groupId;
+const groupName = route.query.name;
 
 const changeKeyToLabel = (key) => {
   switch (key) {
@@ -421,12 +536,13 @@ const getStudents = (query) => {
     {
       id: 1,
       name: "Assessment 1",
-      closStatus: "Include",
+      is_included_in_clo: true,
+      weight: 30,
       description:
         "lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud",
-      maxScore: 100,
-      expectedStudent: 50,
-      expectScore: 80,
+      max_score: 100,
+      expected_passing_student_percentage: 50,
+      expected_score_percentage: 80,
       scores: [
         12, 19, 3, 5, 2, 3, 7, 10, 15, 12, 5, 30, 35, 20, 45, 30, 55, 40, 25, 3,
       ],
@@ -460,12 +576,13 @@ const getStudents = (query) => {
     {
       id: 2,
       name: "Assessment 2",
-      closStatus: "Not Include",
+      is_included_in_clo: false,
+      weight: 20,
       description:
         "lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud",
-      maxScore: 90,
-      expectedStudent: 60,
-      expectScore: 80,
+      max_score: 90,
+      expected_passing_student_percentage: 60,
+      expected_score_percentage: 80,
       scores: [
         10, 15, 5, 8, 3, 6, 9, 12, 18, 14, 7, 25, 30, 22, 40, 28, 50, 35, 20, 5,
       ],
@@ -499,12 +616,13 @@ const getStudents = (query) => {
     {
       id: 3,
       name: "Assessment 3",
-      closStatus: "Include",
+      is_included_in_clo: true,
+      weight: 10,
       description:
         "lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud",
-      maxScore: 100,
-      expectedStudent: 50,
-      expectScore: 80,
+      max_score: 100,
+      expected_passing_student_percentage: 50,
+      expected_score_percentage: 80,
       scores: [
         8, 12, 4, 6, 3, 5, 8, 11, 16, 13, 6, 28, 32, 18, 38, 25, 45, 30, 18, 4,
       ],
@@ -589,13 +707,22 @@ const removeCLO = (code) => {
   active.clos = active.clos.filter((clo) => clo !== code);
 };
 
+const isAddAssesmentsShow = ref(false);
 const isAddCLOShow = ref(false);
 const isAddStudentShow = ref(false);
-const  assesmentsGroupID = ref("");
-const  assesmentsGroupName = ref("");
-const  assesmentsID = ref("");
-const  assesmentsName = ref("");
+const assesmentsGroupID = ref("");
+const assesmentsGroupName = ref("");
+const assesmentsID = ref("");
+const assesmentsName = ref("");
 
+const addAssesments = () => {
+  const active = getActiveAssessment();
+  assesmentsGroupID.value = groupID;
+  assesmentsGroupName.value = groupName;
+  assesmentsID.value = active.id;
+  assesmentsName.value = active.name;
+  isAddAssesmentsShow.value = true;
+};
 
 const addCLO = () => {
   const active = getActiveAssessment();

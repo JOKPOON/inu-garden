@@ -104,7 +104,7 @@
             <div
               class="col-span-1 h-full border-r max-h-[calc(100vh-342px)] overflow-y-scroll scrollbar-set"
             >
-              <div
+              <!-- <div
                 class="w-full flex flex-col gap-2 py-3 border-b border-grey-secondary"
               >
                 <div class="flex flex-row gap-4 px-4">
@@ -131,7 +131,7 @@
                     {{ selectedPO.detail.expectedWeightPassingCLORate }}%
                   </div>
                 </div>
-              </div>
+              </div> -->
               <div class="w-full flex flex-col gap-2 pt-2">
                 <div
                   class="font-semibold text-grey-primary px-4 w-full text-center border-b border-grey-secondary pb-2"
