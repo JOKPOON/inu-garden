@@ -106,10 +106,10 @@
                 <div v-if="!editMode" class="text-start w-full flex items-center h-full">
                   {{ assessment.name }}
                 </div>
-                <div v-if="editMode" class="text-start w-full flex items-center h-full">
+                <div v-if="editMode" class="text-start w-full flex items-center h-full border border-grey-primary p-3 rounded-xl">
                   <input
                     type="text"
-                    class="bg-transparent focus:ring-0 outline-none text-base w-full text-sm"
+                    class="bg-transparent focus:ring-0 outline-none w-full text-sm"
                     v-model="assessment.name"
                   />
                 </div>
