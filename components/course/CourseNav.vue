@@ -1,5 +1,5 @@
 <template>
-  <div class="border border-grey-secondary rounded-xl">
+  <div class="">
     <button
       v-for="button in buttons"
       :key="button"
@@ -50,7 +50,10 @@ const id = route.params.id;
 
 const setActionButton = (button) => {
   const routePath = `/courses/${buttonRoutes[button]}/${id}`;
-  router.push({ path: routePath, query: route.query });
+  const query = { ...route.query };
+  delete query.name;
+  delete query.groupId;
+  router.push({ path: routePath, query });
   activeButton.value = button;
 };
 </script>

@@ -23,10 +23,11 @@
       >
         <select
           v-model="selectedProgramOption"
-          class="bg-transparent border-none focus:ring-0 outline-none text-base pr-2 hover:cursor-pointer"
+          class="bg-transparent border-none focus:ring-0 outline-none text-base pr-2 hover:cursor-pointer max-w-[250px]"
         >
           <option value="">Programs</option>
           <option
+            class="px-3"
             v-for="option in programs"
             :key="option.id"
             :value="option.id"

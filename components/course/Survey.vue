@@ -5,7 +5,7 @@
         v-for="button in buttons"
         :key="button"
         :class="[
-          'px-6 py-2 rounded-xl',
+          'px-6 py-3 rounded-xl',
           activeButton === button
             ? 'bg-black-primary text-white'
             : 'border border-grey-secondary text-base',
@@ -26,7 +26,7 @@
       </button>
       <button
         :class="[
-          'flex items-center flex-row justify-center border rounded-xl px-4 py-2 gap-2',
+          'flex items-center flex-row justify-center border rounded-xl px-4 py-3 gap-2',
           isComplete ? 'bg-black-primary text-white' : 'border-grey-secondary',
         ]"
         @click="markAsComplete"

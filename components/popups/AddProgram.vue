@@ -18,37 +18,59 @@
           </div>
         </div>
         <div class="mt-4 text-center flex gap-4 flex-col text-sm">
-          <input
-            v-model="program.name_th"
-            type="text"
-            placeholder="Program Name (TH)"
-            class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
-          />
-
-          <input
-            v-model="program.name"
-            type="text"
-            placeholder="Program Name"
-            class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
-          />
-          <textarea
-            v-model="program.desc_th"
-            rows="3"
-            placeholder="Program Description (TH)"
-            class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
-          ></textarea>
-          <textarea
-            v-model="program.desc"
-            rows="3"
-            placeholder="Program Description"
-            class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
-          ></textarea>
-          <input
-            v-model="program.year"
-            type="text"
-            placeholder="Year"
-            class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
-          />
+          <div class="flex flex-col items-start w-full gap-2">
+            <div class="flex flex-col items-start w-full gap-2">
+              <label class="font-semibold text-black-primary"
+                >Program Name (EN)</label
+              >
+              <input
+                v-model="program.name"
+                type="text"
+                placeholder="Program Name"
+                class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
+              />
+            </div>
+            <label class="font-semibold text-black-primary"
+              >Program Name (TH)</label
+            >
+            <input
+              v-model="program.name_th"
+              type="text"
+              placeholder="Program Name (TH)"
+              class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
+            />
+          </div>
+          <div class="flex flex-col items-start w-full gap-2">
+            <label class="font-semibold text-black-primary"
+              >Program Description (ENG)</label
+            >
+            <textarea
+              v-model="program.desc"
+              rows="3"
+              placeholder="Program Description"
+              class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
+            ></textarea>
+          </div>
+          <div class="flex flex-col items-start w-full gap-2">
+            <label class="font-semibold text-black-primary"
+              >Program Description (TH)</label
+            >
+            <textarea
+              v-model="program.desc_th"
+              rows="3"
+              placeholder="Program Description (TH)"
+              class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
+            ></textarea>
+          </div>
+          <div class="flex flex-col items-start w-full gap-2">
+            <label class="font-semibold text-black-primary">Program Year</label>
+            <input
+              v-model="program.year"
+              type="number"
+              placeholder="Year"
+              class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
+            />
+          </div>
         </div>
         <div
           class="flex flex-row items-center justify-center gap-2 w-full mt-4 border border-grey-secondary rounded-xl"
@@ -97,4 +119,14 @@ const addProgram = () => {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+</style>
