@@ -148,13 +148,12 @@ const courseName = ref("");
 
 const deleteGroup = (groupId) => {
   groupID.value = groupId;
-  groupName.value = "Ex Group";
+  groupName.value = course_code;
   isDeleteAssignmentGroupPopupOpen.value = true;
 };
 
 const addGroup = () => {
-  course_id = router.currentRoute.value.params.id;
-  courseName.value = "Ex Group";
+  courseName.value = course_code;
   isAddAssignmentGroupPopupOpen.value = true;
 };
 </script>
