@@ -14,30 +14,50 @@
           </div>
         </div>
         <div class="mt-4 text-center flex gap-4 flex-col text-sm">
+          <div class="flex flex-col items-start w-full gap-2">
+            <label class="font-semibold text-black-primary"
+              >Faculty Name</label
+            >
           <input
             v-model="newFaculty.name_th"
             type="text"
             placeholder="Faculty Name (TH)"
             class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
           />
+          </div>
+          <div class="flex flex-col items-start w-full gap-2">
+            <label class="font-semibold text-black-primary"
+              >Faculty Abbreviation (TH)</label
+            >
           <input
             v-model="newFaculty.abbreviate_th"
             type="text"
             placeholder="Faculty Abbreviation (TH)"
             class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
           />
+          </div>
+          <div class="flex flex-col items-start w-full gap-2">
+            <label class="font-semibold text-black-primary"
+              >Faculty Name</label
+            >
           <input
             v-model="newFaculty.name"
             type="text"
             placeholder="Faculty Name"
             class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
           />
+          </div>
+          <div class="flex flex-col items-start w-full gap-2">
+            <label class="font-semibold text-black-primary"
+              >Faculty Abbreviation</label
+            >
           <input
             v-model="newFaculty.abbreviate"
             type="text"
             placeholder="Faculty Abbreviation"
             class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
           />
+          </div>
         </div>
         <div
           class="flex flex-row items-center justify-center gap-2 w-full mt-4 border border-grey-secondary rounded-xl"

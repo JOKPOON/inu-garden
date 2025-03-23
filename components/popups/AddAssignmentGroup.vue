@@ -7,55 +7,45 @@
         class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center border border-grey-secondary"
       >
         <div class="flex flex-col w-[28rem]">
-          <div class="text-2xl font-semibold text-black-primary">
-            Add Sub PLO
+          <div
+            class="text-2xl font-semibold text-black-primary w-full text-start"
+          >
+            Add Assessment Group
           </div>
           <div class="text-sm text-grey-primary mt-1">
-            Add Sub PLO of
-            <span class="font-semibold text-black-primary">{{ plo }}</span> <br /> of
+            Add Assessment Group for
             <span class="font-semibold text-black-primary">{{ name }}</span>
           </div>
         </div>
         <div class="mt-4 text-center flex gap-4 flex-col text-sm">
           <div class="flex flex-col items-start w-full gap-2">
             <label class="font-semibold text-black-primary"
-              >Sub PLO Code</label
+              >Assessment Group Name</label
             >
-          <input
-            v-model="newSubPLO.code"
-            type="text"
-            placeholder="Sub PLO Code"
-            class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
-          />
+            <input
+              v-model="assessmentsGroup.name"
+              type="text"
+              placeholder="Assessment Group Name"
+              class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
+            />
           </div>
           <div class="flex flex-col items-start w-full gap-2">
             <label class="font-semibold text-black-primary"
-              >Description (Eng)</label
+              >Max Weighted Score</label
             >
-          <textarea
-            v-model="newSubPLO.desc"
-            rows="3"
-            placeholder="Sub PLO Description"
-            class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
-          ></textarea>
+            <input
+              v-model="assessmentsGroup.weight"
+              type="number"
+              placeholder="Max Weighted Score"
+              class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
+            />
           </div>
-          <div class="flex flex-col items-start w-full gap-2">
-            <label class="font-semibold text-black-primary"
-              >Description (TH)</label
-            >
-          <textarea
-            v-model="newSubPLO.desc_th"
-            rows="3"
-            placeholder="Sub PLO Description (TH)"
-            class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl mb-4 outline-none"
-          ></textarea>
-        </div>
         </div>
         <div
-          class="flex flex-row items-center justify-center gap-4 w-full mt-4"
+          class="flex flex-row items-center justify-center gap-2 w-full mt-4 border border-grey-secondary rounded-xl"
         >
           <button
-            @click="addSubPLO"
+            @click="addAssignmentsGroup"
             class="py-2 font-medium border border-grey-secondary text-black-primary rounded-xl w-full bg-yellow-primary hover:bg-black-primary hover:text-white"
           >
             Add
@@ -76,12 +66,15 @@
 import { ref } from "vue";
 import { defineProps, defineEmits } from "vue";
 
+const emit = defineEmits(["close"]);
+
+const assessmentsGroup = ref({
+  name: "",
+  weight: 0,
+});
+
 const props = defineProps({
   id: {
-    type: String,
-    required: true,
-  },
-  plo: {
     type: String,
     required: true,
   },
@@ -91,23 +84,19 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["close", "add"]);
-
-const newSubPLO = ref({
-  code: "",
-  desc: "",
-  desc_th: "",
-});
-
-const addSubPLO = () => {
-  emit("add", newPLO.value);
-  newPLO.value = {
-    code: "",
-    desc: "",
-    desc_th: "",
-  };
+const addAssignmentsGroup = () => {
   emit("close");
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+</style>

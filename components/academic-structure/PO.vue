@@ -66,6 +66,7 @@
           </div>
           <div class="w-full mt-4 flex items-center justify-center">
             <SmallAddButton
+              @click="showAddPO"
               class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-3 py-2 gap-2"
             >
               <span class="text-black-primary font-semibold text-base"
@@ -96,113 +97,6 @@
                 </div>
                 <div v-if="selectedPO.detail" class="px-4">
                   {{ selectedPO.detail.desc }}
-                </div>
-              </div>
-              <div class="w-full flex flex-col gap-2 pt-3">
-                <div class="font-semibold text-black-primary px-4">Sub PO</div>
-                <div
-                  class="flex flex-row justify-between gap-6 items-center w-full px-4"
-                >
-                  <div class="flex">
-                    <div
-                      class="px-3 py-2 bg-white border border-grey-secondary rounded-xl flex flex-row gap-4 items-center"
-                    >
-                      <input
-                        type="text"
-                        v-model="searchQuery"
-                        class="bg-transparent border-none focus:ring-0 outline-none text-base w-48"
-                        placeholder="Search..."
-                      />
-                      <button
-                        class="flex items-center justify-center bg-white rounded-xl"
-                      >
-                        <Search class="w-6 h-6" />
-                      </button>
-                    </div>
-                  </div>
-                  <div class="flex flex-row gap-4">
-                    <SmallAddButton
-                      class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-3 py-2 gap-2"
-                    >
-                      <span class="text-black-primary font-semibold text-base"
-                        >Add</span
-                      >
-                    </SmallAddButton>
-                  </div>
-                </div>
-                <div v-if="selectedPO.detail && selectedPO.detail.subPO">
-                  <table
-                    class="min-w-full divide-y border-grey-secondary mt-4 border-y"
-                  >
-                    <thead class="divide-x border-grey-secondary">
-                      <tr>
-                        <th
-                          scope="col"
-                          class="px-6 py-3 text-center font-semibold text-grey-primary border-r border-grey-secondary"
-                        >
-                          Code
-                        </th>
-                        <th
-                          scope="col"
-                          class="px-6 py-3 text-center font-semibold text-grey-primary border-r border-grey-secondary"
-                        >
-                          Description
-                        </th>
-                        <th
-                          scope="col"
-                          class="px-6 py-3 text-center font-semibold text-grey-primary"
-                        >
-                          Action
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y border-grey-secondary">
-                      <tr
-                        v-for="subPO in selectedPO.detail.subPO"
-                        :key="subPO.code"
-                      >
-                        <td
-                          class="px-6 py-4 whitespace-nowrap text-sm font-medium border-r border-grey-secondary"
-                        >
-                          {{ subPO.code }}
-                        </td>
-                        <td class="px-6 py-4 border-r border-grey-secondary">
-                          <div class="w-full flex flex-col gap-2">
-                            <div>
-                              {{ subPO.desc_th }}
-                            </div>
-                            <div>{{ subPO.desc }}</div>
-                          </div>
-                        </td>
-                        <td
-                          class="px-6 py-4 whitespace-nowrap text-sm font-medium"
-                        >
-                          <div
-                            class="flex flex-col gap-2 items-center justify-center"
-                          >
-                            <button
-                              class="flex items-center justify-center bg-white rounded-xl p-2 border border-grey-secondary hover:bg-black-primary text-black-primary hover:text-white"
-                            >
-                              <Edit class="w-5 h-5" />
-                            </button>
-                            <button
-                              class="flex items-center justify-center bg-white rounded-xl p-2 border border-grey-secondary hover:bg-red-500 text-black-primary hover:text-white"
-                            >
-                              <Delete class="w-5 h-5" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr v-if="!selectedPO.detail.subPO.length">
-                        <td
-                          colspan="3"
-                          class="px-6 py-4 whitespace-nowrap text-sm font-medium border-r border-grey-secondary text-center"
-                        >
-                          No Data
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
                 </div>
               </div>
             </div>
@@ -361,6 +255,12 @@
       </div>
     </div>
   </div>
+  <AddPO
+    v-if="showAddPOPopup"
+    :id="id"
+    :name="POName"
+    @close="showAddPOPopup = false"
+  />
 </template>
 
 <script setup>
@@ -373,6 +273,7 @@ import SmallSaveButton from "@/components/button/SmallSaveButton.vue";
 import Search from "@/components/icons/Search.vue";
 import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
+import AddPO from "@/components/popups/AddPO.vue";
 import { ref } from "vue";
 
 const searchQuery = ref("");
@@ -384,6 +285,18 @@ const editPO = () => {
 const savePO = () => {
   editMode.value = false;
 };
+
+const showAddPOPopup = ref(false);
+const POName = ref("");
+const id = ref("");
+
+const showAddPO = () => {
+  id.value = "PLO1";
+  POName.value = "Computer Engineering (Regular) year 2565";
+  showAddPOPopup.value = true;
+};
+
+
 const PO = ref([
   {
     name: "PO 1",

@@ -66,6 +66,7 @@
           </div>
           <div class="w-full mt-4 flex items-center justify-center">
             <SmallAddButton
+              @click="addSO"
               class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-3 py-2 gap-2"
             >
               <span class="text-black-primary font-semibold text-base"
@@ -122,6 +123,7 @@
                   </div>
                   <div class="flex flex-row gap-4">
                     <SmallAddButton
+                      @click="addSubSO"
                       class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-3 py-2 gap-2"
                     >
                       <span class="text-black-primary font-semibold text-base"
@@ -361,6 +363,19 @@
       </div>
     </div>
   </div>
+  <AddSO
+    v-if="showAddSOPopup"
+    :id="id"
+    :name="SOName"
+    @close="showAddSOPopup = false"
+  />
+  <AddSubSO
+    v-if="showAddSubSOPopup"
+    :id="id"
+    :So="SOid"
+    :name="SOName"
+    @close="showAddSubSOPopup = false"
+  />
 </template>
 
 <script setup>
@@ -373,7 +388,12 @@ import SmallSaveButton from "@/components/button/SmallSaveButton.vue";
 import Search from "@/components/icons/Search.vue";
 import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
+import AddSO from "@/components/popups/AddSO.vue";
+import AddSubSO from "@/components/popups/AddSubSO.vue";
+import { useRouter } from "vue-router";
 import { ref } from "vue";
+
+const router = useRouter();
 
 const searchQuery = ref("");
 const editMode = ref(false);
@@ -384,6 +404,26 @@ const editSO = () => {
 const saveSO = () => {
   editMode.value = false;
 };
+
+const showAddSOPopup = ref(false);
+const showAddSubSOPopup = ref(false);
+const SOName = ref("");
+const id = ref("");
+const SOid = ref("");
+
+const addSO = () => {
+  id.value = router.currentRoute.value.params.id;
+  SOName.value = "Computer Engineering (Regular) year 2565";
+  showAddSOPopup.value = true;
+};
+
+const addSubSO = () => {
+  id.value = router.currentRoute.value.params.id;
+  SOid.value ="SO1";
+  SOName.value = "Computer Engineering (Regular) year 2565";
+  showAddSubSOPopup.value = true;
+};
+
 const SO = ref([
   {
     name: "SO 1",

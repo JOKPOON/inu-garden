@@ -75,6 +75,16 @@
           </div>
         </div>
       </div>
+      <div
+        class="flex w-full items-center justify-center mt-4 border-t border-grey-tertiary pt-4"
+      >
+        <AddButton
+          class="flex items-center justify-center bg-white rounded-xl px-4 py-3 gap-3 border hover:bg-black-primary hover:text-white font-medium text-base"
+          @click="addGroup()"
+        >
+          Add Assignment Group
+        </AddButton>
+      </div>
     </div>
   </div>
   <DeleteAssignmentGroup
@@ -82,6 +92,13 @@
     :groupID="groupID"
     :groupName="groupName"
     @close="isDeleteAssignmentGroupPopupOpen = false"
+  />
+
+  <AddAssignmentGroup
+    v-if="isAddAssignmentGroupPopupOpen"
+    :id="course_id"
+    :name="courseName"
+    @close="isAddAssignmentGroupPopupOpen = false"
   />
 </template>
 
@@ -96,9 +113,15 @@ import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
 import ShowUser from "@/components/icons/ShowUser.vue";
 import DeleteAssignmentGroup from "@/components/popups/DeleteAssignmentGroup.vue";
+import AddButton from "@/components/button/AddButton.vue";
+import AddAssignmentGroup from "@/components/popups/AddAssignmentGroup.vue";
 
 const searchQuery = ref("");
-const course_id = ref(1);
+const router = useRouter();
+const route = useRoute();
+const course_code = route.query.code;
+const course_id = router.currentRoute.value.params.id;
+
 const assessmentGroups = ref([
   { id: 15456, name: "Group 1", maxWeightedScore: 100 },
   { id: 21321, name: "Group 2", maxWeightedScore: 90 },
@@ -106,24 +129,33 @@ const assessmentGroups = ref([
 
 const fetchEnrollments = (courseId, query) => {};
 
-const router = useRouter();
-
 const showGroup = (groupId, groupName) => {
   router.push({
-    path: `/courses/assessments/groups/${groupId}`,
-    query: { name: groupName },
+    path: `/courses/assessments/groups-of/${course_id}`,
+    query: {
+      code: course_code,
+      name: groupName,
+      groupId: groupId,
+    },
   });
 };
 
 const isDeleteAssignmentGroupPopupOpen = ref(false);
+const isAddAssignmentGroupPopupOpen = ref(false);
 const groupID = ref("");
 const groupName = ref("");
+const courseName = ref("");
 
-const editGroup = (groupId) => {};
 const deleteGroup = (groupId) => {
   groupID.value = groupId;
   groupName.value = "Ex Group";
   isDeleteAssignmentGroupPopupOpen.value = true;
+};
+
+const addGroup = () => {
+  course_id = router.currentRoute.value.params.id;
+  courseName.value = "Ex Group";
+  isAddAssignmentGroupPopupOpen.value = true;
 };
 </script>
 

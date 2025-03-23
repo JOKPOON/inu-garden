@@ -553,9 +553,13 @@ watch(
 );
 
 const path = "7casdas547ads45s56a45d6s4ad";
+const name = "Computer Engineering (Regular)";
 
 const manageOutcome = () => {
-  router.push(`/academic-structure/mange-outcome/${path}`);
+  router.push({
+    path: `/academic-structure/mange-outcome/${path}`,
+    query: { name: name },
+  })
 };
 </script>
 

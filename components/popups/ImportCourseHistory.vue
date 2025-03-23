@@ -15,7 +15,7 @@
           </div>
         </div>
         <div
-          class="border border-grey-secondary rounded-xl p-4 max-h-[calc(100vh-300px)] overflow-y-scroll hide-scrollbar scrollbar-set"
+          class="border border-grey-secondary rounded-xl p-4 max-h-[calc(100vh-300px)] max-w-[70vw] overflow-y-scroll hide-scrollbar scrollbar-set"
         >
           <div class="grid grid-cols-3 gap-4 w-full">
             <div class="col-span-2 w-full flex flex-col gap-2">

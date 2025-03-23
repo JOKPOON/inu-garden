@@ -373,6 +373,11 @@ const setActionButton = (button) => {
   activeButton.value = button;
 };
 
+const router = useRouter();
+const route = useRoute();
+const groupID =route.query.groupId;
+const groupName =route.query.name;
+
 const changeKeyToLabel = (key) => {
   switch (key) {
     case "mean":
@@ -594,8 +599,8 @@ const  assesmentsName = ref("");
 
 const addCLO = () => {
   const active = getActiveAssessment();
-  assesmentsGroupID.value = "ID252";
-  assesmentsGroupName.value = "EX group";
+  assesmentsGroupID.value = groupID;
+  assesmentsGroupName.value = groupName;
   assesmentsID.value = "EX1D";
   assesmentsName.value = "EXName";
   isAddCLOShow.value = true;
@@ -603,8 +608,8 @@ const addCLO = () => {
 
 const addStudentToAssessment = () => {
   const active = getActiveAssessment();
-  assesmentsGroupID.value = "ID252";
-  assesmentsGroupName.value = "EX group";
+  assesmentsGroupID.value = groupID;
+  assesmentsGroupName.value = groupName;
   assesmentsID.value = "EX1D";
   assesmentsName.value = "EXName";
   isAddStudentShow.value = true;
