@@ -6,75 +6,76 @@
       <div
         class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center border border-grey-secondary"
       >
-        <div class="flex flex-col w-[32rem]">
-          <div class="text-2xl font-semibold text-black-primary">Add PO</div>
+        <div class="flex flex-col w-[28rem]">
+          <div
+            class="text-2xl font-semibold text-black-primary w-full text-start"
+          >
+            Add Assessment Group
+          </div>
           <div class="text-sm text-grey-primary mt-1">
-            Add PO for
+            Add Assessment Group for
             <span class="font-semibold text-black-primary">{{ name }}</span>
           </div>
         </div>
-        <div class="mt-4 text-center flex gap-4 flex-col text-sm">
+        <div class="mt-4 text-center flex gap-4 flex-col text-sm max-h-[60vh] overflow-y-auto scrollbar-set">
           <div class="flex flex-col items-start w-full gap-2">
-            <label class="font-semibold text-black-primary">PO Code</label>
+            <label class="font-semibold text-black-primary"
+              >Assessment Group Name</label
+            >
             <input
-              v-model="newPO.code"
+              v-model="assessmentsGroup.name"
               type="text"
-              placeholder="PO Code"
-              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
+              placeholder="Assessment Group Name"
+              class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
             />
           </div>
           <div class="flex flex-col items-start w-full gap-2">
-            <label class="font-semibold text-black-primary"
-              >Description (Eng)</label
-            >
+            <label class="font-semibold text-black-primary">Description</label>
             <textarea
-              v-model="newPO.desc"
-              rows="3"
-              placeholder="PO Description"
-              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
+              v-model="assessmentsGroup.desc_en"
+              placeholder="Description"
+              class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
             ></textarea>
           </div>
           <div class="flex flex-col items-start w-full gap-2">
             <label class="font-semibold text-black-primary"
-              >Description (TH)</label
-            >
-            <textarea
-              v-model="newPO.desc_th"
-              rows="3"
-              placeholder="PO Description (TH)"
-              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
-            ></textarea>
-          </div>
-          <div class="flex flex-col items-start w-full gap-2">
-            <label class="font-semibold text-black-primary"
-              >PO Category</label
+              >Weighted Score</label
             >
             <input
-              v-model="newPO.category"
-              type="text"
-              placeholder="PO Category"
-              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
-            />
-          </div>
-
-          <div class="w-full flex flex-row gap-2 items-center">
-            <div class="w-full text-left">
-              Expected Passing Student rate (%)
-            </div>
-
-            <input
-              v-model="newPO.expectedRate"
-              class="border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary w-12 text-center"
+              v-model="assessmentsGroup.weight"
               type="number"
-              placeholder="ExpectedPassingCLO"
+              placeholder="Max Weighted Score"
+              class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
+            />
+          </div>
+          <div class="flex flex-col items-start w-full gap-2">
+            <label class="font-semibold text-black-primary"
+              >Expected Passing Student (%)</label
+            >
+            <input
+              v-model="assessmentsGroup.expectedPassingStudent"
+              type="number"
+              placeholder="Expected Passing Student (%)"
+              class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
+            />
+          </div>
+          <div class="flex flex-col items-start w-full gap-2 mb-4">
+            <label class="font-semibold text-black-primary"
+              >Expected Passing Score (%)</label
+            >
+            <input
+              v-model="assessmentsGroup.expectedPassingScore"
+              type="number"
+              placeholder="Expected Passing Score (%)"
+              class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
             />
           </div>
         </div>
         <div
-          class="flex flex-row items-center justify-center gap-4 w-full mt-4"
+          class="flex flex-row items-center justify-center gap-2 w-full mt-4 border border-grey-secondary rounded-xl"
         >
           <button
-            @click="addPO"
+            @click="addAssignmentsGroup"
             class="py-2 font-medium border border-grey-secondary text-black-primary rounded-xl w-full bg-yellow-primary hover:bg-black-primary hover:text-white"
           >
             Add
@@ -95,6 +96,16 @@
 import { ref } from "vue";
 import { defineProps, defineEmits } from "vue";
 
+const emit = defineEmits(["close"]);
+
+const assessmentsGroup = ref({
+  name: "",
+  desc_en: "",
+  weight: 0,
+  expectedPassingStudent: 50,
+  expectedPassingScore: 50,
+});
+
 const props = defineProps({
   id: {
     type: String,
@@ -106,27 +117,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["close", "add"]);
-
-const newPO = ref({
-  desc: "",
-  desc_th: "",
-  code: "",
-  description: "",
-  category: "",
-  expectedRate: 0,
-});
-
-const addPO = () => {
-  emit("add", newPO.value);
-  newPO.value = {
-    desc: "",
-    desc_th: "",
-    code: "",
-    description: "",
-    category: "",
-    expectedRate: 0,
-  };
+const addAssignmentsGroup = () => {
   emit("close");
 };
 </script>
@@ -154,7 +145,6 @@ const addPO = () => {
     background: #555;
   }
 }
-
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;

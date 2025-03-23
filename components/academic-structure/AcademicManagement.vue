@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col gap-4">
     <div
-      class="flex h-[calc(100vh-232px)] border border-grey-secondary rounded-xl"
+      class="flex h-[calc(100vh-245px)] border border-grey-secondary rounded-xl"
     >
       <div class="grid grid-cols-5 w-full h-full text-sm">
         <div class="col-span-1 h-full border-r flex flex-col">

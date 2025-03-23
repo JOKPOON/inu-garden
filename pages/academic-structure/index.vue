@@ -1,11 +1,11 @@
 <template>
   <div class="flex items-center justify-between flex-row">
-    <div class="border border-grey-secondary rounded-xl mb-4">
+    <div class=" mb-4">
       <button
         v-for="button in buttons"
         :key="button"
         :class="[
-          'px-6 py-2 rounded-xl',
+          'px-6 py-3 rounded-xl',
           activeButton === button
             ? 'bg-black-primary text-white'
             : 'border border-grey-secondary text-base',
