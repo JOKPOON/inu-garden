@@ -23,16 +23,16 @@
               class="px-4 py-3 bg-white border border-grey-secondary rounded-xl flex flex-row gap-4 items-center"
             >
               <select
-                v-model="selectedProgram"
+                v-model="selectedDepartment"
                 class="bg-transparent w-[26rem] border-none focus:ring-0 outline-none text-base pr-2 hover:cursor-pointer"
               >
-                <option value="">All Programs</option>
+                <option value="">All Departments</option>
                 <option
-                  v-for="program in programs"
-                  :key="program"
-                  :value="program"
+                  v-for="department in departments"
+                  :key="department.name"
+                  :value="department.name"
                 >
-                  {{ program }}
+                  {{ department.name }}
                 </option>
               </select>
             </div>
@@ -40,16 +40,16 @@
               class="px-4 py-3 bg-white border border-grey-secondary rounded-xl flex flex-row gap-4 items-center"
             >
               <select
-                v-model="selectedDepartment"
+                v-model="selectedProgram"
                 class="bg-transparent w-[26rem] border-none focus:ring-0 outline-none text-base pr-2 hover:cursor-pointer"
               >
-                <option value="">All Departments</option>
+                <option value="">All Programs</option>
                 <option
-                  v-for="department in departments"
-                  :key="department"
-                  :value="department"
+                  v-for="program in programs"
+                  :key="program.id"
+                  :value="program.id"
                 >
-                  {{ department }}
+                  {{ program.name_en }}
                 </option>
               </select>
             </div>
@@ -70,16 +70,15 @@
               v-if="
                 selectedYear != '' &&
                 selectedDepartment != '' &&
-                selectedProgram != '' &&
-                filteredStudents.length
+                selectedProgram != ''
               "
               v-model="student.id"
               type="text"
               placeholder="Enter Student ID"
               class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
+              @keydown.enter="onEnter"
             />
             <h3
-              v-if="student.id && filteredStudents.length"
               class="text-base font-semibold border-b border-grey-secondary py-1 text-start"
             >
               Results
@@ -167,6 +166,7 @@ import { ref, computed } from "vue";
 import { defineProps, defineEmits } from "vue";
 import Delete from "@/components/icons/Delete.vue";
 import BaseURL from "@/config/api";
+import { fetchDepartments, fetchPrograms, fetchStudents } from "~/api/api";
 
 const emit = defineEmits(["close", "addStudent"]);
 
@@ -183,130 +183,20 @@ const props = defineProps({
   },
 });
 
-const programs = ref([
-  "Computer Engineering",
-  "Electrical Engineering",
-  "Mechanical Engineering",
-]);
-const departments = ref([
-  "Computer Engineering",
-  "Electrical Engineering",
-  "Mechanical Engineering",
-]);
+const students = ref([]);
+const programs = ref([]);
+const departments = ref([]);
 const years = ref(["2023", "2024", "2025"]);
 
 const selectedProgram = ref("");
 const selectedDepartment = ref("");
 const selectedYear = ref("");
 
-const AllStudent = ref([
-  {
-    id: "64070501011",
-    first_name_th: "อริสา",
-    last_name_th: "สมิธ",
-    first_name_en: "Alice",
-    last_name_en: "Smith",
-    gpax: 3.9,
-    math_gpa: 4.0,
-    eng_gpa: 3.8,
-    sci_gpa: 3.9,
-    school: "XYZ High School",
-    city: "Chiang Mai",
-    email: "alice.smith@example.com",
-    year: "2024",
-    admission: "Regular",
-    remark: "Top scorer in regional math olympiad",
-    programme_name: "Computer Engineering",
-    department_name: "Computer Engineering",
-    programme_id: "01JKK501SMEE3K9NYKBVAKHER6",
-  },
-  {
-    id: "64070501012",
-    first_name_th: "มานพ",
-    last_name_th: "จอห์นสัน",
-    first_name_en: "Michael",
-    last_name_en: "Johnson",
-    gpax: 3.6,
-    math_gpa: 3.7,
-    eng_gpa: 3.5,
-    sci_gpa: 3.6,
-    school: "DEF International School",
-    city: "Phuket",
-    email: "michael.johnson@example.com",
-    year: "2024",
-    admission: "Regular",
-    remark: "Consistent academic performance with strong math skills",
-    programme_name: "Computer Engineering",
-    department_name: "Computer Engineering",
-    programme_id: "01JKK501SMEE3K9NYKBVAKHER6",
-  },
-  {
-    id: "64070501013",
-    first_name_th: "เอมอร",
-    last_name_th: "บราวน์",
-    first_name_en: "Emma",
-    last_name_en: "Brown",
-    gpax: 3.85,
-    math_gpa: 3.9,
-    eng_gpa: 3.7,
-    sci_gpa: 3.8,
-    school: "GHI High School",
-    city: "Pattaya",
-    email: "emma.brown@example.com",
-    year: "2024",
-    admission: "Regular",
-    remark: "Excellence in science projects and research",
-    programme_name: "Computer Engineering",
-    department_name: "Computer Engineering",
-    programme_id: "01JKK501SMEE3K9NYKBVAKHER6",
-  },
-  {
-    id: "64070501014",
-    first_name_th: "ดนัย",
-    last_name_th: "วิลสัน",
-    first_name_en: "Daniel",
-    last_name_en: "Wilson",
-    gpax: 3.7,
-    math_gpa: 3.8,
-    eng_gpa: 3.6,
-    sci_gpa: 3.7,
-    school: "JKL High School",
-    city: "Khon Kaen",
-    email: "daniel.wilson@example.com",
-    year: "2024",
-    admission: "Regular",
-    remark: "Strong analytical and problem-solving skills",
-    programme_name: "Computer Engineering",
-    department_name: "Computer Engineering",
-    programme_id: "01JKK501SMEE3K9NYKBVAKHER6",
-  },
-  {
-    id: "64070501015",
-    first_name_th: "โสภิดา",
-    last_name_th: "เทย์เลอร์",
-    first_name_en: "Sophia",
-    last_name_en: "Taylor",
-    gpax: 3.95,
-    math_gpa: 4.0,
-    eng_gpa: 3.9,
-    sci_gpa: 3.95,
-    school: "MNO High School",
-    city: "Hat Yai",
-    email: "sophia.taylor@example.com",
-    year: "2024",
-    admission: "Regular",
-    remark: "Exceptional GPA with perfect math scores",
-    programme_name: "Computer Engineering",
-    department_name: "Computer Engineering",
-    programme_id: "01JKK501SMEE3K9NYKBVAKHER6",
-  },
-]);
-
 const filteredStudents = computed(() => {
-  return AllStudent.value.filter((s) => {
+  return students.value.filter((s) => {
     const matchesProgram =
       selectedProgram.value === "none" ||
-      s.programme_name === selectedProgram.value;
+      s.programme_id === selectedProgram.value;
     const matchesDepartment =
       selectedDepartment.value === "none" ||
       s.department_name === selectedDepartment.value;
@@ -343,6 +233,8 @@ const addStudent = () => {
 
 const addStudentAll = () => {
   emit("addStudent", selectedStudents.value);
+  addStudentEnrollment(selectedStudents.value);
+  console.log(selectedStudents.value);
   selectedStudents.value = [];
 };
 
@@ -353,18 +245,58 @@ const removeStudent = (id) => {
 };
 
 onMounted(() => {
-  queryStudents();
+  fetchPrograms(programs, selectedDepartment.value);
+  fetchDepartments(departments);
 });
 
-const queryStudents = () => {
-  fetch(BaseURL + "students", {
-    credentials: "include",
-  })
-    .then((response) => response.json())
-    .then((json) => {
-      AllStudent.value = json.data;
-    });
-};
+watch(selectedDepartment, () => {
+  fetchPrograms(programs, selectedDepartment.value);
+  if (
+    selectedDepartment.value != null &&
+    selectedProgram.value != null &&
+    selectedYear.value != null
+  ) {
+    fetchStudents(
+      students,
+      "",
+      selectedProgram.value,
+      selectedDepartment.value,
+      selectedYear.value
+    );
+  }
+});
+
+watch(selectedProgram, () => {
+  if (
+    selectedDepartment.value != null &&
+    selectedProgram.value != null &&
+    selectedYear.value != null
+  ) {
+    fetchStudents(
+      students,
+      "",
+      selectedProgram.value,
+      selectedDepartment.value,
+      selectedYear.value
+    );
+  }
+});
+
+watch(selectedYear, () => {
+  if (
+    selectedDepartment.value != null &&
+    selectedProgram.value != null &&
+    selectedYear.value != null
+  ) {
+    fetchStudents(
+      students,
+      "",
+      selectedProgram.value,
+      selectedDepartment.value,
+      selectedYear.value
+    );
+  }
+});
 
 const addStudentEnrollment = async (students) => {
   await fetch(BaseURL + "enrollments", {
