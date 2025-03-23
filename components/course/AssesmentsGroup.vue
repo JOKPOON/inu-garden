@@ -23,7 +23,7 @@
         <div class="font-semibold w-full text-center">Action</div>
       </div>
         <div v-for="group in assessmentGroups" :key="group.id" class="contents rounded-xl">
-          <div @click="showGroup(group.id, group.name)" class="grid grid-cols-5 gap-2 mt-4 hover:cursor-pointer hover:bg-[#F6F8F8] px-4 rounded-xl py-2  items-center">
+          <div @click="showGroup(group.id, group.name)" class="grid grid-cols-5 gap-2 mt-4 hover:cursor-pointer hover:bg-[#F6F8F8] px-4 rounded-xl py-1   items-center">
           <div  class="col-span-3">
             {{ group.name }}
           </div>
