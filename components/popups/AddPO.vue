@@ -47,7 +47,7 @@
           </div>
           <div class="flex flex-col items-start w-full gap-2">
             <label class="font-semibold text-black-primary"
-              >PO Description</label
+              >PO Category</label
             >
             <input
               v-model="newPO.category"

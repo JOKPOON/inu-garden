@@ -601,8 +601,8 @@ const addCLO = () => {
   const active = getActiveAssessment();
   assesmentsGroupID.value = groupID;
   assesmentsGroupName.value = groupName;
-  assesmentsID.value = "EX1D";
-  assesmentsName.value = "EXName";
+  assesmentsID.value = active.id;
+  assesmentsName.value = active.name;
   isAddCLOShow.value = true;
 };
 
@@ -610,8 +610,8 @@ const addStudentToAssessment = () => {
   const active = getActiveAssessment();
   assesmentsGroupID.value = groupID;
   assesmentsGroupName.value = groupName;
-  assesmentsID.value = "EX1D";
-  assesmentsName.value = "EXName";
+  assesmentsID.value = active.id;
+  assesmentsName.value = active.name;
   isAddStudentShow.value = true;
 };
 
