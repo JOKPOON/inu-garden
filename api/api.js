@@ -112,7 +112,7 @@ const fetchEnrollments = async (students, course_id, searchQuery) => {
   }
 };
 
-const fetchPrograms = async (programs, department) => {
+const fetchPrograms = async (programs, department = "") => {
   try {
     const response = await fetch(
       `${BaseURL}programmes?department_name=${department}`,
@@ -149,7 +149,7 @@ const fetchSerms = async (serms) => {
   }
 };
 
-const fetchAssignments = async (assessments, course_id) => {
+const fetchAssignments = async (assessments, course_id = "") => {
   try {
     const response = await fetch(`${BaseURL}courses/${course_id}/assignments`, {
       credentials: "include",
@@ -163,6 +163,27 @@ const fetchAssignments = async (assessments, course_id) => {
     assessments.value = res.data;
   } catch (error) {
     console.error("Error fetching assignments:", error);
+  }
+};
+
+const fetchAssignmentScores = async (scores, clos, assignment_id) => {
+  try {
+    const response = await fetch(
+      `${BaseURL}assignments/${assignment_id}/scores`,
+      {
+        credentials: "include",
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!response.ok) throw new Error("Failed to fetch scores");
+    const res = await response.json();
+    scores.value = res.data.scores;
+    clos.value = res.data.clos;
+  } catch (error) {
+    console.error("Error fetching scores:", error);
   }
 };
 
@@ -315,6 +336,7 @@ export {
   fetchSerms,
   fetchStudents,
   fetchAssignments,
+  fetchAssignmentScores,
   fetchScores,
   fetchCourse,
   fetchCourseResult,

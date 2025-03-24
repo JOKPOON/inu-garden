@@ -21,17 +21,21 @@
           </div>
         </div>
         <div class="flex">
-          <div class="flex flex-row gap-2 px-4 py-2  rounded-xl text-grey-primary  items-center justify-center border border-gray-primary">
+          <div
+            class="flex flex-row gap-2 px-4 py-2 rounded-xl text-grey-primary items-center justify-center border border-gray-primary"
+          >
             <div
-              class="text-[12px] p-1 w-6 h-6 rounded-full border border-grey-primary items-center justify-center flex "
+              class="text-[12px] p-1 w-6 h-6 rounded-full border border-grey-primary items-center justify-center flex"
             >
               i
             </div>
-            <div class="text-[14px]">The score is calculated as a percentage out of 100%</div>
+            <div class="text-[14px]">
+              The score is calculated as a percentage out of 100%
+            </div>
           </div>
         </div>
       </div>
-      <Assessments />
+      <Assessments :courseId="courseId" />
     </div>
   </div>
 </template>
@@ -59,6 +63,7 @@ const router = useRouter();
 const route = useRoute();
 
 const groupName = ref(route.query.name);
+const courseId = ref(router.currentRoute.value.params.id);
 
 const backToAssessments = () => {
   router.go(-1);
