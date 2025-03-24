@@ -231,11 +231,12 @@ const addStudent = () => {
   }
 };
 
-const addStudentAll = () => {
+const addStudentAll = async () => {
   emit("addStudent", selectedStudents.value);
-  addStudentEnrollment(selectedStudents.value);
+  await addStudentEnrollment(selectedStudents.value);
   console.log(selectedStudents.value);
   selectedStudents.value = [];
+  emit("updated");
 };
 
 const removeStudent = (id) => {

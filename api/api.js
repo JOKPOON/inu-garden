@@ -9,7 +9,7 @@ export function stage() {
 
 export function api() {
   if (stage() === "dev") {
-    return "https://localhost/";
+    return "http://localhost:3001/";
   } else {
     return "https://api.example.com";
   }
