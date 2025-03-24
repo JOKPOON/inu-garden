@@ -87,6 +87,7 @@ const props = defineProps({
 
 const confirmDelete = () => {
   DeleteEnrollment(props.enrollmentId);
+  emit("updated");
   emit("close");
 };
 

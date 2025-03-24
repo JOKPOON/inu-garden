@@ -104,6 +104,7 @@ const selectedStatus = ref(props.studentStatus);
 
 const updateStatus = () => {
   updateStudentStatus();
+  emit("updated");
   emit("close");
 };
 

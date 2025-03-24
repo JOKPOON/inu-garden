@@ -117,7 +117,13 @@
                 <ShowUser class="w-5 h-5" />
               </button>
               <button
-                @click="editStudentEnroll(student.id, student.student_id)"
+                @click="
+                  editStudentEnroll(
+                    student.id,
+                    student.student_id,
+                    student.status
+                  )
+                "
                 class="flex items-center justify-center rounded-xl p-2 border bg-white hover:bg-black-primary hover:text-white"
               >
                 <Edit class="w-5 h-5" />
@@ -180,6 +186,7 @@
     :studentStatus="studentStatus"
     :enrollmentId="enrollmentId"
     @close="isEditStudentEnrollVisible = false"
+    @updated="reloadStudentList"
   />
   <DeleteStudent
     v-if="isDeleteStudentVisible"
@@ -190,6 +197,7 @@
     :studentStatus="studentStatus"
     :enrollmentId="enrollmentId"
     @close="isDeleteStudentVisible = false"
+    @updated="reloadStudentList"
   />
 </template>
 
@@ -209,7 +217,16 @@ import { fetchEnrollments } from "@/api/api";
 import StudentEnroll from "@/components/popups/StudentEnroll.vue";
 import EditStudentEnroll from "@/components/popups/EditStudentEnroll.vue";
 import DeleteStudent from "@/components/popups/DeleteStudent.vue";
+import { defineProps, watch } from "vue";
 
+const props = defineProps({
+  refresh: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+const students = ref([]);
 const isStudentEnrollVisible = ref(false);
 const isEditStudentEnrollVisible = ref(false);
 const isDeleteStudentVisible = ref(false);
@@ -229,13 +246,13 @@ const studentDetails = (id) => {
   isStudentEnrollVisible.value = true;
 };
 
-const editStudentEnroll = (id, student_id) => {
+const editStudentEnroll = (id, student_id, status) => {
   studentID.value = student_id;
   enrollmentId.value = id;
   courseID.value = course_id.value;
   courseName.value = "Example Course";
   studentName.value = "Example Student";
-  studentStatus.value = "ENROLL";
+  studentStatus.value = status;
   isEditStudentEnrollVisible.value = true;
 };
 
@@ -247,6 +264,10 @@ const deleteStudent = (id, student_id) => {
   studentName.value = "Example Student";
   studentStatus.value = "ENROLL";
   isDeleteStudentVisible.value = true;
+};
+
+const reloadStudentList = () => {
+  fetchEnrollments(students, course_id.value, searchQuery.value);
 };
 
 const searchQuery = ref("");
@@ -275,8 +296,6 @@ const exportStudent = () => {};
 const onClickImportStudent = () => {};
 
 const onClickExportStudent = () => {};
-
-const students = ref([]);
 
 const currentPage = ref(1);
 const totalPages = ref(1);
@@ -331,6 +350,13 @@ const getStatusText = (status) => {
 onMounted(() => {
   fetchEnrollments(students, course_id.value, searchQuery.value);
 });
+
+watch(
+  () => props.refresh,
+  (newValue) => {
+    fetchEnrollments(students, course_id.value, searchQuery.value);
+  }
+);
 </script>
 
 <style lang="scss" scoped>

@@ -41,7 +41,7 @@
     </div>
   </div>
   <div v-if="activeButton === 'Student Enrollments'">
-    <StudentEnrollments />
+    <StudentEnrollments :refresh="studentListUpdated" />
   </div>
   <div v-else-if="activeButton === 'Student Results'">
     <StudentResult />
@@ -51,6 +51,7 @@
     :id="id"
     :course="course"
     @close="showAddStudentPopup = false"
+    @updated="handleStudentListUpdated"
   />
 </template>
 
@@ -83,11 +84,17 @@ const setActionButton = (button) => {
 };
 
 const showAddStudentPopup = ref(false);
+const studentListUpdated = ref(false);
+
 const id = ref(router.currentRoute.value.params.id);
 
 const onClickAddUser = () => {
   id.value = router.currentRoute.value.params.id;
   showAddStudentPopup.value = true;
+};
+
+const handleStudentListUpdated = () => {
+  studentListUpdated.value = !studentListUpdated.value;
 };
 </script>
 
