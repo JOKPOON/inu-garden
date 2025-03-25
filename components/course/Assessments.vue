@@ -364,11 +364,13 @@
                       class="col-span-2 text-sm text-black-primary flex items-center justify-end flex-row gap-2"
                     >
                       <button
+                        @click="editScore(score.id, 55)"
                         class="flex items-center justify-center rounded-xl p-2 border bg-white hover:bg-black-primary hover:text-white"
                       >
                         <Edit class="w-5 h-5" />
                       </button>
                       <button
+                        @click="deleteScore(score.id)"
                         class="flex items-center justify-center rounded-xl p-2 border hover:bg-red-500 hover:text-white"
                       >
                         <Delete class="w-5 h-5" />
@@ -689,6 +691,42 @@ const deleteClo = async (cloId) => {
     );
     if (response.ok) {
       clos.value = clos.value.filter((clo) => clo.id !== cloId);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const editScore = async (scoreId, score = 0.0) => {
+  try {
+    const response = await fetch(`${BaseURL}scores/${scoreId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        score: score,
+      }),
+      credentials: "include",
+    });
+    if (response.ok) {
+      scores.value = scores.value.map((s) =>
+        s.id === scoreId ? { ...s, score: score } : s
+      );
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const deleteScore = async (scoreId) => {
+  try {
+    const response = await fetch(`${BaseURL}scores/${scoreId}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+    if (response.ok) {
+      scores.value = scores.value.filter((score) => score.id !== scoreId);
     }
   } catch (error) {
     console.error(error);
