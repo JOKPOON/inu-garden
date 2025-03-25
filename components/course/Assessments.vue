@@ -309,7 +309,6 @@
                       </div>
                     </div>
                   </div>
-
                   <div class="w-full flex flex-row justify-center mt-4 mb-2">
                     <AddButton
                       class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-2 gap-2"
@@ -403,9 +402,11 @@
   <AddCLO
     v-if="isAddCLOShow"
     @close="isAddCLOShow = false"
+    @updated="updateClos"
     :groupID="assesmentsGroupID"
     :groupName="assesmentsGroupName"
     :id="assesmentsID"
+    :courseId="props.courseId"
     :name="assesmentsName"
   />
   <AddStudentToAssessment
@@ -443,7 +444,7 @@ import AddStudentToAssessment from "@/components/popups/AddStudentToAssessment.v
 import AddAssesments from "@/components/popups/AddAssesments.vue";
 import SmallEditButton from "@/components/button/SmallEditButton.vue";
 import SmallSaveButton from "@/components/button/SmallSaveButton.vue";
-import { fetchAssignments, fetchAssignmentScores } from "~/api/api";
+import { BaseURL, fetchAssignments, fetchAssignmentScores } from "~/api/api";
 
 const props = defineProps({
   courseId: {
@@ -453,7 +454,6 @@ const props = defineProps({
 });
 
 const { t } = useI18n();
-const router = useRouter();
 const route = useRoute();
 
 ChartJS.register(
@@ -535,24 +535,9 @@ const changeKeyToLabel = (key) => {
   }
 };
 
-const AllCLOs = [
-  {
-    code: "CLO1",
-    description: "Understand the basic concepts of computer science",
-  },
-  {
-    code: "CLO2",
-    description: "Understand the basic concepts of computer engineering",
-  },
-  {
-    code: "CLO3",
-    description: "Understand the basic concepts of software engineering",
-  },
-  {
-    code: "CLO4",
-    description: "Understand the basic concepts of information technology",
-  },
-];
+const updateClos = async () => {
+  await fetchAssignmentScores(scores, clos, assesmentsID.value);
+};
 
 const setActiveAssessment = async (assessment) => {
   activeAssessment.value = assessment.id;
@@ -607,8 +592,7 @@ const getActiveAssessment = () => {
 };
 
 const removeCLO = (code) => {
-  const active = getActiveAssessment();
-  active.clos = active.clos.filter((clo) => clo !== code);
+  deleteClo(code);
 };
 
 const isAddAssesmentsShow = ref(false);
@@ -646,40 +630,12 @@ const addStudentToAssessment = () => {
   isAddStudentShow.value = true;
 };
 
-const onClickAddUser = () => {};
-
-const exportUser = () => {};
-
-const onClickImportUser = () => {};
-
 onMounted(async () => {
   await fetchAssignments(assessments, props.courseId);
   setActiveAssessment(assessments.value[0]);
 
   const active = getActiveAssessment();
   chartData.value = {
-    labels: [
-      "0-5",
-      "5-10",
-      "10-15",
-      "15-20",
-      "20-25",
-      "25-30",
-      "30-35",
-      "35-40",
-      "40-45",
-      "45-50",
-      "50-55",
-      "55-60",
-      "60-65",
-      "65-70",
-      "70-75",
-      "75-80",
-      "80-85",
-      "85-90",
-      "90-95",
-      "95-100",
-    ],
     datasets: [
       {
         label: "Scores",
@@ -721,435 +677,24 @@ onMounted(async () => {
     },
   };
 });
-</script>
 
-<!-- <script setup>
-import { ref, onMounted } from "vue";
-import { Bar } from "vue-chartjs";
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-} from "chart.js";
-import Search from "@/components/icons/Search.vue";
-import AddButton from "@/components/button/AddButton.vue";
-import TemplateButton from "@/components/button/TemplateButton.vue";
-import Import from "@/components/button/ImportButton.vue";
-import Include from "@/components/icons/Include.vue";
-import NotInclude from "@/components/icons/NotInclude.vue";
-import Edit from "@/components/icons/Edit.vue";
-import Delete from "@/components/icons/Delete.vue";
-import { BaseURL } from "@/api/api";
-import { fetchAssignments, fetchScores } from "@/api/api";
-
-import { useRouter } from "vue-router";
-const router = useRouter();
-const { t } = useI18n();
-
-ChartJS.register(
-  Title,
-  Tooltip,
-  Legend,
-  BarElement,
-  CategoryScale,
-  LinearScale
-);
-
-const course_id = ref(router.currentRoute.value.params.id);
-const searchQuery = ref("");
-const assessments = ref(null);
-const activeAssessment = ref(null);
-const chartData = ref(null);
-const chartOptions = ref(null);
-const scores = ref(null);
-const clos = ref(null);
-
-useHead({
-  title: t("seo.title"),
-  description: t("seo.desc"),
-});
-
-definePageMeta({
-  layout: "landing",
-});
-
-const buttons = ["Targeting CLO(s)", "Students Assessment"];
-
-const activeButton = ref("Targeting CLO(s)");
-const setActionButton = (button) => {
-  activeButton.value = button;
-};
-
-const changeKeyToLabel = (key) => {
-  switch (key) {
-    case "mean":
-      return "Mean";
-    case "sd":
-      return "S.D.";
-    case "median":
-      return "Median";
-    case "max":
-      return "Max";
-    case "mode":
-      return "Mode";
-    case "min":
-      return "Min";
-    default:
-      return key;
-  }
-};
-
-const AllCLOs = [
-  {
-    code: "CLO1",
-    description: "Understand the basic concepts of computer science",
-  },
-  {
-    code: "CLO2",
-    description: "Understand the basic concepts of computer engineering",
-  },
-  {
-    code: "CLO3",
-    description: "Understand the basic concepts of software engineering",
-  },
-  {
-    code: "CLO4",
-    description: "Understand the basic concepts of information technology",
-  },
-];
-
-const setActiveAssessment = (id) => {
-  activeAssessment.value = id;
-  const active = getActiveAssessment();
-  chartData.value = {
-    labels: [
-      "0-5",
-      "5-10",
-      "10-15",
-      "15-20",
-      "20-25",
-      "25-30",
-      "30-35",
-      "35-40",
-      "40-45",
-      "45-50",
-      "50-55",
-      "55-60",
-      "60-65",
-      "65-70",
-      "70-75",
-      "75-80",
-      "80-85",
-      "85-90",
-      "90-95",
-      "95-100",
-    ],
-    datasets: [
-      {
-        label: "Scores",
-        backgroundColor: "#FEC232",
-        borderRadius: 5,
-        data: active.scores,
-      },
-    ],
-  };
-};
-
-const getActiveAssessment = () => {
-  return assessments.value.find((a) => a.id === activeAssessment.value) || {};
-};
-
-const getCLODescription = (code) => {
-  const clo = AllCLOs.find((clo) => clo.code === code);
-  return clo ? clo.description : "";
-};
-
-const removeCLO = (code) => {
-  const active = getActiveAssessment();
-  active.clos = active.clos.filter((clo) => clo !== code);
-};
-
-const addCLO = () => {
-  const active = getActiveAssessment();
-  const newCLO = prompt("Enter CLO code:");
-  if (newCLO && !active.clos.includes(newCLO)) {
-    active.clos.push(newCLO);
-  }
-};
-
-const onClickAddUser = () => {};
-
-const exportUser = () => {};
-
-const onClickImportUser = () => {};
-
-// Add CLOs to the assignment
-// clo_ids: Array of CLO IDs
-// assignment_id: ID of the assignment
-const linkCLOs = async (assignment_id, clo_ids) => {
+const deleteClo = async (cloId) => {
   try {
     const response = await fetch(
-      `${BaseURL}assignments/${assignment_id}/clos`,
+      `${BaseURL}assignments/${activeAssessment.value}/clos/${cloId}`,
       {
-        credentials: "include",
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          course_learning_outcome_ids: clo_ids,
-        }),
-      }
-    );
-    if (!response.ok) throw new Error("Failed to add CLO");
-    const res = await response.json();
-    console.log(res);
-  } catch (error) {
-    console.error("Error adding CLO:", error);
-  }
-};
-
-// Add student score to the assignment
-// student_scores: Array of student scores [{student_id, score}]
-// assignment_id: ID of the assignment
-const addStudentScores = async (assignment_id, student_scores) => {
-  try {
-    const response = await fetch(
-      `${BaseURL}assignments/${assignment_id}/scores`,
-      {
-        credentials: "include",
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          assignment_id: assignment_id,
-          student_scores: student_scores.map((s) => ({
-            student_id: s.student_id,
-            score: s.score,
-          })),
-        }),
-      }
-    );
-    if (!response.ok) throw new Error("Failed to add student scores");
-    const res = await response.json();
-    console.log(res);
-  } catch (error) {
-    console.error("Error adding student scores:", error);
-  }
-};
-
-// Update student score in the assignment
-// score_id: ID of the score
-// score: New score
-const updateStudentScore = async (score_id, score) => {
-  try {
-    const response = await fetch(`${BaseURL}scores/${score_id}`, {
-      credentials: "include",
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        score: score,
-      }),
-    });
-    if (!response.ok) throw new Error("Failed to update student score");
-    const res = await response.json();
-    console.log(res);
-  } catch (error) {
-    console.error("Error updating student score:", error);
-  }
-};
-
-// Remove student score from the assignment
-// score_id: ID of the score
-const removeStudentScore = async (score_id) => {
-  try {
-    const response = await fetch(`${BaseURL}scores/${score_id}`, {
-      credentials: "include",
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!response.ok) throw new Error("Failed to remove student score");
-    const res = await response.json();
-    console.log(res);
-  } catch (error) {
-    console.error("Error removing student score:", error);
-  }
-};
-
-// Remove CLO from the assignment
-// clo_id: ID of the CLO
-// assignment_id: ID of the assignment
-const unlinkCLO = async (assignment_id, clo_id) => {
-  try {
-    const response = await fetch(
-      `${BaseURL}assignments/${assignment_id}/clos/${clo_id}`,
-      {
-        credentials: "include",
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        credentials: "include",
       }
     );
-    if (!response.ok) throw new Error("Failed to remove CLO");
-    const res = await response.json();
-    console.log(res);
+    if (response.ok) {
+      clos.value = clos.value.filter((clo) => clo.id !== cloId);
+    }
   } catch (error) {
-    console.error("Error removing CLO:", error);
+    console.error(error);
   }
 };
-
-onMounted(() => {
-  chartData.value = {
-    labels: [
-      "0-5",
-      "5-10",
-      "10-15",
-      "15-20",
-      "20-25",
-      "25-30",
-      "30-35",
-      "35-40",
-      "40-45",
-      "45-50",
-      "50-55",
-      "55-60",
-      "60-65",
-      "65-70",
-      "70-75",
-      "75-80",
-      "80-85",
-      "85-90",
-      "90-95",
-      "95-100",
-    ],
-    datasets: [
-      {
-        label: "Scores",
-        backgroundColor: "#FEC232",
-        borderRadius: 5,
-        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      },
-    ],
-  };
-
-  chartOptions.value = {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      x: {
-        title: {
-          display: true,
-          text: "Score Range",
-        },
-        grid: {
-          display: false,
-        },
-      },
-      y: {
-        title: {
-          display: true,
-          text: "No. of Students",
-        },
-        grid: {
-          display: false,
-        },
-        beginAtZero: true,
-      },
-    },
-    plugins: {
-      legend: {
-        display: false,
-      },
-    },
-  };
-
-  fetchAssignments(assessments, course_id.value);
-});
-
-watch(assessments, async (newVal) => {
-  if (newVal.length > 0) {
-    setActiveAssessment(newVal[0].id);
-  }
-});
-
-watch(activeAssessment, async (newVal) => {
-  await fetchScores(scores, clos, newVal);
-});
-
-watch(scores, async (newVal) => {
-  let score_freq = {
-    0: 0,
-    5: 0,
-    10: 0,
-    15: 0,
-    20: 0,
-    25: 0,
-    30: 0,
-    35: 0,
-    40: 0,
-    45: 0,
-    50: 0,
-    55: 0,
-    60: 0,
-    65: 0,
-    70: 0,
-    75: 0,
-    80: 0,
-    85: 0,
-    90: 0,
-    95: 0,
-  };
-
-  newVal.forEach((score) => {
-    if (score.score >= 0 && score.score <= 100) {
-      score_freq[Math.floor(score.score / 5) * 5] += 1;
-    }
-  });
-
-  chartData.value = {
-    labels: [
-      "0-5",
-      "5-10",
-      "10-15",
-      "15-20",
-      "20-25",
-      "25-30",
-      "30-35",
-      "35-40",
-      "40-45",
-      "45-50",
-      "50-55",
-      "55-60",
-      "60-65",
-      "65-70",
-      "70-75",
-      "75-80",
-      "80-85",
-      "85-90",
-      "90-95",
-      "95-100",
-    ],
-    datasets: [
-      {
-        label: "Scores",
-        backgroundColor: "#FEC232",
-        borderRadius: 5,
-        data: Object.values(score_freq),
-      },
-    ],
-  };
-});
-</script> -->
+</script>
 
 <style lang="scss" scoped>
 .scrollbar-set {
