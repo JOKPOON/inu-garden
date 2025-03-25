@@ -34,8 +34,9 @@
                 placeholder="Select CLO"
               >
                 <option value="">Select CLO</option>
-                <option value="ID251">ID251</option>
-                <option value="ID252">ID252</option>
+                <option v-for="clo in clos" :key="clo.id" :value="clo.id">
+                  {{ clo.code }}
+                </option>
               </select>
             </div>
           </div>
@@ -64,8 +65,9 @@
 <script setup>
 import { ref } from "vue";
 import { defineProps, defineEmits } from "vue";
+import { fetchCourseClos, BaseURL } from "~/api/api";
 
-const emit = defineEmits(["close"]);
+const emit = defineEmits(["close", "updated"]);
 
 const props = defineProps({
   groupID: {
@@ -80,6 +82,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  courseId: {
+    type: String,
+    required: true,
+  },
   name: {
     type: String,
     required: true,
@@ -87,10 +93,36 @@ const props = defineProps({
 });
 
 const selectCLO = ref("");
+const clos = ref([]);
 
-const updateStatus = () => {
-  emit("close");
+const updateStatus = async () => {
+  await addCLO();
 };
+
+const addCLO = async () => {
+  try {
+    const response = await fetch(`${BaseURL}assignments/${props.id}/clos`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        course_learning_outcome_ids: [selectCLO.value],
+      }),
+      credentials: "include",
+    });
+    if (response.ok) {
+      emit("updated");
+      emit("close");
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+onMounted(() => {
+  fetchCourseClos(clos, props.courseId);
+});
 </script>
 
 <style scoped></style>

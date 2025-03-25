@@ -57,6 +57,23 @@ const fetchCourses = async (courses, query, serm, program) => {
   }
 };
 
+const fetchCourseClos = async (clos, course_id) => {
+  try {
+    const response = await fetch(`${BaseURL}courses/${course_id}/clos`, {
+      credentials: "include",
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Failed to fetch clos");
+    const res = await response.json();
+    clos.value = res.data;
+  } catch (error) {
+    console.error("Error fetching clos:", error);
+  }
+};
+
 const fetchCourse = async (course, course_id) => {
   try {
     const response = await fetch(`${BaseURL}courses/${course_id}`, {
@@ -332,6 +349,7 @@ export {
   BaseURL,
   fetchMe,
   fetchCourses,
+  fetchCourseClos,
   fetchPrograms,
   fetchSerms,
   fetchStudents,
