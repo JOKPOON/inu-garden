@@ -697,6 +697,33 @@ const deleteClo = async (cloId) => {
   }
 };
 
+const addScore = async (score = 0.0, student_id) => {
+  try {
+    const response = await fetch(`${BaseURL}scores`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        assignment_id: activeAssessment.value,
+        student_scores: [
+          {
+            student_id: student_id,
+            score: score,
+          },
+        ],
+      }),
+      credentials: "include",
+    });
+    if (response.ok) {
+      const newScore = await response.json();
+      scores.value = [...scores.value, newScore];
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 const editScore = async (scoreId, score = 0.0) => {
   try {
     const response = await fetch(`${BaseURL}scores/${scoreId}`, {
