@@ -130,7 +130,7 @@
               </div>
               <div class="w-full mt-4 flex items-center justify-center">
                 <SmallAddButton
-                  @click="addProgram"
+                  @click="addDepartment"
                   class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-3 py-2 gap-2"
                 >
                   <span class="text-black-primary font-semibold text-sm"
@@ -211,7 +211,7 @@
                   </div>
                   <div class="w-full mt-4 flex items-center justify-center">
                     <SmallAddButton
-                      @click="addDepartment"
+                      @click="addProgram"
                       class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-3 py-2 gap-2"
                     >
                       <span class="text-black-primary font-semibold text-sm"
@@ -295,7 +295,7 @@
                           {{ selectedProgramDetails.details.description }}
                         </div>
                       </div>
-                      <div class="flex mt-4 w-full items-center justify-center">
+                      <div class="flex mb-4 w-full items-center justify-center">
                         <SmallEditButton
                           @click="manageOutcome"
                           class="flex items-center flex-row justify-center border font-[500] border-grey-secondary rounded-xl px-4 py-3 gap-2 hover:bg-black-primary hover:text-white"
@@ -559,7 +559,7 @@ const manageOutcome = () => {
   router.push({
     path: `/academic-structure/mange-outcome/${path}`,
     query: { name: name },
-  })
+  });
 };
 </script>
 
