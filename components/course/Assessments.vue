@@ -89,7 +89,7 @@
               <button
                 v-for="assessment in assessments"
                 :key="assessment.id"
-                @click="setActiveAssessment(assessment.id)"
+                @click="setActiveAssessment(assessment)"
                 :class="[
                   'flex items-center  py-3 rounded-xl w-full hover:cursor-pointer  flex-row gap-2 px-3 justify-between text-sm',
                   activeAssessment === assessment.id
@@ -103,10 +103,16 @@
                 >
                   {{ assessment.weight }}%
                 </div>
-                <div v-if="!editMode" class="text-start w-full flex items-center h-full">
+                <div
+                  v-if="!editMode"
+                  class="text-start w-full flex items-center h-full"
+                >
                   {{ assessment.name }}
                 </div>
-                <div v-if="editMode" class="text-start w-full flex items-center h-full border border-grey-primary p-3 rounded-xl">
+                <div
+                  v-if="editMode"
+                  class="text-start w-full flex items-center h-full border border-grey-primary p-3 rounded-xl"
+                >
                   <input
                     type="text"
                     class="bg-transparent focus:ring-0 outline-none w-full text-sm"
@@ -178,7 +184,7 @@
                       {{ getActiveAssessment().max_score }}
                     </div>
                   </div>
-                  <div class="flex flex-row justify-between gap-4  items-center">
+                  <div class="flex flex-row justify-between gap-4 items-center">
                     <div class="text-sm font-semibold">
                       Expected Passing Student (%)
                     </div>
@@ -190,13 +196,18 @@
                     </div>
                     <input
                       v-if="editMode"
-                      v-model="getActiveAssessment().expected_passing_student_percentage"
+                      v-model="
+                        getActiveAssessment()
+                          .expected_passing_student_percentage
+                      "
                       type="number"
-                      class=" px-4 py-2 border border-grey-secondary rounded-xl outline-none w-24"
+                      class="px-4 py-2 border border-grey-secondary rounded-xl outline-none w-24"
                       placeholder="(%)"
                     />
                   </div>
-                  <div class="flex flex-row justify-between gap-4 mb-2 items-center">
+                  <div
+                    class="flex flex-row justify-between gap-4 mb-2 items-center"
+                  >
                     <div class="text-sm font-semibold">
                       Expected Passing Score (%)
                     </div>
@@ -207,7 +218,7 @@
                       v-if="editMode"
                       v-model="getActiveAssessment().expected_score_percentage"
                       type="number"
-                      class=" px-4 py-2 border border-grey-secondary rounded-xl outline-none w-24"
+                      class="px-4 py-2 border border-grey-secondary rounded-xl outline-none w-24"
                       placeholder="(%)"
                     />
                   </div>
@@ -278,15 +289,15 @@
 
                   <div
                     v-for="clo in clos"
-                    :key="clo.clo_id"
+                    :key="clo.id"
                     class="grid grid-cols-4 gap-2 mt-2 border-b pb-2 border-grey-tertiary"
                   >
                     <div class="col-span-1 text-sm flex items-center">
-                      {{ clo.clo_code }}
+                      {{ clo.code }}
                     </div>
                     <div class="col-span-3 text-sm flex flex-row gap-4">
                       <div class="w-full flex items-center">
-                        {{ clo.clo_description }}
+                        {{ clo.description }}
                       </div>
                       <div class="h-full flex items-center">
                         <button
@@ -432,7 +443,18 @@ import AddStudentToAssessment from "@/components/popups/AddStudentToAssessment.v
 import AddAssesments from "@/components/popups/AddAssesments.vue";
 import SmallEditButton from "@/components/button/SmallEditButton.vue";
 import SmallSaveButton from "@/components/button/SmallSaveButton.vue";
+import { fetchAssignments, fetchAssignmentScores } from "~/api/api";
+
+const props = defineProps({
+  courseId: {
+    type: String,
+    required: true,
+  },
+});
+
 const { t } = useI18n();
+const router = useRouter();
+const route = useRoute();
 
 ChartJS.register(
   Title,
@@ -471,6 +493,9 @@ const assessments = ref([]);
 const activeAssessment = ref(1);
 const chartData = ref(null);
 const chartOptions = ref(null);
+const clos = ref([]);
+const scores = ref([]);
+const score_frequency = ref([]);
 
 useHead({
   title: t("seo.title"),
@@ -488,8 +513,6 @@ const setActionButton = (button) => {
   activeButton.value = button;
 };
 
-const router = useRouter();
-const route = useRoute();
 const groupID = route.query.groupId;
 const groupName = route.query.name;
 
@@ -531,163 +554,49 @@ const AllCLOs = [
   },
 ];
 
-const getStudents = (query) => {
-  assessments.value = [
-    {
-      id: 1,
-      name: "Assessment 1",
-      is_included_in_clo: true,
-      weight: 30,
-      description:
-        "lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud",
-      max_score: 100,
-      expected_passing_student_percentage: 50,
-      expected_score_percentage: 80,
-      scores: [
-        12, 19, 3, 5, 2, 3, 7, 10, 15, 12, 5, 30, 35, 20, 45, 30, 55, 40, 25, 3,
-      ],
-      statistics: {
-        mean: 80.0,
-        sd: 10.0,
-        median: 70.0,
-        max: 90.0,
-        mode: 60.0,
-        min: 50.0,
-      },
-      clos: ["CLO1", "CLO2"],
-      student: [
-        {
-          studentID: "64070501010",
-          studentName: "Jirapat Lakma",
-          score: 80,
-        },
-        {
-          studentID: "64070501039",
-          studentName: "Peerapat Padtawaro",
-          score: 20,
-        },
-        {
-          studentID: "64070501092",
-          studentName: "Nutchapong Pramualsup",
-          score: 100,
-        },
-      ],
-    },
-    {
-      id: 2,
-      name: "Assessment 2",
-      is_included_in_clo: false,
-      weight: 20,
-      description:
-        "lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud",
-      max_score: 90,
-      expected_passing_student_percentage: 60,
-      expected_score_percentage: 80,
-      scores: [
-        10, 15, 5, 8, 3, 6, 9, 12, 18, 14, 7, 25, 30, 22, 40, 28, 50, 35, 20, 5,
-      ],
-      statistics: {
-        mean: 80.0,
-        sd: 10.0,
-        median: 70.0,
-        max: 90.0,
-        mode: 60.0,
-        min: 50.0,
-      },
-      clos: ["CLO3", "CLO4"],
-      student: [
-        {
-          studentID: "64070501010",
-          studentName: "Jirapat Lakma",
-          score: 80,
-        },
-        {
-          studentID: "64070501039",
-          studentName: "Peerapat Padtawaro",
-          score: 20,
-        },
-        {
-          studentID: "64070501092",
-          studentName: "Nutchapong Pramualsup",
-          score: 100,
-        },
-      ],
-    },
-    {
-      id: 3,
-      name: "Assessment 3",
-      is_included_in_clo: true,
-      weight: 10,
-      description:
-        "lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud",
-      max_score: 100,
-      expected_passing_student_percentage: 50,
-      expected_score_percentage: 80,
-      scores: [
-        8, 12, 4, 6, 3, 5, 8, 11, 16, 13, 6, 28, 32, 18, 38, 25, 45, 30, 18, 4,
-      ],
-      statistics: {
-        mean: 80.0,
-        sd: 10.0,
-        median: 70.0,
-        max: 90.0,
-        mode: 60.0,
-        min: 50.0,
-      },
-      clos: ["CLO1", "CLO2"],
-      student: [
-        {
-          studentID: "64070501010",
-          studentName: "Jirapat Lakma",
-          score: 80,
-        },
-        {
-          studentID: "64070501039",
-          studentName: "Peerapat Padtawaro",
-          score: 20,
-        },
-        {
-          studentID: "64070501092",
-          studentName: "Nutchapong Pramualsup",
-          score: 100,
-        },
-      ],
-    },
-  ];
-};
+const setActiveAssessment = async (assessment) => {
+  activeAssessment.value = assessment.id;
+  await fetchAssignmentScores(scores, clos, assessment.id);
 
-const setActiveAssessment = (id) => {
-  activeAssessment.value = id;
-  const active = getActiveAssessment();
+  score_frequency.value = Array(21).fill(0);
+
+  // Calculate the frequency of scores in ranges
+  scores.value.forEach((score) => {
+    // Determine the range based on the score
+    const range = score.score === 100 ? 20 : Math.floor(score.score / 5);
+    score_frequency.value[range] += 1; // Increment the count for the appropriate range
+  });
+
+  // Create the chart data
   chartData.value = {
     labels: [
       "0-5",
-      "5-10",
-      "10-15",
-      "15-20",
-      "20-25",
-      "25-30",
-      "30-35",
-      "35-40",
-      "40-45",
-      "45-50",
-      "50-55",
-      "55-60",
-      "60-65",
-      "65-70",
-      "70-75",
-      "75-80",
-      "80-85",
-      "85-90",
-      "90-95",
-      "95-100",
+      "6-10",
+      "11-15",
+      "16-20",
+      "21-25",
+      "26-30",
+      "31-35",
+      "36-40",
+      "41-45",
+      "46-50",
+      "51-55",
+      "56-60",
+      "61-65",
+      "66-70",
+      "71-75",
+      "76-80",
+      "81-85",
+      "86-90",
+      "91-95",
+      "96-100",
     ],
     datasets: [
       {
         label: "Scores",
         backgroundColor: "#FEC232",
         borderRadius: 5,
-        data: active.scores,
+        data: score_frequency.value,
       },
     ],
   };
@@ -695,11 +604,6 @@ const setActiveAssessment = (id) => {
 
 const getActiveAssessment = () => {
   return assessments.value.find((a) => a.id === activeAssessment.value) || {};
-};
-
-const getCLODescription = (code) => {
-  const clo = AllCLOs.find((clo) => clo.code === code);
-  return clo ? clo.description : "";
 };
 
 const removeCLO = (code) => {
@@ -748,8 +652,9 @@ const exportUser = () => {};
 
 const onClickImportUser = () => {};
 
-onMounted(() => {
-  getStudents(searchQuery.value);
+onMounted(async () => {
+  await fetchAssignments(assessments, props.courseId);
+  setActiveAssessment(assessments.value[0]);
 
   const active = getActiveAssessment();
   chartData.value = {
