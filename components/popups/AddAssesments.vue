@@ -10,14 +10,16 @@
           <div
             class="text-2xl font-semibold text-black-primary w-full text-start"
           >
-            Add Assessment Group
+            Add Assessment
           </div>
           <div class="text-sm text-grey-primary mt-1">
             Add Assessment Group for
             <span class="font-semibold text-black-primary">{{ name }}</span>
           </div>
         </div>
-        <div class="mt-4 text-center flex gap-4 flex-col text-sm max-h-[60vh] overflow-y-auto scrollbar-set">
+        <div
+          class="mt-4 text-center flex gap-4 flex-col text-sm max-h-[60vh] overflow-y-auto scrollbar-set"
+        >
           <div class="flex flex-col items-start w-full gap-2">
             <label class="font-semibold text-black-primary"
               >Assessment Group Name</label
@@ -37,14 +39,49 @@
               class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
             ></textarea>
           </div>
+          <div class="grid grid-cols-2 gap-4 items-center w-[28rem]">
+            <div class="flex flex-col items-start w-full gap-2">
+              <label class="font-semibold text-black-primary"
+                >Weighted (%)</label
+              >
+              <input
+                v-model="assessmentsGroup.weight"
+                type="number"
+                placeholder="Max Weighted Score"
+                class="px-4 py-2 border border-grey-secondary rounded-xl outline-none"
+              />
+            </div>
+            <div class="flex flex-row items-center w-full gap-2">
+              <div class="flex flex-col items-start w-full gap-2 ">
+                <label class="font-semibold text-black-primary"
+                  >Include CLO</label
+                >
+                <div class="flex flex-row items-center w-full gap-2 p-2 border border-grey-secondary rounded-xl">
+                  <input
+                    v-model="assessmentsGroup.includeCLO"
+                    type="checkbox"
+                    class="w-4 h-4 rounded-xl "
+                  />
+                  <label class="font-semibold text-black-primary border-l border-grey-secondary  pl-2"
+                    ><span
+                      v-if="assessmentsGroup.includeCLO"
+                      class="text-green-500"
+                      >Include</span
+                    >
+                    <span v-else class="text-red-500">Not Include</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="flex flex-col items-start w-full gap-2">
             <label class="font-semibold text-black-primary"
-              >Weighted Score</label
+              >Max Scored</label
             >
             <input
-              v-model="assessmentsGroup.weight"
+              v-model="assessmentsGroup.maxScored"
               type="number"
-              placeholder="Max Weighted Score"
+              placeholder="Max Scored"
               class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
             />
           </div>
@@ -102,6 +139,8 @@ const assessmentsGroup = ref({
   name: "",
   desc_en: "",
   weight: 0,
+  includeCLO: true,
+  maxScored: 0,
   expectedPassingStudent: 50,
   expectedPassingScore: 50,
 });

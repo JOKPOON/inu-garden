@@ -92,6 +92,13 @@
       </div>
     </div>
   </div>
+  <StatusPopup
+    v-if="statusVisible"
+    @close="statusVisible = false"
+    :status="status"
+    :message="message"
+    :path="path"
+  />
 </template>
 
 <script setup>
@@ -104,6 +111,7 @@ import PasswordLogin from "@/components/icons/PasswordLogin.vue";
 import LoginButton from "@/components/button/LoginButton.vue";
 import HttpClient from "@/api/http.js";
 import BaseURL from "@/config/api.js";
+import StatusPopup from "@/components/popups/StatusPopup.vue";
 const { t } = useI18n();
 
 const Email = ref("");
@@ -111,12 +119,15 @@ const Password = ref("");
 const router = useRouter();
 const checkEmail = ref(false);
 const checkPassword = ref(false);
+const statusVisible = ref(false);
+const message = ref("");
+const path = ref("");
+const status = ref("");
 
 const handleLogin = () => {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   checkEmail.value = !emailPattern.test(Email.value);
   checkPassword.value = Password.value.length < 0;
-
   if (!checkEmail.value && !checkPassword.value) {
     fetch(BaseURL + "auth/login", {
       method: "POST",
@@ -132,8 +143,15 @@ const handleLogin = () => {
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
-          router.push("/");
+          status.value = "success";
+          message.value = "Welcome to INU System";
+          path.value = "/";
+          statusVisible.value = true;
         } else {
+          status.value = "error";
+          message.value = "Password or Email is incorrect";
+          path.value = "/";
+          statusVisible.value = true;
           console.log(data.error.message);
           if (data.error.message === "password or email is incorrect") {
             checkEmail.value = true;

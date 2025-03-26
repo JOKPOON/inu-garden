@@ -185,6 +185,19 @@
                   >
                     <div v-if="selectedCLO.detail && selectedCLO.detail.PLO">
                       <div
+                          class="grid grid-cols-4 gap-4 border-b border-grey-tertiary px-4 py-3"
+                        >
+                          <div class="col-span-1 text-sm w-full font-medium ">
+                            {{selectedCLO.detail.PLOcode }}
+                          </div>
+                          <div class="col-span-3 text-sm w-full">
+                            <div class="flex flex-col gap-3">
+                              <div>{{ selectedCLO.detail.PLOdesc_th }}</div>
+                              <div>{{ selectedCLO.detail.PLOdesc }}</div>
+                            </div>
+                          </div>
+                        </div>
+                      <div
                         v-for="(plo, key) in selectedCLO.detail.PLO"
                         :key="key"
                       >
@@ -308,7 +321,7 @@ const searchQuery = ref("");
 
 const CLO = ref([
   {
-    name: "CLO 1",
+    name: "CLO1",
     type: 0,
     detail: {
       desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
@@ -316,6 +329,15 @@ const CLO = ref([
         "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
       expectedWeightPassingCLORate: 70,
       expectedWeightPassingStudentRate: 70,
+      PLOcode: "PLO1",
+      PLOdesc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
+      PLOdesc_th: "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
+      POcode: "PO1",
+      POdesc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
+      POdesc_th: "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
+      SOcode : "SO1",
+      SOdesc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
+      SOdesc_th: "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
       PLO: {
         PLO1: {
           desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",

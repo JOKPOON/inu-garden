@@ -21,7 +21,7 @@
     <div class="mt-4 rounded-xl p-4 bg-white border border-grey-secondary">
       <div
         :class="[
-          editMode ? 'grid grid-cols-8' : 'grid grid-cols-7',
+          editMode ? 'grid grid-cols-6' : 'grid grid-cols-5',
           'gap-4 pb-2 border-b',
         ]"
       >
@@ -33,18 +33,9 @@
         <div
           class="col-span-1 text-sm text-grey-primary flex items-center justify-center"
         >
-          Involved PLO
+          Involved CLO
         </div>
-        <div
-          class="col-span-1 text-sm text-grey-primary flex items-center justify-center"
-        >
-          Involved PO
-        </div>
-        <div
-          class="col-span-1 text-sm text-grey-primary flex items-center justify-center"
-        >
-          Involved SO
-        </div>
+
         <div
           v-if="editMode"
           class="col-span-1 text-sm text-grey-primary flex items-center justify-center"
@@ -57,7 +48,7 @@
           v-for="(question, index) in survey.question"
           :key="question.id"
           :class="[
-            editMode ? 'grid grid-cols-8' : 'grid grid-cols-7',
+            editMode ? 'grid grid-cols-6' : 'grid grid-cols-5',
             'space-x-4 py-2 border-b',
           ]"
         >
@@ -73,22 +64,22 @@
           <div class="col-span-1 text-sm text-black-primary text-center">
             <ul>
               <li
-                v-for="(plo, ploIndex) in question.plo"
-                :key="plo"
+                v-for="(clo, ploIndex) in question.clo"
+                :key="clo"
                 class="flex items-center space-x-2"
               >
                 <div class="w-full flex items-center justify-center mt-1">
                   <input
                     v-if="editMode"
-                    :value="plo"
-                    @input="updatePLO(index, ploIndex, $event.target.value)"
+                    :value="clo"
+                    @input="updateCLO(index, ploIndex, $event.target.value)"
                     class="w-14 outline-none"
-                    placeholder="PLO"
+                    placeholder="CLO"
                   />
-                  <span v-else>{{ plo }}</span>
+                  <span v-else>{{ clo }}</span>
                   <button
                     v-if="editMode"
-                    @click="removePLO(index, ploIndex)"
+                    @click="removeCLO(index, ploIndex)"
                     class="flex items-center justify-center rounded-lg p-1 border hover:bg-red-500 hover:text-white"
                   >
                     <Delete class="w-5 h-5" />
@@ -98,83 +89,7 @@
               <li v-if="editMode">
                 <div class="w-full flex items-center justify-center mt-2">
                   <button
-                    @click="addPLO(index)"
-                    class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-3 py-1 hover:bg-black-primary hover:text-white"
-                  >
-                    <Add class="w-5 h-5" />
-                    <div class="text-base">Add</div>
-                  </button>
-                </div>
-              </li>
-            </ul>
-          </div>
-          <div class="col-span-1 text-sm text-black-primary text-center">
-            <ul>
-              <li
-                v-for="(po, poIndex) in question.po"
-                :key="po"
-                class="flex items-center space-x-2"
-              >
-                <div class="w-full flex items-center justify-center mt-1">
-                  <input
-                    v-if="editMode"
-                    :value="po"
-                    @input="updatePO(index, poIndex, $event.target.value)"
-                    class="w-14 outline-none"
-                    placeholder="PO"
-                  />
-                  <span v-else>{{ po }}</span>
-                  <button
-                    v-if="editMode"
-                    @click="removePO(index, poIndex)"
-                    class="flex items-center justify-center rounded-lg p-1 border hover:bg-red-500 hover:text-white"
-                  >
-                    <Delete class="w-5 h-5" />
-                  </button>
-                </div>
-              </li>
-              <li v-if="editMode">
-                <div class="w-full flex items-center justify-center mt-2">
-                  <button
-                    @click="addPO(index)"
-                    class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-3 py-1 hover:bg-black-primary hover:text-white"
-                  >
-                    <Add class="w-5 h-5" />
-                    <div class="text-base">Add</div>
-                  </button>
-                </div>
-              </li>
-            </ul>
-          </div>
-          <div class="col-span-1 text-sm text-black-primary text-center">
-            <ul>
-              <li
-                v-for="(so, soIndex) in question.so"
-                :key="so"
-                class="flex items-center space-x-2"
-              >
-                <div class="w-full flex items-center justify-center mt-1">
-                  <input
-                    v-if="editMode"
-                    :value="so"
-                    @input="updateSO(index, soIndex, $event.target.value)"
-                    class="w-14 outline-none"
-                    placeholder="SO"
-                  />
-                  <span v-else>{{ so }}</span>
-                  <button
-                    v-if="editMode"
-                    @click="removeSO(index, soIndex)"
-                    class="flex items-center justify-center rounded-lg p-1 border hover:bg-red-500 hover:text-white"
-                  >
-                    <Delete class="w-5 h-5" />
-                  </button>
-                </div>
-              </li>
-              <li v-if="editMode">
-                <div class="w-full flex items-center justify-center mt-2">
-                  <button
-                    @click="addSO(index)"
+                    @click="addCLO(index)"
                     class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-3 py-1 hover:bg-black-primary hover:text-white"
                   >
                     <Add class="w-5 h-5" />
@@ -280,17 +195,13 @@ const survey = ref({
     {
       id: "Q1",
       question: "How do you feel about this course?",
-      plo: ["PLO1", "PLO2"],
-      po: ["PO1", "PO2"],
-      so: ["SO1", "SO2"],
+      clo: ["CLO1", "CLO2"],
     },
     {
       id: "Q2",
       question:
         "I can apply knowledge of mathematics, science, and engineering to solve engineering problems.",
-      plo: ["PLO1", "PLO2"],
-      po: ["PO1", "PO2"],
-      so: ["SO1", "SO2"],
+      clo: ["CLO1", "CLO2"],
     },
   ],
 });
@@ -305,9 +216,7 @@ const addQuestion = () => {
   survey.value.question.push({
     id: `Q${survey.value.question.length + 1}`,
     question: "",
-    plo: [],
-    po: [],
-    so: [],
+    clo: [],
   });
 };
 
@@ -315,29 +224,14 @@ const removeQuestion = (index) => {
   survey.value.question.splice(index, 1);
 };
 
-const addPLO = (questionIndex) => {
-  survey.value.question[questionIndex].plo.push("");
+const addCLO = (questionIndex) => {
+  survey.value.question[questionIndex].clo.push("");
 };
 
-const removePLO = (questionIndex, ploIndex) => {
+const removeCLO = (questionIndex, ploIndex) => {
   survey.value.question[questionIndex].plo.splice(ploIndex, 1);
 };
 
-const addPO = (questionIndex) => {
-  survey.value.question[questionIndex].po.push("");
-};
-
-const removePO = (questionIndex, poIndex) => {
-  survey.value.question[questionIndex].po.splice(poIndex, 1);
-};
-
-const addSO = (questionIndex) => {
-  survey.value.question[questionIndex].so.push("");
-};
-
-const removeSO = (questionIndex, soIndex) => {
-  survey.value.question[questionIndex].so.splice(soIndex, 1);
-};
 
 const updatePLO = debounce((questionIndex, ploIndex, value) => {
   survey.value.question[questionIndex].plo[ploIndex] = value;
