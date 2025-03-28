@@ -46,9 +46,7 @@
             ></textarea>
           </div>
           <div class="flex flex-col items-start w-full gap-2">
-            <label class="font-semibold text-black-primary"
-              >PO Category</label
-            >
+            <label class="font-semibold text-black-primary">PO Category</label>
             <input
               v-model="newPO.category"
               type="text"

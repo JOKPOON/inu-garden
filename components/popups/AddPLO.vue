@@ -22,7 +22,7 @@
             <input
               v-model="newPLO.code"
               type="text"
-              placeholder="PLO Name"
+              placeholder="PLO Code"
               class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
             />
           </div>
@@ -54,19 +54,18 @@
               v-model="newPLO.expectedCLORate"
               class="border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary w-12 text-center"
               type="number"
-              placeholder="ExpectedPassingCLO"
+              placeholder="Expected Passing CLO"
             />
           </div>
           <div class="w-full flex flex-row gap-2 items-center -mt-2">
             <div class="w-full text-left">
-              Expected Passing Student rate (%)
+              Expected Passing Student Rate (%)
             </div>
-
             <input
               v-model="newPLO.expectedRate"
               class="border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary w-12 text-center"
               type="number"
-              placeholder="ExpectedPassingCLO"
+              placeholder="Expected Passing Student"
             />
           </div>
         </div>
@@ -119,10 +118,24 @@
                   </td>
                   <td class="px-6 py-4 border-r border-grey-secondary">
                     <div class="w-full flex flex-col gap-2">
-                      <div>
+                      <div v-if="!subPLO.editMode">
                         {{ subPLO.desc_th }}
                       </div>
-                      <div>{{ subPLO.desc }}</div>
+                      <textarea
+                        v-else
+                        v-model="subPLO.desc_th"
+                        rows="4"
+                        class="w-full p-2 border border-grey-secondary rounded-xl outline-none"
+                      ></textarea>
+                      <div v-if="!subPLO.editMode">
+                        {{ subPLO.desc }}
+                      </div>
+                      <textarea
+                        v-else
+                        v-model="subPLO.desc"
+                        rows="4"
+                        class="w-full p-2p-2 border border-grey-secondary rounded-xl outline-none"
+                      ></textarea>
                     </div>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -130,11 +143,18 @@
                       class="flex flex-col gap-2 items-center justify-center"
                     >
                       <button
+                        @click="toggleEditMode(subPLO)"
                         class="flex items-center justify-center bg-white rounded-xl p-2 border border-grey-secondary hover:bg-black-primary text-black-primary hover:text-white"
                       >
-                        <Edit class="w-5 h-5" />
+                        <div v-if="!subPLO.editMode">
+                          <Edit class="w-5 h-5" />
+                        </div>
+                        <div v-else>
+                          <Include class="w-5 h-5" />
+                        </div>
                       </button>
                       <button
+                        @click="deleteSubPLO(subPLO.code)"
                         class="flex items-center justify-center bg-white rounded-xl p-2 border border-grey-secondary hover:bg-red-500 text-black-primary hover:text-white"
                       >
                         <Delete class="w-5 h-5" />
@@ -186,6 +206,7 @@ import { ref } from "vue";
 import { defineProps, defineEmits } from "vue";
 import { useRouter } from "vue-router";
 import Edit from "@/components/icons/Edit.vue";
+import Include from "@/components/icons/Include.vue";
 import Delete from "@/components/icons/Delete.vue";
 import SmallAddButton from "@/components/button/SmallAddButton.vue";
 import AddSubPLO from "@/components/popups/AddSubPLO.vue";
@@ -219,7 +240,7 @@ const props = defineProps({
 const emit = defineEmits(["close", "add"]);
 
 const newPLO = ref({
-  name: "",
+  code: "",
   desc: "",
   desc_th: "",
   expectedRate: 0,
@@ -232,23 +253,35 @@ const subPLOs = ref([
     desc: "Apply knowledge of mathematics, science, and engineering to computer engineering problems.",
     desc_th:
       "ใช้ความรู้ด้านคณิตศาสตร์ วิทยาศาสตร์ และวิศวกรรมศาสตร์ในการแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์",
+    editMode: false,
   },
   {
     code: "PLO 1.2",
     desc: "Apply knowledge of mathematics, science, and engineering to computer engineering problems.",
     desc_th:
       "ใช้ความรู้ด้านคณิตศาสตร์ วิทยาศาสตร์ และวิศวกรรมศาสตร์ในการแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์",
+    editMode: false,
   },
 ]);
 
 const addPLO = () => {
   emit("add", newPLO.value);
   newPLO.value = {
-    name: "",
+    code: "",
     desc: "",
     desc_th: "",
+    expectedRate: 0,
+    expectedCLORate: 0,
   };
   emit("close");
+};
+
+const toggleEditMode = (subPLO) => {
+  subPLO.editMode = !subPLO.editMode;
+};
+
+const deleteSubPLO = (code) => {
+  subPLOs.value = subPLOs.value.filter((subPLO) => subPLO.code !== code);
 };
 </script>
 

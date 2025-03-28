@@ -1,7 +1,7 @@
 <template>
   <teleport to="body">
     <div
-      v-if="!showAddSubCLOPopup"
+      v-if="!showAddPLOPopup && !showAddPOPopup && !showAddSOPopup"
       class="w-full h-full fixed inset-0 flex items-center justify-center bg-black-primary bg-opacity-50 z-50"
     >
       <div
@@ -14,9 +14,7 @@
             <span class="font-semibold text-black-primary">{{ name }}</span>
           </div>
         </div>
-        <div
-          class="border-t border-grey-secondary  w-[36rem] my-4"
-        ></div>
+        <div class="border-t border-grey-secondary w-[36rem] my-4"></div>
         <div class="max-h-[60vh] overflow-y-scroll scrollbar-set mb-4 text-sm">
           <div class="mb-4 text-center flex gap-4 flex-col text-sm">
             <div class="flex flex-col items-start w-full gap-2">
@@ -29,7 +27,9 @@
               />
             </div>
             <div class="flex flex-col items-start w-full gap-2">
-              <label class="font-semibold text-black-primary">Description (Eng)</label>
+              <label class="font-semibold text-black-primary"
+                >Description (Eng)</label
+              >
               <textarea
                 v-model="newCLO.desc"
                 rows="3"
@@ -38,7 +38,9 @@
               ></textarea>
             </div>
             <div class="flex flex-col items-start w-full gap-2">
-              <label class="font-semibold text-black-primary">Description (TH)</label>
+              <label class="font-semibold text-black-primary"
+                >Description (TH)</label
+              >
               <textarea
                 v-model="newCLO.desc_th"
                 rows="3"
@@ -119,54 +121,78 @@
               </SmallAddButton>
             </div>
             <div class="h-[1px] w-full bg-grey-secondary"></div>
-            <div class="max-h-[250px] overflow-y-scroll scrollbar-set">
-              <table
-                class="min-w-full divide-y border border-grey-secondary rounded-xl"
-              >
-                <thead class="divide-x border-grey-secondary">
-                  <tr>
-                    <th
-                      scope="col"
-                      class="px-6 py-3 text-center font-semibold text-grey-primary border-r border-grey-secondary"
+            <div class="max-h-[300px] overflow-y-scroll scrollbar-set">
+              <div class="border border-grey-secondary rounded-xl">
+                <div
+                  class="grid grid-cols-4 font-semibold text-grey-primary divide-x"
+                >
+                  <div
+                    class="col-span-1 px-6 py-3 text-center border-r border-grey-secondary"
+                  >
+                    Code
+                  </div>
+                  <div
+                    class="col-span-2 px-6 py-3 text-center border-r border-grey-secondary"
+                  >
+                    Description
+                  </div>
+                  <div class="col-span-1 px-6 py-3 text-center">Action</div>
+                </div>
+                <div
+                  v-for="(detail, key) in selectedDetails"
+                  :key="key"
+                  class="grid grid-cols-4 divide-x border-t border-grey-secondary bg-grey-tertiary"
+                >
+                  <div
+                    class="col-span-1 flex-1 px-6 py-3 text-center border-r border-grey-secondary"
+                  >
+                    {{ detail.code }}
+                  </div>
+                  <div
+                    class="col-span-2 px-6 py-3 border-r border-grey-secondary"
+                  >
+                    <div class="mb-2">{{ detail.desc_th }}</div>
+                    {{ detail.desc }}
+                  </div>
+                  <div
+                    class="col-span-1 px-6 py-3 text-center flex items-center justify-center"
+                  >
+                    <button
+                      class="flex items-center justify-center bg-white rounded-xl p-2 border border-grey-secondary hover:bg-red-500 text-black-primary hover:text-white"
+                      @click="removeDetail(key)"
                     >
-                      Code
-                    </th>
-                    <th
-                      scope="col"
-                      class="px-6 py-3 text-center font-semibold text-grey-primary border-r border-grey-secondary"
+                      <Delete class="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+                <div
+                  v-for="(sub, key) in subDetail"
+                  :key="key"
+                  class="grid grid-cols-4 divide-x border-t border-grey-secondary bg-grey-light"
+                >
+                  <div
+                    class="col-span-1 flex-1 px-6 py-3 text-center border-r border-grey-secondary"
+                  >
+                    {{ sub.code }}
+                  </div>
+                  <div
+                    class="col-span-2 px-6 py-3 border-r border-grey-secondary"
+                  >
+                    <div class="mb-2">{{ sub.desc_th }}</div>
+                    {{ sub.desc }}
+                  </div>
+                  <div
+                    class="col-span-1 px-6 py-3 text-center flex items-center justify-center"
+                  >
+                    <button
+                      class="flex items-center justify-center bg-white rounded-xl p-2 border border-grey-secondary hover:bg-red-500 text-black-primary hover:text-white"
+                      @click="removeSubDetail(key)"
                     >
-                      Description
-                    </th>
-                    <th
-                      scope="col"
-                      class="px-6 py-3 text-center font-semibold text-grey-primary"
-                    >
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-                <tbody class="bg-white divide-y border-grey-secondary">
-                  <tr v-for="(detail, key) in selectedDetails" :key="key">
-                    <td
-                      class="px-6 py-3 text-center border-r border-grey-secondary"
-                    >
-                      {{ key }}
-                    </td>
-                    <td class="px-6 py-3 border-r border-grey-secondary">
-                      <div class="mb-2">{{ detail.desc_th }}</div>
-                      {{ detail.desc }}
-                    </td>
-                    <td class="px-6 py-3 text-center">
-                      <button
-                        class="flex items-center justify-center bg-white rounded-xl p-2 border border-grey-secondary hover:bg-red-500 text-black-primary hover:text-white"
-                        @click="removeDetail(key)"
-                      >
-                        <Delete class="w-5 h-5" />
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                      <Delete class="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -186,6 +212,24 @@
         </div>
       </div>
     </div>
+    <AddPLO
+      v-if="showAddPLOPopup"
+      :id="id"
+      :name="name"
+      @close="showAddPLOPopup = false"
+    ></AddPLO>
+    <AddPO
+      v-if="showAddPOPopup"
+      :id="id"
+      :name="name"
+      @close="showAddPOPopup = false"
+    ></AddPO>
+    <AddSO
+      v-if="showAddSOPopup"
+      :id="id"
+      :name="name"
+      @close="showAddSOPopup = false"
+    ></AddSO>
   </teleport>
 </template>
 
@@ -195,19 +239,42 @@ import { defineProps, defineEmits } from "vue";
 import { useRouter } from "vue-router";
 import Delete from "@/components/icons/Delete.vue";
 import SmallAddButton from "@/components/button/SmallAddButton.vue";
-import AddPLO from "@/components/popups/AddPLO.vue";
+import AddPLO from "@/components/popups/AddPLOLO.vue";
+import AddPO from "@/components/popups/AddPOLO.vue";
+import AddSO from "@/components/popups/AddSOLO.vue";
 
 const router = useRouter();
 
-const showAddSubCLOPopup = ref(false);
+const showAddPLOPopup = ref(false);
+const showAddPOPopup = ref(false);
+const showAddSOPopup = ref(false);
+const selectedDetails = ref([]);
+const subDetail = ref([]);
+const id = ref("");
+const name = ref("");
+onMounted(() => {
+  selectedDetails.value = CLO.value.flatMap((item) => item.PLO);
+  subDetail.value = CLO.value.flatMap((item) =>
+    Object.entries(item.PLO.sub).map(([key, value]) => ({
+      key,
+      ...value,
+    }))
+  );
+});
 
 const addSubCLO = (path) => {
   if (path === "PLO") {
-    // Add PLO logic
+    id.value = props.id;
+    name.value = props.name;
+    showAddPLOPopup.value = true;
   } else if (path === "PO") {
-    // Add PO logic
+    id.value = props.id;
+    name.value = props.name;
+    showAddPOPopup.value = true;
   } else if (path === "SO") {
-    // Add SO logic
+    id.value = props.id;
+    name.value = props.name;
+    showAddSOPopup.value = true;
   }
 };
 
@@ -216,6 +283,27 @@ const activeButton = ref("PLO");
 
 const setActionButton = (button) => {
   activeButton.value = button;
+  selectedDetails.value = CLO.value.flatMap((item) => {
+    if (button === "PLO") {
+      return item.PLO;
+    } else if (button === "PO") {
+      return item.PO;
+    } else if (button === "SO") {
+      return item.SO;
+    }
+    return [];
+  });
+
+  subDetail.value = CLO.value.flatMap((item) => {
+    if (button === "PLO") {
+      return item.PLO.sub;
+    } else if (button === "PO") {
+      return item.PO.sub;
+    } else if (button === "SO") {
+      return item.SO.sub;
+    }
+    return [];
+  });
 };
 
 const props = defineProps({
@@ -244,6 +332,10 @@ const removeDetail = (key) => {
   selectedDetails.value.splice(key, 1);
 };
 
+const removeSubDetail = (key) => {
+  subDetail.value.splice(key, 1);
+};
+
 const addCLO = () => {
   emit("add", newCLO.value);
   newCLO.value = {
@@ -255,6 +347,89 @@ const addCLO = () => {
   };
   emit("close");
 };
+
+const CLO = ref([
+  {
+    PLO: {
+      code: "PLO",
+      desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
+      desc_th:
+        "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
+      sub: [
+        {
+          code: "PLO1",
+          desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
+          desc_th:
+            "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
+        },
+        {
+          code: "PLO2",
+          desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
+          desc_th:
+            "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
+        },
+        {
+          code: "PLO3",
+          desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
+          desc_th:
+            "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
+        },
+      ],
+    },
+    PO: {
+      code: "PO",
+      desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
+      desc_th:
+        "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
+      sub: [
+        {
+          code: "PO1",
+          desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
+          desc_th:
+            "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
+        },
+        {
+          code: "PO2",
+          desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
+          desc_th:
+            "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
+        },
+        {
+          code: "PO3",
+          desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
+          desc_th:
+            "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
+        },
+      ],
+    },
+    SO: {
+      code: "SO",
+      desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
+      desc_th:
+        "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
+      sub: [
+        {
+          code: "SO1",
+          desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
+          desc_th:
+            "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
+        },
+        {
+          code: "SO2",
+          desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
+          desc_th:
+            "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
+        },
+        {
+          code: "SO3",
+          desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
+          desc_th:
+            "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
+        },
+      ],
+    },
+  },
+]);
 </script>
 
 <style scoped>
