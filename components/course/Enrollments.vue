@@ -65,6 +65,7 @@ import { useRouter } from "vue-router";
 
 const router = useRouter();
 
+
 const { t } = useI18n();
 
 useHead({

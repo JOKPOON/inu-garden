@@ -1,10 +1,10 @@
 <template>
   <div class="flex flex-col">
     <div class="flex items-center gap-4 flex-row">
-      <div class="flex flex-row gap-4">
-        <button
+      <div class="flex flex-row gap-4 w-full">
+        <!-- <button
           @click="toggleSteam"
-          :class="[
+          :class="[ 
             'flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2 transition-all duration-300',
             steamStatusClass,
           ]"
@@ -19,10 +19,21 @@
           <template v-else>
             <ArrowDown class="w-5 h-5" />
           </template>
-        </button>
+        </button> -->
+        <div class ="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-2 gap-2 bg-grey-tertiary ">
+        <p class="text-sm text-grey-primary ">
+          Total :
+        </p>
+        <p class="text-sm text-black-primary font-semibold">
+          <span class="font-semibold  text-black-primary">{{
+            downstreamFeedbacks.length + upstreamFeedbacks.length
+          }}</span>
+          Feedbacks
+        </p>
+        </div>
         <button
           @click="toggleDateTime"
-          :class="[
+          :class="[ 
             'flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-2 gap-2 transition-all duration-300',
             dateTimeStatusClass,
           ]"
@@ -40,56 +51,97 @@
         </button>
       </div>
     </div>
-    <div class="grid grid-cols-2 grid-flex-media gap-4 mt-4">
-      <div
-        class="flex-col flex gap-4 max-h-[calc(100vh-370px)] overflow-y-scroll scrollbar-set"
-      >
-        <div class="p-3 rounded-xl border border-grey-tertiary">
-          <div
-            v-for="feedback in received_feedbacks"
-            :key="feedback.id"
-            class="bg-white border border-grey-tertiary shadow-sm rounded-xl p-3 mb-4"
-          >
-            <p class="text-sm font-semibold">
-              {{ feedback.from_course.code }} - {{ feedback.from_course.name }}
-            </p>
-            <p class="text-sm text-grey-primary">{{ feedback.comment }}</p>
 
-            // TODO: Make type a tag on upper right side of the card
-            <p class="text-sm text-grey-secondary">
-              Type: {{ feedback.stream_type }}
-            </p>
-            <p class="text-sm text-grey-secondary">
-              From:
-              {{ feedback.user.title_en_short }}
-              {{ feedback.user.first_name_en }}
-              {{ feedback.user.last_name_en }}
-            </p>
-            <p class="text-sm text-grey-secondary">
-              {{ formatBangkokTime(feedback.created_at) }}
-            </p>
+    <div class="grid grid-cols-2 gap-4 mt-4 max-h-[calc(100vh-370px)] overflow-y-scroll scrollbar-set">
+      <!-- Downstream Feedbacks -->
+      <div>
+        
+        <div
+          v-for="feedback in downstreamFeedbacks"
+          :key="feedback.id"
+          class="bg-white border border-grey-tertiary shadow-sm rounded-xl p-3 mb-4"
+        >
+          <div
+            class="flex flex-row gap-4 bg-grey-tertiary rounded-xl p-3 items-center justify-between"
+          >
+            <div class="flex flex-row gap-4 items-center">
+              <div
+                class="text-sm flex flex-row gap-2 items-center rounded-lg px-2 py-1 bg-orange-primary text-white"
+              >
+                <ArrowDown class="w-4 h-4" />
+                Downstream
+              </div>
+              <p class="text-sm font-semibold">
+                {{ feedback.from_course.code }} -
+                {{ feedback.from_course.name }}
+              </p>
+            </div>
+            <div>
+              <p class="text-sm text-grey-primary text-end">
+                {{ feedback.semester }}
+              </p>
+            </div>
           </div>
+
+          <p class="text-sm p-3 my-3 text-center text-black-primary border border-grey-secondary rounded-lg">
+            "{{ feedback.comment }}"
+          </p>
+
+          <p class="text-sm text-grey-primary">
+            From:
+            {{ feedback.user.title_en_short }}
+            {{ feedback.user.first_name_en }}
+            {{ feedback.user.last_name_en }}
+          </p>
+          <p class="text-sm text-grey-primary">
+            {{ formatBangkokTime(feedback.created_at) }}
+          </p>
         </div>
       </div>
-      <div class="flex-col flex gap-4">
+
+      <!-- Upstream Feedbacks -->
+      <div>
+       
         <div
-          class="bg-white border border-grey-tertiary shadow-sm rounded-xl p-6"
+          v-for="feedback in upstreamFeedbacks"
+          :key="feedback.id"
+          class="bg-white border border-grey-tertiary shadow-sm rounded-xl p-3 mb-4"
         >
-          <div class="flex flex-row gap-4 items-center justify-between mb-4">
-            <h3 class="text-base font-semibold">Add Feedback</h3>
-            <button
-              @click="addFeedback"
-              class="bg-black-primary text-white px-4 py-2 rounded-lg text-sm flex items-center flex-row gap-1"
-            >
-              <Send class="w-4 h-4 color-white flex items-center" />
-              <div>Submit</div>
-            </button>
+          <div
+            class="flex flex-row gap-4 bg-grey-tertiary rounded-xl p-3 items-center justify-between"
+          >
+            <div class="flex flex-row gap-4 items-center">
+              <div
+                class="text-sm flex flex-row gap-2 items-center rounded-lg px-2 py-1 bg-yellow-primary text-black-primary"
+              >
+                <ArrowUp class="w-4 h-4" />
+                Upstream
+              </div>
+              <p class="text-sm font-semibold">
+                {{ feedback.from_course.code }} -
+                {{ feedback.from_course.name }}
+              </p>
+            </div>
+            <div>
+              <p class="text-sm text-grey-primary text-end">
+                {{ feedback.semester }}
+              </p>
+            </div>
           </div>
-          <textarea
-            v-model="newFeedback.message"
-            placeholder="Feedback Message"
-            class="p-2 border rounded w-full"
-          ></textarea>
+
+          <p class="text-sm p-3 my-3 text-center text-black-primary border border-grey-secondary rounded-lg">
+            "{{ feedback.comment }}"
+          </p>
+
+          <p class="text-sm text-grey-primary">
+            From:
+            {{ feedback.user.title_en_short }}
+            {{ feedback.user.first_name_en }}
+            {{ feedback.user.last_name_en }}
+          </p>
+          <p class="text-sm text-grey-primary">
+            {{ formatBangkokTime(feedback.created_at) }}
+          </p>
         </div>
       </div>
     </div>
@@ -102,9 +154,6 @@ import Status from "@/components/icons/Status.vue";
 import ArrowUp from "@/components/icons/ArrowUp.vue";
 import ArrowDown from "@/components/icons/ArrowDown.vue";
 import { useI18n } from "vue-i18n";
-import Send from "@/components/icons/Send.vue";
-import { fetchReceivedFeedbacks } from "~/api/api";
-import { useRouter } from "vue-router";
 
 const formatBangkokTime = (dateString) => {
   return new Intl.DateTimeFormat("en-TH", {
@@ -129,18 +178,125 @@ definePageMeta({
   layout: "landing",
 });
 
-const router = useRouter();
-const buttons = ["Received Feedbacks", "Manage Feedback"];
-
-const activeButton = ref("Received Feedbacks");
-const setActionButton = (button) => {
-  activeButton.value = button;
-};
-
 const steamStatus = ref("default");
 const dateTimeStatus = ref("default");
-const course_id = ref(router.currentRoute.value.params.id);
-const received_feedbacks = ref([]);
+
+const received_feedbacks = ref([
+  {
+    id: "1",
+    stream_type: "UPSTREAM",
+    comment: "This is a sample comment",
+    semester: "1st/2024",
+    created_at: "2025-04-05T07:59:50.856Z",
+    user: {
+      title_en_short: "Assoc. Prof.",
+      first_name_en: "Somchai",
+      last_name_en: "Thongdee",
+    },
+    from_course: {
+      code: "CPE101",
+      name: "Introduction to Programming I",
+    },
+  },
+  {
+    id: "2",
+    stream_type: "DOWNSTREAM",
+    comment: "Another feedback comment",
+    semester: "2nd/2023",
+    created_at: "2025-04-04T10:30:00.000Z",
+    user: {
+      title_en_short: "Dr.",
+      first_name_en: "Jane",
+      last_name_en: "Doe",
+    },
+    from_course: {
+      code: "CPE102",
+      name: "Introduction to Programming II",
+    },
+  },
+  {
+    id: "3",
+    stream_type: "UPSTREAM",
+    comment: "Yet another feedback comment",
+    semester: "3rd/2022",
+    created_at: "2025-04-03T15:45:00.000Z",
+    user: {
+      title_en_short: "Prof.",
+      first_name_en: "John",
+      last_name_en: "Smith",
+    },
+    from_course: {
+      code: "CPE103",
+      name: "Introduction to Programming III",
+    },
+  },
+  {
+    id: "4",
+    stream_type: "DOWNSTREAM",
+    comment: "Feedback comment here",
+    semester: "4th/2021",
+    created_at: "2025-04-02T12:00:00.000Z",
+    user: {
+      title_en_short: "Mr.",
+      first_name_en: "Jack",
+      last_name_en: "Johnson",
+    },
+    from_course: {
+      code: "CPE104",
+      name: "Introduction to Programming IV",
+    },
+  },
+  {
+    id: "5",
+    stream_type: "UPSTREAM",
+    comment: "Feedback comment here",
+    semester: "5th/2020",
+    created_at: "2025-04-01T09:15:00.000Z",
+    user: {
+      title_en_short: "Ms.",
+      first_name_en: "Emily",
+      last_name_en: "Davis",
+    },
+    from_course: {
+      code: "CPE105",
+      name: "Introduction to Programming V",
+    },
+  },
+]);
+
+const sortedFeedbacks = computed(() => {
+  let feedbacks = [...received_feedbacks.value];
+
+  if (steamStatus.value === "ascending") {
+    feedbacks.sort((a, b) => {
+      if (a.stream_type < b.stream_type) return -1;
+      if (a.stream_type > b.stream_type) return 1;
+      return 0;
+    });
+  } else if (steamStatus.value === "descending") {
+    feedbacks.sort((a, b) => {
+      if (a.stream_type > b.stream_type) return -1;
+      if (a.stream_type < b.stream_type) return 1;
+      return 0;
+    });
+  }
+
+  if (dateTimeStatus.value === "ascending") {
+    feedbacks.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+  } else if (dateTimeStatus.value === "descending") {
+    feedbacks.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  }
+
+  return feedbacks;
+});
+
+const downstreamFeedbacks = computed(() =>
+  sortedFeedbacks.value.filter((feedback) => feedback.stream_type === "DOWNSTREAM")
+);
+
+const upstreamFeedbacks = computed(() =>
+  sortedFeedbacks.value.filter((feedback) => feedback.stream_type === "UPSTREAM")
+);
 
 const toggleSteam = () => {
   if (steamStatus.value === "default") {
@@ -173,73 +329,29 @@ const dateTimeStatusClass = computed(() => {
     ? "bg-white text-black-primary"
     : " bg-black-primary text-white";
 });
-
-const newFeedback = ref({
-  courseId: "",
-  courseName: "",
-  message: "",
-  sender: "Cosebane",
-  date: new Date().toISOString().slice(0, 16),
-});
-
-const feedback = (course) => {
-  newFeedback.value.courseId = course.code;
-  newFeedback.value.courseName = course.name;
-};
-
-const addFeedback = () => {
-  if (
-    newFeedback.value.courseId &&
-    newFeedback.value.courseName &&
-    newFeedback.value.message
-  ) {
-    feedbacks.value.push({ ...newFeedback.value, id: Date.now().toString() });
-    newFeedback.value = {
-      courseId: "",
-      courseName: "",
-      message: "",
-      sender: "Cosebane",
-      date: new Date().toISOString().slice(0, 16),
-    };
-  }
-};
-
-onMounted(() => {
-  fetchReceivedFeedbacks(received_feedbacks, course_id.value);
-});
-
-watch(dateTimeStatus, () => {
-  if (dateTimeStatus.value === "ascending") {
-    received_feedbacks.value.sort(
-      (a, b) => new Date(a.created_at) - new Date(b.created_at)
-    );
-  } else if (dateTimeStatus.value === "descending") {
-    received_feedbacks.value.sort(
-      (a, b) => new Date(b.created_at) - new Date(a.created_at)
-    );
-  }
-});
-
-watch(steamStatus, () => {
-  if (steamStatus.value === "ascending") {
-    received_feedbacks.value.sort((a, b) =>
-      a.stream_type.localeCompare(b.stream_type)
-    );
-  } else if (steamStatus.value === "descending") {
-    received_feedbacks.value.sort((a, b) =>
-      b.stream_type.localeCompare(a.stream_type)
-    );
-  }
-});
 </script>
 
 <style lang="scss" scoped>
 .scrollbar-set {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  scrollbar-width: thin;
+  overflow-y: auto;
 
   &::-webkit-scrollbar {
-    display: none;
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 10px;
+    border: 2px solid #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
   }
 }
 </style>
