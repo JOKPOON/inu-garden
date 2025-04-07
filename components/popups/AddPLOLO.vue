@@ -1,105 +1,122 @@
 <template>
-    <teleport to="body">
+  <teleport to="body">
+    <div
+      class="w-full h-full fixed inset-0 flex items-center justify-center bg-black-primary bg-opacity-50 z-50"
+    >
       <div
-        class="w-full h-full fixed inset-0 flex items-center justify-center bg-black-primary bg-opacity-50 z-50"
+        class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center border border-grey-secondary"
       >
         <div
-          class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center border border-grey-secondary"
+          class="flex flex-col w-[28rem] pb-2 border-b border-grey-secondary"
         >
           <div
-            class="flex flex-col w-[28rem] pb-2 border-b border-grey-secondary"
+            class="text-2xl font-semibold text-black-primary w-full text-start"
           >
-            <div
-              class="text-2xl font-semibold text-black-primary w-full text-start"
-            >
-              Add PLO
-            </div>
-            <div class="text-sm text-grey-primary mt-1"> 
-              in
-              <span class="font-semibold text-black-primary">Leaning Outcome</span>
-            </div>
+            Add PLO
           </div>
-          <div class="mt-4 text-center flex gap-4 flex-col text-sm w-[28rem]">
-            <div class="flex flex-col items-start w-full gap-2">
-              <label class="font-semibold text-black-primary">Select PLO</label>
-              <div
-                class="bg-transparent border border-grey-secondary rounded-xl text-base p-3 hover:cursor-pointer w-full"
-              >
-                <select
-                  v-model="selectPLO"
-                  class="w-full border-none outline-none hover:cursor-pointer"
-                  placeholder="Select PLO"
-                >
-                  <option value="">Select PLO</option>
-                  <option v-for="plo in plos" :key="plo.id" :value="plo.id">
-                    {{ plo.code }}
-                  </option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <div
-            class="flex flex-row items-center justify-center gap-2 w-full mt-4 rounded-xl"
-          >
-            <button
-              @click="updateStatus"
-              class="py-2 font-medium border border-grey-secondary text-black-primary rounded-xl w-full bg-yellow-primary hover:bg-black-primary hover:text-white"
+          <div class="text-sm text-grey-primary mt-1">
+            in
+            <span class="font-semibold text-black-primary"
+              >Leaning Outcome</span
             >
-              Add
-            </button>
-            <button
-              @click="$emit('close')"
-              class="py-2 font-medium border border-grey-secondary text-black-primary rounded-xl w-full hover:bg-black-primary hover:text-white"
-            >
-              Close
-            </button>
           </div>
         </div>
+        <div class="mt-4 text-center flex gap-4 flex-col text-sm w-[28rem]">
+          <div class="flex flex-col items-start w-full gap-2">
+            <label class="font-semibold text-black-primary">Select PLO</label>
+            <div
+              class="bg-transparent border border-grey-secondary rounded-xl text-base p-3 hover:cursor-pointer w-full"
+            >
+              <select
+                v-model="selectPLO"
+                class="w-full border-none outline-none hover:cursor-pointer"
+              >
+                <option value="">Select PLO</option>
+                <optgroup
+                  v-for="plo in plos"
+                  :key="plo.id"
+                  :label="plo.code + ' - ' + plo.description_eng"
+                >
+                  <option
+                    v-for="splo in plo.sub_program_learning_outcomes"
+                    :key="splo.id"
+                    :value="splo"
+                  >
+                    {{ splo.code }} - {{ splo.description_eng }}
+                  </option>
+                </optgroup>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div
+          class="flex flex-row items-center justify-center gap-2 w-full mt-4 rounded-xl"
+        >
+          <button
+            @click="updateStatus"
+            class="py-2 font-medium border border-grey-secondary text-black-primary rounded-xl w-full bg-yellow-primary hover:bg-black-primary hover:text-white"
+          >
+            Add
+          </button>
+          <button
+            @click="$emit('close')"
+            class="py-2 font-medium border border-grey-secondary text-black-primary rounded-xl w-full hover:bg-black-primary hover:text-white"
+          >
+            Close
+          </button>
+        </div>
       </div>
-    </teleport>
-  </template>
-  
-  <script setup>
-  import { ref, onMounted } from "vue";
-  import { defineProps, defineEmits } from "vue";
+    </div>
+  </teleport>
+</template>
 
-  const emit = defineEmits(["close", "updated"]);
+<script setup>
+import { ref, onMounted } from "vue";
+import { defineProps, defineEmits } from "vue";
+import { fetchPLOs } from "@/api/api";
 
-  const props = defineProps({
-    id: {
-      type: String,
-      required: true,
-    },
-    name: {
-      type: String,
-      required: true,
-    },
-  });
+const emit = defineEmits(["close", "updated"]);
 
-  const selectPLO = ref("");
-  const plos = ref([]);
+const props = defineProps({
+  id: {
+    type: String,
+    required: true,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  splos: {
+    type: Array,
+    required: true,
+  },
+  program_id: {
+    type: String,
+    required: true,
+  },
+});
 
-  const updateStatus = () => {
-    addPLO();
-  };
+const selectPLO = ref("");
+const plos = ref([]);
 
-  const addPLO = () => {
-    try {
-      console.log("PLO added:", selectPLO.value);
-      emit("updated");
-      emit("close");
-    } catch (error) {
-      console.error(error);
-    }
-  };
+const updateStatus = () => {
+  addPLO();
+};
 
-  onMounted(() => {
-    plos.value = [
-      { id: "1", code: "PLO1" },
-      { id: "2", code: "PLO2" },
-      { id: "3", code: "PLO3" },
-    ];
-  });
-  </script>
-  
-  <style scoped></style>
+const addPLO = () => {
+  try {
+    console.log("PLO added:", selectPLO.value);
+    props.splos.push(selectPLO.value);
+    emit("updated");
+    emit("close");
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+onMounted(async () => {
+  await fetchPLOs(plos, props.program_id);
+});
+</script>
+
+<style scoped></style>

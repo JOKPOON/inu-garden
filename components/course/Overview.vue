@@ -8,7 +8,7 @@
           class="shadow-sm rounded-xl p-6 bg-white border border-grey-tertiary"
         >
           <div class="flex flex-row justify-between gap-6 items-center">
-            <button @click="overviewCourse(course.id , course.code)">
+            <button @click="overviewCourse(course.id, course.code)">
               <p class="text-base text-start font-semibold text-grey-600">
                 {{ course.code }}
               </p>
@@ -19,7 +19,7 @@
             <div>
               <div class="flex flex-row gap-2">
                 <button
-                  @click="overviewCourse(course.id , course.code)"
+                  @click="overviewCourse(course.id, course.code)"
                   class="flex items-center flex-row justify-center bg-yellow-primary hover:bg-black-primary text-black-primary hover:text-white rounded-xl px-4 py-3 gap-2"
                 >
                   <span class="font-semibold text-base">Course Portfolio</span>
@@ -39,12 +39,9 @@
           <p class="text-sm text-grey-primary text-start mb-4">
             credits : {{ course.credit }}
           </p>
-          <div  v-for="lecturer in course.lecturers" class="flex flex-row gap-2 ">
+          <div v-for="lecturer in course.lecturers" class="flex flex-row gap-2">
             <Lecturer class="w-6 h-6" />
-            <div
-              :key="lecturer.id"
-              class="flex flex-row gap-2 items-center"
-            >
+            <div :key="lecturer.id" class="flex flex-row gap-2 items-center">
               <p class="text-sm text-grey-primary">
                 {{ lecturer.title_en_short }}
                 {{ lecturer.first_name_en }}
@@ -153,13 +150,13 @@ definePageMeta({
 const router = useRouter();
 const overviewCourse = (id, code) => {
   router.push({
-    path:`/courses/portfolio/${id}`,
+    path: `/courses/portfolio/${id}`,
     query: { code: code },
   });
 };
 
 const editCourse = (id, code) => {
-    router.push({
+  router.push({
     path: `/courses/edit-course/${id}`,
     query: { code: code },
   });
@@ -293,9 +290,9 @@ const result = ref({
   },
 });
 
-onMounted(() => {
-  fetchCourseResult(result, course_id.value);
-  fetchCourse(course, course_id.value);
+onMounted(async () => {
+  await fetchCourseResult(result, course_id.value);
+  await fetchCourse(course, course_id.value);
 });
 </script>
 

@@ -52,7 +52,7 @@
           >
             <button
               v-for="clo in CLO"
-              :key="clo.name"
+              :key="clo.code"
               :class="{
                 'bg-grey-secondary text-black-primary': selectedCLO === clo,
                 'bg-white': selectedCLO !== clo,
@@ -61,7 +61,7 @@
               class="w-full flex items-center justify-center py-3 border-b border-grey-secondary"
             >
               <div v-if="!editMode">
-                {{ clo.name }}
+                {{ clo.code }}
               </div>
               <div
                 v-if="editMode"
@@ -70,7 +70,7 @@
                 <input
                   type="text"
                   class="bg-transparent focus:ring-0 outline-none w-full text-sm"
-                  v-model="clo.name"
+                  v-model="clo.code"
                 />
               </div>
             </button>
@@ -169,26 +169,26 @@
                 <div class="font-semibold text-black-primary px-4">
                   Description
                 </div>
-                <div v-if="selectedCLO.detail" class="px-4">
+                <div v-if="selectedCLO" class="px-4">
                   <div v-if="!editMode">
-                    {{ selectedCLO.detail.desc_th }}
+                    {{ selectedCLO.description_th }}
                   </div>
                   <div v-else>
                     <textarea
-                      v-model="selectedCLO.detail.desc_th"
+                      v-model="selectedCLO.description_th"
                       class="w-full px-4 py-2 border border-grey-secondary rounded-xl outline-none text-sm"
                       rows="3"
                       placeholder="Description in Thai"
                     ></textarea>
                   </div>
                 </div>
-                <div v-if="selectedCLO.detail" class="px-4">
+                <div v-if="selectedCLO" class="px-4">
                   <div v-if="!editMode">
-                    {{ selectedCLO.detail.desc }}
+                    {{ selectedCLO.description_th }}
                   </div>
                   <div v-else>
                     <textarea
-                      v-model="selectedCLO.detail.desc"
+                      v-model="selectedCLO.description_th"
                       class="w-full px-4 py-2 border border-grey-secondary rounded-xl outline-none text-sm"
                       rows="3"
                       placeholder="Description in English"
@@ -204,11 +204,13 @@
                     Expected Passing Assessment
                   </div>
                   <div v-if="!editMode">
-                    {{ selectedCLO.detail.expectedWeightPassingCLORate }}%
+                    {{ selectedCLO.expected_passing_assignment_percentage }}%
                   </div>
                   <div v-if="editMode">
                     <input
-                      v-model="selectedCLO.detail.expectedWeightPassingCLORate"
+                      v-model="
+                        selectedCLO.expected_passing_assignment_percentage
+                      "
                       type="number"
                       class="border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary w-16 text-center"
                       placeholder="%"
@@ -220,12 +222,12 @@
                     Expected Passing Student
                   </div>
                   <div v-if="!editMode">
-                    {{ selectedCLO.detail.expectedWeightPassingStudentRate }}%
+                    {{ selectedCLO.expected_passing_assignment_percentage }}%
                   </div>
                   <div v-if="editMode">
                     <input
                       v-model="
-                        selectedCLO.detail.expectedWeightPassingStudentRate
+                        selectedCLO.expected_passing_assignment_percentage
                       "
                       type="number"
                       class="border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary w-16 text-center"
@@ -295,7 +297,15 @@
                   <div
                     class="w-full flex flex-col gap-2 border-b border-grey-secondary"
                   >
-                    <div v-if="selectedCLO.detail && selectedCLO.detail.PLO">
+                    <div
+                      v-if="
+                        selectedCLO && selectedCLO.program_learning_outcomes
+                      "
+                      v-for="(
+                        plo, key
+                      ) in selectedCLO.program_learning_outcomes"
+                      :key="key"
+                    >
                       <div
                         :class="{
                           'grid grid-cols-5 ': editMode,
@@ -307,14 +317,14 @@
                           v-if="!editMode"
                           class="col-span-1 text-sm w-full font-medium"
                         >
-                          {{ selectedCLO.detail.PLOcode }}
+                          {{ plo.code }}
                         </div>
                         <div
                           v-if="editMode"
                           class="col-span-1 text-sm w-full font-medium"
                         >
                           <input
-                            v-model="selectedCLO.detail.PLOcode"
+                            v-model="plo.code"
                             type="text"
                             class="border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary w-16 text-center"
                             placeholder="Code"
@@ -323,22 +333,22 @@
                         <div class="col-span-3 text-sm w-full">
                           <div class="flex flex-col gap-3">
                             <div v-if="!editMode">
-                              {{ selectedCLO.detail.PLOdesc_th }}
+                              {{ plo.description_thai }}
                             </div>
                             <div v-if="editMode">
                               <textarea
-                                v-model="selectedCLO.detail.PLOdesc_th"
+                                v-model="plo.description_thai"
                                 class="w-full px-4 py-2 border border-grey-secondary rounded-xl outline-none text-sm scrollbar-set"
                                 rows="4"
                                 placeholder="Description in Thai"
                               ></textarea>
                             </div>
                             <div v-if="!editMode">
-                              {{ selectedCLO.detail.PLOdesc }}
+                              {{ plo.description_eng }}
                             </div>
                             <div v-if="editMode">
                               <textarea
-                                v-model="selectedCLO.detail.PLOdesc"
+                                v-model="plo.description_eng"
                                 class="w-full px-4 py-2 border border-grey-secondary rounded-xl outline-none text-sm scrollbar-set"
                                 rows="4"
                                 placeholder="Description in English"
@@ -351,7 +361,7 @@
                         >
                           <button
                             v-if="editMode"
-                            @click="deletePLO(selectedCLO.detail.PLOcode)"
+                            @click="deletePLO(plo.code)"
                             class="flex items-center flex-row justify-center bg-white border border-grey-secondary rounded-xl px-3 py-2 gap-2 ml-3 hover:bg-red-500 hover:text-white"
                           >
                             <Delete class="w-5 h-5" />
@@ -359,7 +369,7 @@
                         </div>
                       </div>
                       <div
-                        v-for="(plo, key) in selectedCLO.detail.PLO"
+                        v-for="(splo, key) in plo.sub_program_learning_outcomes"
                         :key="key"
                       >
                         <div
@@ -371,14 +381,14 @@
                         >
                           <div class="col-span-1 text-sm w-full font-medium">
                             <div v-if="!editMode">
-                              {{ plo.code }}
+                              {{ splo.code }}
                             </div>
                             <div
                               v-if="editMode"
                               class="col-span-1 text-sm w-full font-medium"
                             >
                               <input
-                                v-model="plo.code"
+                                v-model="splo.code"
                                 type="text"
                                 class="border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary w-16 text-center"
                                 placeholder="Code"
@@ -388,22 +398,22 @@
                           <div class="col-span-3 text-sm w-full">
                             <div class="flex flex-col gap-3">
                               <div v-if="!editMode">
-                                {{ plo.desc_th }}
+                                {{ splo.description_thai }}
                               </div>
                               <div v-if="editMode">
                                 <textarea
-                                  v-model="plo.desc_th"
+                                  v-model="splo.description_thai"
                                   class="w-full px-4 py-2 border border-grey-secondary rounded-xl outline-none text-sm scrollbar-set"
                                   rows="4"
                                   placeholder="Description in Thai"
                                 ></textarea>
                               </div>
                               <div v-if="!editMode">
-                                {{ plo.desc }}
+                                {{ splo.description_eng }}
                               </div>
                               <div v-if="editMode">
                                 <textarea
-                                  v-model="plo.desc"
+                                  v-model="splo.description_eng"
                                   class="w-full px-4 py-2 border border-grey-secondary rounded-xl outline-none text-sm scrollbar-set"
                                   rows="4"
                                   placeholder="Description in English"
@@ -416,7 +426,7 @@
                           >
                             <button
                               v-if="editMode"
-                              @click="deleteSubPLO(plo.code)"
+                              @click="deleteSubPLO(splo.code)"
                               class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-3 py-2 gap-2 ml-3 hover:bg-red-500 hover:text-white"
                             >
                               <Delete class="w-5 h-5" />
@@ -431,7 +441,11 @@
                   <div
                     class="w-full flex flex-col gap-2 border-b border-grey-secondary"
                   >
-                    <div v-if="selectedCLO.detail && selectedCLO.detail.PO">
+                    <div
+                      v-if="selectedCLO && selectedCLO.program_outcomes"
+                      v-for="(po, key) in selectedCLO.program_outcomes"
+                      :key="key"
+                    >
                       <div
                         :class="{
                           'grid grid-cols-5 ': editMode,
@@ -443,14 +457,14 @@
                           v-if="!editMode"
                           class="col-span-1 text-sm w-full font-medium"
                         >
-                          {{ selectedCLO.detail.POcode }}
+                          {{ po.code }}
                         </div>
                         <div
                           v-if="editMode"
                           class="col-span-1 text-sm w-full font-medium"
                         >
                           <input
-                            v-model="selectedCLO.detail.POcode"
+                            v-model="po.code"
                             type="text"
                             class="border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary w-16 text-center"
                             placeholder="Code"
@@ -459,25 +473,14 @@
                         <div class="col-span-3 text-sm w-full">
                           <div class="flex flex-col gap-3">
                             <div v-if="!editMode">
-                              {{ selectedCLO.detail.POdesc_th }}
+                              {{ po.description }}
                             </div>
                             <div v-if="editMode">
                               <textarea
-                                v-model="selectedCLO.detail.POdesc_th"
+                                v-model="po.description"
                                 class="w-full px-4 py-2 border border-grey-secondary rounded-xl outline-none text-sm scrollbar-set"
                                 rows="4"
                                 placeholder="Description in Thai"
-                              ></textarea>
-                            </div>
-                            <div v-if="!editMode">
-                              {{ selectedCLO.detail.POdesc }}
-                            </div>
-                            <div v-if="editMode">
-                              <textarea
-                                v-model="selectedCLO.detail.POdesc"
-                                class="w-full px-4 py-2 border border-grey-secondary rounded-xl outline-none text-sm scrollbar-set"
-                                rows="4"
-                                placeholder="Description in English"
                               ></textarea>
                             </div>
                           </div>
@@ -487,78 +490,11 @@
                         >
                           <button
                             v-if="editMode"
-                            @click="deletePO(selectedCLO.detail.POcode)"
+                            @click="deletePO(po.code)"
                             class="flex items-center flex-row justify-center border bg-white border-grey-secondary rounded-xl px-3 py-2 gap-2 ml-3 hover:bg-red-500 hover:text-white"
                           >
                             <Delete class="w-5 h-5" />
                           </button>
-                        </div>
-                      </div>
-                      <div
-                        v-for="(po, key) in selectedCLO.detail.PO"
-                        :key="key"
-                      >
-                        <div
-                          :class="{
-                            'grid grid-cols-5 ': editMode,
-                            'grid grid-cols-4 ': !editMode,
-                          }"
-                          class="gap-4 border-b border-grey-tertiary px-4 py-3"
-                        >
-                          <div
-                            v-if="!editMode"
-                            class="col-span-1 text-sm w-full font-medium"
-                          >
-                            {{ po.code }}
-                          </div>
-                          <div
-                            v-if="editMode"
-                            class="col-span-1 text-sm w-full font-medium"
-                          >
-                            <input
-                              v-model="po.code"
-                              type="text"
-                              class="border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary w-16 text-center"
-                              placeholder="Code"
-                            />
-                          </div>
-                          <div class="col-span-3 text-sm w-full">
-                            <div class="flex flex-col gap-3">
-                              <div v-if="!editMode">
-                                {{ po.desc_th }}
-                              </div>
-                              <div v-if="editMode">
-                                <textarea
-                                  v-model="po.desc_th"
-                                  class="w-full px-4 py-2 border border-grey-secondary rounded-xl outline-none text-sm scrollbar-set"
-                                  rows="4"
-                                  placeholder="Description in Thai"
-                                ></textarea>
-                              </div>
-                              <div v-if="!editMode">
-                                {{ po.desc }}
-                              </div>
-                              <div v-if="editMode">
-                                <textarea
-                                  v-model="po.desc"
-                                  class="w-full px-4 py-2 border border-grey-secondary rounded-xl outline-none text-sm scrollbar-set"
-                                  rows="4"
-                                  placeholder="Description in English"
-                                ></textarea>
-                              </div>
-                            </div>
-                          </div>
-                          <div
-                            class="col-span-1 flex items-center justify-center"
-                          >
-                            <button
-                              v-if="editMode"
-                              @click="deleteSubPO(po.code)"
-                              class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-3 py-2 gap-2 ml-3 hover:bg-red-500 hover:text-white"
-                            >
-                              <Delete class="w-5 h-5" />
-                            </button>
-                          </div>
                         </div>
                       </div>
                     </div>
@@ -568,7 +504,11 @@
                   <div
                     class="w-full flex flex-col gap-2 border-b border-grey-secondary"
                   >
-                    <div v-if="selectedCLO.detail && selectedCLO.detail.SO">
+                    <div
+                      v-if="selectedCLO && selectedCLO.student_outcomes"
+                      v-for="(so, key) in selectedCLO.student_outcomes"
+                      :key="key"
+                    >
                       <div
                         :class="{
                           'grid grid-cols-5 ': editMode,
@@ -580,14 +520,14 @@
                           v-if="!editMode"
                           class="col-span-1 text-sm w-full font-medium"
                         >
-                          {{ selectedCLO.detail.SOcode }}
+                          {{ so.code }}
                         </div>
                         <div
                           v-if="editMode"
                           class="col-span-1 text-sm w-full font-medium"
                         >
                           <input
-                            v-model="selectedCLO.detail.SOcode"
+                            v-model="so.code"
                             type="text"
                             class="border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary w-16 text-center"
                             placeholder="Code"
@@ -596,22 +536,22 @@
                         <div class="col-span-3 text-sm w-full">
                           <div class="flex flex-col gap-3">
                             <div v-if="!editMode">
-                              {{ selectedCLO.detail.SOdesc_th }}
+                              {{ so.description_thai }}
                             </div>
                             <div v-if="editMode">
                               <textarea
-                                v-model="selectedCLO.detail.SOdesc_th"
+                                v-model="so.description_thai"
                                 class="w-full px-4 py-2 border border-grey-secondary rounded-xl outline-none text-sm scrollbar-set"
                                 rows="4"
                                 placeholder="Description in Thai"
                               ></textarea>
                             </div>
                             <div v-if="!editMode">
-                              {{ selectedCLO.detail.SOdesc }}
+                              {{ so.description_eng }}
                             </div>
                             <div v-if="editMode">
                               <textarea
-                                v-model="selectedCLO.detail.SOdesc"
+                                v-model="so.description_eng"
                                 class="w-full px-4 py-2 border border-grey-secondary rounded-xl outline-none text-sm scrollbar-set"
                                 rows="4"
                                 placeholder="Description in English"
@@ -624,7 +564,7 @@
                         >
                           <button
                             v-if="editMode"
-                            @click="deleteSO(selectedCLO.detail.SOcode)"
+                            @click="deleteSO(so.code)"
                             class="flex items-center flex-row justify-center border bg-white border-grey-secondary rounded-xl px-3 py-2 gap-2 ml-3 hover:bg-red-500 hover:text-white"
                           >
                             <Delete class="w-5 h-5" />
@@ -632,7 +572,7 @@
                         </div>
                       </div>
                       <div
-                        v-for="(so, key) in selectedCLO.detail.SO"
+                        v-for="(sso, key) in so.sub_student_outcomes"
                         :key="key"
                       >
                         <div
@@ -646,14 +586,14 @@
                             v-if="!editMode"
                             class="col-span-1 text-sm w-full font-medium"
                           >
-                            {{ so.code }}
+                            {{ sso.code }}
                           </div>
                           <div
                             v-if="editMode"
                             class="col-span-1 text-sm w-full font-medium"
                           >
                             <input
-                              v-model="so.code"
+                              v-model="sso.code"
                               type="text"
                               class="border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary w-16 text-center"
                               placeholder="Code"
@@ -662,22 +602,22 @@
                           <div class="col-span-3 text-sm w-full">
                             <div class="flex flex-col gap-3">
                               <div v-if="!editMode">
-                                {{ so.desc_th }}
+                                {{ sso.description_thai }}
                               </div>
                               <div v-if="editMode">
                                 <textarea
-                                  v-model="so.desc_th"
+                                  v-model="sso.description_thai"
                                   class="w-full px-4 py-2 border border-grey-secondary rounded-xl outline-none text-sm scrollbar-set"
                                   rows="4"
                                   placeholder="Description in Thai"
                                 ></textarea>
                               </div>
                               <div v-if="!editMode">
-                                {{ so.desc }}
+                                {{ sso.description_eng }}
                               </div>
                               <div v-if="editMode">
                                 <textarea
-                                  v-model="so.desc"
+                                  v-model="sso.description_eng"
                                   class="w-full px-4 py-2 border border-grey-secondary rounded-xl outline-none text-sm scrollbar-set"
                                   rows="4"
                                   placeholder="Description in English"
@@ -690,7 +630,7 @@
                           >
                             <button
                               v-if="editMode"
-                              @click="deleteSubSO(so.code)"
+                              @click="deleteSubSO(sso.code)"
                               class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-3 py-2 gap-2 ml-3 hover:bg-red-500 hover:text-white"
                             >
                               <Delete class="w-5 h-5" />
@@ -711,6 +651,7 @@
   <AddCLO
     v-if="showAddCLOPopup"
     :id="id"
+    :program_id="program_id"
     :name="name"
     @close="showAddCLOPopup = false"
   />
@@ -753,14 +694,16 @@ import AddPO from "@/components/popups/AddPOLO.vue";
 import AddSO from "@/components/popups/AddSOLO.vue";
 import DeleteCLO from "@/components/popups/DeleteCLO.vue";
 import Search from "@/components/icons/Search.vue";
-import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { fetchCourse, fetchCourseClos } from "~/api/api";
 
 const router = useRouter();
-const id = ref("");
+const id = ref(router.currentRoute.value.params.id);
 const name = ref("");
+const program_id = ref("");
+const course = ref(null);
 
 const buttons = ["PLO", "PO", "SO"];
 const activeButton = ref("PLO");
@@ -843,93 +786,61 @@ const CLO = ref([
   {
     name: "CLO1",
     type: 0,
-    detail: {
-      desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-      desc_th:
-        "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
-      expectedWeightPassingCLORate: 70,
-      expectedWeightPassingStudentRate: 70,
-      PLOcode: "PLO",
-      PLOdesc:
-        "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-      PLOdesc_th:
-        "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
-      POcode: "PO",
-      POdesc:
-        "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-      POdesc_th:
-        "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
-      SOcode: "SO",
-      SOdesc:
-        "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-      SOdesc_th:
-        "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
-      PLO: [
-        {
-          code: "PLO1",
-          desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-          desc_th:
-            "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
-        },
-        {
-          code: "PLO2",
-          desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-          desc_th:
-            "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
-        },
-        {
-          code: "PLO3",
-          desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-          desc_th:
-            "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
-        },
-      ],
-      PO: [
-        {
-          code: "PO1",
-          desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-          desc_th:
-            "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
-        },
-        {
-          code: "PO2",
-          desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-          desc_th:
-            "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
-        },
-        {
-          code: "PO3",
-          desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-          desc_th:
-            "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
-        },
-      ],
-      SO: [
-        {
-          code: "SO1",
-          desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-          desc_th:
-            "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
-        },
-        {
-          code: "SO2",
-          desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-          desc_th:
-            "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
-        },
-        {
-          code: "SO3",
-          desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-          desc_th:
-            "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
-        },
-      ],
-    },
-  },
-  {
-    name: "CLO 2",
-    type: 1,
-    detail: {},
+    id: "01JR8EVPEV04T49HZDA30JXJSZ",
+    code: "test",
+    description_th: "test",
+    description_en: "test",
+    type: "From Curriculum",
+    expected_passing_assignment_percentage: 12,
+    expected_passing_student_percentage: 12,
+    status: "",
+    program_learning_outcomes: [
+      {
+        id: "01JQ4BGNN3GQABWF04GWJZ9Q2X",
+        code: "PLO1",
+        description_eng:
+          "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
+        description_thai:
+          "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
+        sub_program_learning_outcomes: [
+          {
+            id: "01JQ4BGNN3GQABWF04GZ7ZHHZV",
+            code: "PLO1.1",
+            description_eng:
+              "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
+            description_thai:
+              "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
+          },
+        ],
+      },
+    ],
+    program_outcomes: [
+      {
+        id: "01JQ4BTGA1ZNYP65RMX97XCXSJ",
+        code: "PO1",
+        name: "Critical Thinking",
+        category: "Skills",
+        description:
+          "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
+      },
+    ],
+    student_outcomes: [
+      {
+        id: "01JQ4BWQPA0CT6K73PB98M6GW9",
+        code: "SO1",
+        description_thai: "ความสามารถในการเขียนโปรแกรม",
+        description_eng: "Ability to write programs.",
+        sub_student_outcomes: [
+          {
+            id: "01JQ4BWQPA0CT6K73PBAGQJV09",
+            code: "SSO11",
+            description_thai: "สามารถใช้ภาษาโปรแกรมพื้นฐานได้",
+            description_eng: "Ability to use basic programming languages.",
+            student_outcome_id: "01JQ4BWQPA0CT6K73PB98M6GW9",
+          },
+        ],
+      },
+    ],
   },
 ]);
 
@@ -938,6 +849,16 @@ const selectedCLO = ref(CLO.value[0]);
 function selectCLO(clo) {
   selectedCLO.value = clo;
 }
+
+onMounted(async () => {
+  await fetchCourse(course, id.value);
+  if (course.value) {
+    console.log(course.value);
+    program_id.value = course.value.programme_id;
+  }
+  await fetchCourseClos(CLO, id.value);
+  console.log(CLO.value);
+});
 </script>
 
 <style lang="scss" scoped>
