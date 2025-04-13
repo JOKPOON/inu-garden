@@ -28,7 +28,7 @@
               class="bg-transparent border border-grey-secondary rounded-xl text-base p-3 hover:cursor-pointer w-full"
             >
               <select
-                v-model="selectPLO"
+                v-model="selectSPLO"
                 class="w-full border-none outline-none hover:cursor-pointer"
               >
                 <option value="">Select PLO</option>
@@ -73,7 +73,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { defineProps, defineEmits } from "vue";
-import { fetchPLOs } from "@/api/api";
+import { fetchPLOs, BaseURL } from "@/api/api";
 
 const emit = defineEmits(["close", "updated"]);
 
@@ -90,23 +90,24 @@ const props = defineProps({
     type: Array,
     required: true,
   },
+
   program_id: {
     type: String,
     required: true,
   },
 });
 
-const selectPLO = ref("");
+const selectSPLO = ref("");
 const plos = ref([]);
 
 const updateStatus = () => {
   addPLO();
 };
 
-const addPLO = () => {
+const addPLO = async () => {
   try {
-    console.log("PLO added:", selectPLO.value);
-    props.splos.push(selectPLO.value);
+    console.log("PLO added:", selectSPLO.value);
+    props.splos.push(selectSPLO.value);
     emit("updated");
     emit("close");
   } catch (error) {
