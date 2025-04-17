@@ -294,9 +294,29 @@ const fetchReceivedFeedbacks = async (received_feedbacks, course_id) => {
         },
       }
     );
-    if (!response.ok) throw new Error("Failed to fetch courses");
+    if (!response.ok) throw new Error("Failed to fetch received feedbacks");
     const res = await response.json();
     received_feedbacks.value = res.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const fetchSentFeedbacks = async (sent_feedbacks, course_id) => {
+  try {
+    const response = await fetch(
+      `${BaseURL}course-streams?fromCourseId=${course_id}`,
+      {
+        credentials: "include",
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!response.ok) throw new Error("Failed to fetch sent feedbacks");
+    const res = await response.json();
+    sent_feedbacks.value = res.data;
   } catch (error) {
     console.error(error);
   }
@@ -363,5 +383,6 @@ export {
   fetchInstructor,
   fetchInstructorCourses,
   fetchReceivedFeedbacks,
+  fetchSentFeedbacks,
   fetchDepartments,
 };
