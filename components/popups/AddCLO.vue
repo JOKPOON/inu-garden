@@ -31,7 +31,7 @@
                 >Description (Eng)</label
               >
               <textarea
-                v-model="newCLO.desc"
+                v-model="newCLO.description_en"
                 rows="3"
                 placeholder="CLO Description"
                 class="w-[36rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
@@ -42,7 +42,7 @@
                 >Description (TH)</label
               >
               <textarea
-                v-model="newCLO.desc_th"
+                v-model="newCLO.description_th"
                 rows="3"
                 placeholder="CLO Description (TH)"
                 class="w-[36rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
@@ -59,8 +59,8 @@
                   class="w-full border-none outline-none hover:cursor-pointer"
                 >
                   <option value="">Select Type</option>
-                  <option value="From Curriculum">From Curriculum</option>
-                  <option value="Custom">Custom</option>
+                  <option value="CURRICULUM">CURRICULUM</option>
+                  <option value="MODIFIED">MODIFIED</option>
                 </select>
               </div>
             </div>
@@ -70,10 +70,10 @@
               </div>
               <div>
                 <input
-                  type="text"
+                  type="number"
                   placeholder="%"
                   class="bg-transparent text-center focus:ring-0 outline-none text-base w-16 border p-1 rounded-lg border-grey-primary"
-                  v-model="newCLO.expectedPassingAssessment"
+                  v-model="newCLO.expected_passing_assignment_percentage"
                 />
               </div>
             </div>
@@ -83,10 +83,10 @@
               </div>
               <div>
                 <input
-                  type="text"
+                  type="number"
                   placeholder="%"
                   class="bg-transparent text-center focus:ring-0 outline-none text-base w-16 border p-1 rounded-lg border-grey-primary"
-                  v-model="newCLO.expectedPassingStudent"
+                  v-model="newCLO.expected_passing_student_percentage"
                 />
               </div>
             </div>
@@ -139,20 +139,24 @@
                   <div class="col-span-1 px-6 py-3 text-center">Action</div>
                 </div>
                 <div
-                  v-for="(detail, key) in selectedDetails"
-                  :key="key"
-                  class="grid grid-cols-4 divide-x border-t border-grey-secondary bg-grey-tertiary"
+                  v-for="o in selectedDetails"
+                  :key="o.id"
+                  class="grid grid-cols-4 divide-x border-t border-grey-secondary bg-grey-light"
                 >
                   <div
                     class="col-span-1 flex-1 px-6 py-3 text-center border-r border-grey-secondary"
                   >
-                    {{ detail.code }}
+                    {{ o.code }}
                   </div>
                   <div
                     class="col-span-2 px-6 py-3 border-r border-grey-secondary"
                   >
-                    <div class="mb-2">{{ detail.desc_th }}</div>
-                    {{ detail.desc }}
+                    <div v-if="o.description">
+                      <div class="mb-2">{{ o.description }}</div>
+                    </div>
+
+                    <div class="mb-2">{{ o.description_thai }}</div>
+                    {{ o.description_eng }}
                   </div>
                   <div
                     class="col-span-1 px-6 py-3 text-center flex items-center justify-center"
@@ -160,33 +164,6 @@
                     <button
                       class="flex items-center justify-center bg-white rounded-xl p-2 border border-grey-secondary hover:bg-red-500 text-black-primary hover:text-white"
                       @click="removeDetail(key)"
-                    >
-                      <Delete class="w-5 h-5" />
-                    </button>
-                  </div>
-                </div>
-                <div
-                  v-for="(sub, key) in subDetail"
-                  :key="key"
-                  class="grid grid-cols-4 divide-x border-t border-grey-secondary bg-grey-light"
-                >
-                  <div
-                    class="col-span-1 flex-1 px-6 py-3 text-center border-r border-grey-secondary"
-                  >
-                    {{ sub.code }}
-                  </div>
-                  <div
-                    class="col-span-2 px-6 py-3 border-r border-grey-secondary"
-                  >
-                    <div class="mb-2">{{ sub.desc_th }}</div>
-                    {{ sub.desc }}
-                  </div>
-                  <div
-                    class="col-span-1 px-6 py-3 text-center flex items-center justify-center"
-                  >
-                    <button
-                      class="flex items-center justify-center bg-white rounded-xl p-2 border border-grey-secondary hover:bg-red-500 text-black-primary hover:text-white"
-                      @click="removeSubDetail(key)"
                     >
                       <Delete class="w-5 h-5" />
                     </button>
@@ -216,50 +193,71 @@
       v-if="showAddPLOPopup"
       :id="id"
       :name="name"
+      :course_id="course_id"
+      :program_id="props.program_id"
+      :splos="selectedSPLO"
       @close="showAddPLOPopup = false"
     ></AddPLO>
     <AddPO
       v-if="showAddPOPopup"
       :id="id"
       :name="name"
+      :course_id="course_id"
+      :program_id="props.program_id"
+      :pos="selectedPO"
       @close="showAddPOPopup = false"
     ></AddPO>
     <AddSO
       v-if="showAddSOPopup"
       :id="id"
       :name="name"
+      :course_id="course_id"
+      :program_id="props.program_id"
+      :ssos="selectedSSO"
       @close="showAddSOPopup = false"
     ></AddSO>
   </teleport>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { defineProps, defineEmits } from "vue";
-import { useRouter } from "vue-router";
 import Delete from "@/components/icons/Delete.vue";
 import SmallAddButton from "@/components/button/SmallAddButton.vue";
 import AddPLO from "@/components/popups/AddPLOLO.vue";
 import AddPO from "@/components/popups/AddPOLO.vue";
 import AddSO from "@/components/popups/AddSOLO.vue";
+import { BaseURL } from "~/api/api";
 
-const router = useRouter();
+const props = defineProps({
+  id: {
+    type: String,
+    required: true,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  course_id: {
+    type: String,
+    required: true,
+  },
+  program_id: {
+    type: String,
+    required: true,
+  },
+});
 
 const showAddPLOPopup = ref(false);
 const showAddPOPopup = ref(false);
 const showAddSOPopup = ref(false);
 const selectedDetails = ref([]);
-const subDetail = ref([]);
 const id = ref("");
 const name = ref("");
+
 onMounted(() => {
-  selectedDetails.value = CLO.value.flatMap((item) => item.PLO);
-  subDetail.value = CLO.value.flatMap((item) =>
-    Object.entries(item.PLO.sub).map(([key, value]) => ({
-      key,
-      ...value,
-    }))
-  );
+  console.info(props.program_id);
+  selectedDetails.value = selectedSPLO.value;
 });
 
 const addSubCLO = (path) => {
@@ -283,153 +281,120 @@ const activeButton = ref("PLO");
 
 const setActionButton = (button) => {
   activeButton.value = button;
-  selectedDetails.value = CLO.value.flatMap((item) => {
-    if (button === "PLO") {
-      return item.PLO;
-    } else if (button === "PO") {
-      return item.PO;
-    } else if (button === "SO") {
-      return item.SO;
-    }
-    return [];
-  });
-
-  subDetail.value = CLO.value.flatMap((item) => {
-    if (button === "PLO") {
-      return item.PLO.sub;
-    } else if (button === "PO") {
-      return item.PO.sub;
-    } else if (button === "SO") {
-      return item.SO.sub;
-    }
-    return [];
-  });
+  if (button === "PLO") {
+    selectedDetails.value = selectedSPLO.value;
+  } else if (button === "PO") {
+    selectedDetails.value = selectedPO.value;
+  } else if (button === "SO") {
+    selectedDetails.value = selectedSSO.value;
+  } else {
+    selectedDetails.value = [];
+  }
 };
 
-const props = defineProps({
-  id: {
-    type: String,
-    required: true,
-  },
-  name: {
-    type: String,
-    required: true,
-  },
-});
+const emit = defineEmits(["close", "add", "updated"]);
 
-const emit = defineEmits(["close", "add"]);
+const selectedSPLO = ref([]);
+const selectedPO = ref([]);
+const selectedSSO = ref([]);
+
+const PO = ref([
+  {
+    id: "",
+    code: "",
+    name: "",
+    description: "",
+    category: "",
+    program_id: "",
+  },
+]);
+
+const PLO = ref([
+  {
+    id: "",
+    code: "",
+    description_thai: "",
+    description_eng: "",
+    program_id: "",
+    sub_program_learning_outcomes: [
+      {
+        id: "",
+        code: "",
+        description_thai: "",
+        description_eng: "",
+        program_learning_outcome_id: "",
+      },
+    ],
+  },
+]);
+
+const SO = ref([
+  {
+    id: "",
+    code: "",
+    description_thai: "",
+    description_eng: "",
+    program_id: "",
+    sub_student_outcomes: [
+      {
+        id: "",
+        code: "",
+        description_thai: "",
+        description_eng: "",
+        student_outcome_id: "",
+      },
+    ],
+  },
+]);
 
 const newCLO = ref({
+  course_id: props.id,
   code: "",
-  desc: "",
-  desc_th: "",
-  expectedPassingAssessment: "",
-  expectedPassingStudent: "",
-  type: "",
+  description_en: "",
+  description_th: "",
+  expected_passing_assignment_percentage: 65,
+  expected_passing_student_percentage: 65,
+  type: "active",
+  program_outcome_ids: PO.value,
+  sub_program_learning_outcome_ids: PLO.value,
+  sub_student_outcome_ids: SO.value,
 });
 
 const removeDetail = (key) => {
   selectedDetails.value.splice(key, 1);
 };
 
-const removeSubDetail = (key) => {
-  subDetail.value.splice(key, 1);
-};
-
-const addCLO = () => {
+const addCLO = async () => {
   emit("add", newCLO.value);
-  newCLO.value = {
-    code: "",
-    desc: "",
-    desc_th: "",
-    expectedPassingAssessment: "",
-    expectedPassingStudent: "",
-  };
+  newCLO.value.course_id = props.id;
+  newCLO.value.program_outcome_ids = selectedPO.value.map((item) => item.id);
+  newCLO.value.sub_program_learning_outcome_ids = selectedSPLO.value.map(
+    (item) => item.id
+  );
+  newCLO.value.sub_student_outcome_ids = selectedSSO.value.map(
+    (item) => item.id
+  );
+  console.info("CLO added:", newCLO.value);
+  await createCLO(newCLO.value);
+  emit("updated");
   emit("close");
 };
 
-const CLO = ref([
-  {
-    PLO: {
-      code: "PLO",
-      desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-      desc_th:
-        "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
-      sub: [
-        {
-          code: "PLO1",
-          desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-          desc_th:
-            "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
-        },
-        {
-          code: "PLO2",
-          desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-          desc_th:
-            "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
-        },
-        {
-          code: "PLO3",
-          desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-          desc_th:
-            "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
-        },
-      ],
-    },
-    PO: {
-      code: "PO",
-      desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-      desc_th:
-        "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
-      sub: [
-        {
-          code: "PO1",
-          desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-          desc_th:
-            "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
-        },
-        {
-          code: "PO2",
-          desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-          desc_th:
-            "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
-        },
-        {
-          code: "PO3",
-          desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-          desc_th:
-            "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
-        },
-      ],
-    },
-    SO: {
-      code: "SO",
-      desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-      desc_th:
-        "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
-      sub: [
-        {
-          code: "SO1",
-          desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-          desc_th:
-            "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
-        },
-        {
-          code: "SO2",
-          desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-          desc_th:
-            "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
-        },
-        {
-          code: "SO3",
-          desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-          desc_th:
-            "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
-        },
-      ],
-    },
-  },
-]);
+const createCLO = async (newCLO) => {
+  try {
+    const response = await fetch(`${BaseURL}clos`, {
+      credentials: "include",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newCLO),
+    });
+    if (!response.ok) throw new Error("Failed to create CLO");
+  } catch (error) {
+    console.error(error);
+  }
+};
 </script>
 
 <style scoped>

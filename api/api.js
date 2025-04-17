@@ -321,10 +321,10 @@ const fetchDepartments = async (departments) => {
 
 const fetchStudents = async (
   students,
-  query,
-  programme_id,
-  department_name,
-  year
+  query = "",
+  programme_id = "",
+  department_name = "",
+  year = ""
 ) => {
   try {
     const response = await fetch(
@@ -340,6 +340,60 @@ const fetchStudents = async (
     if (!response.ok) throw new Error("Failed to fetch students");
     const res = await response.json();
     students.value = res.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const fetchPLOs = async (plos, programme_id = "") => {
+  try {
+    const response = await fetch(
+      `${BaseURL}plos?programme_id=${programme_id}`,
+      {
+        credentials: "include",
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!response.ok) throw new Error("Failed to fetch students");
+    const res = await response.json();
+    plos.value = res.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const fetchPOs = async (pos, programme_id = "") => {
+  try {
+    const response = await fetch(`${BaseURL}pos?programme_id=${programme_id}`, {
+      credentials: "include",
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Failed to fetch students");
+    const res = await response.json();
+    pos.value = res.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const fetchSOs = async (sos, programme_id = "") => {
+  try {
+    const response = await fetch(`${BaseURL}sos?programme_id=${programme_id}`, {
+      credentials: "include",
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Failed to fetch students");
+    const res = await response.json();
+    sos.value = res.data;
   } catch (error) {
     console.error(error);
   }
@@ -364,4 +418,7 @@ export {
   fetchInstructorCourses,
   fetchReceivedFeedbacks,
   fetchDepartments,
+  fetchPLOs,
+  fetchPOs,
+  fetchSOs,
 };
