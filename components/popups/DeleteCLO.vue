@@ -66,9 +66,9 @@ const props = defineProps({
   },
 });
 
-const confirmDelete = () => {
+const confirmDelete = async () => {
   console.log("Deleting CLO:", props.id);
-  DeleteCLO();
+  await DeleteCLO();
   emit("deleted", props.id);
   emit("close");
 };

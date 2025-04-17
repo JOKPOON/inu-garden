@@ -59,8 +59,8 @@
                   class="w-full border-none outline-none hover:cursor-pointer"
                 >
                   <option value="">Select Type</option>
-                  <option value="From Curriculum">From Curriculum</option>
-                  <option value="Custom">Custom</option>
+                  <option value="CURRICULUM">CURRICULUM</option>
+                  <option value="MODIFIED">MODIFIED</option>
                 </select>
               </div>
             </div>
@@ -292,7 +292,7 @@ const setActionButton = (button) => {
   }
 };
 
-const emit = defineEmits(["close", "add"]);
+const emit = defineEmits(["close", "add", "updated"]);
 
 const selectedSPLO = ref([]);
 const selectedPO = ref([]);
@@ -364,7 +364,7 @@ const removeDetail = (key) => {
   selectedDetails.value.splice(key, 1);
 };
 
-const addCLO = () => {
+const addCLO = async () => {
   emit("add", newCLO.value);
   newCLO.value.course_id = props.id;
   newCLO.value.program_outcome_ids = selectedPO.value.map((item) => item.id);
@@ -375,7 +375,8 @@ const addCLO = () => {
     (item) => item.id
   );
   console.info("CLO added:", newCLO.value);
-  createCLO(newCLO.value);
+  await createCLO(newCLO.value);
+  emit("updated");
   emit("close");
 };
 
@@ -390,8 +391,6 @@ const createCLO = async (newCLO) => {
       body: JSON.stringify(newCLO),
     });
     if (!response.ok) throw new Error("Failed to create CLO");
-    const res = await response.json();
-    students.value = res.data;
   } catch (error) {
     console.error(error);
   }

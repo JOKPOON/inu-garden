@@ -96,21 +96,22 @@
             class="max-h-[calc(100vh-380px)] overflow-y-scroll scrollbar-set"
           >
             <div
+              v-if="selectedCLO != null"
               class="w-full flex items-center justify-center p-3 border-b border-grey-secondary"
             >
               <div
-                v-if="!editMode"
+                v-if="!editMode && selectedCLO"
                 :class="{
-                  'bg-green-500': selectedCLO.type === 0,
-                  'bg-yellow-500': selectedCLO.type === 1,
+                  'bg-green-500': selectedCLO.type == 'CURRICULUM',
+                  'bg-yellow-500': selectedCLO.type == 'MODIFIED',
                 }"
                 class="p-2 rounded-xl text-white"
               >
-                <span v-if="selectedCLO.type === 0">Curriculum</span>
+                <span v-if="selectedCLO.type === 'CURRICULUM'">Curriculum</span>
                 <span v-else>Modified</span>
               </div>
               <div
-                v-if="editMode"
+                v-if="editMode && selectedCLO.type === 0"
                 class="text-start w-full flex items-center h-full border border-grey-primary p-3 rounded-xl mx-3"
               >
                 <select
@@ -128,11 +129,11 @@
           <div
             class="w-full flex items-center justify-center py-3 border-b border-grey-secondary font-semibold text-grey-primary"
           >
-            Detail of {{ selectedCLO.name }}
+            Detail of {{ selectedCLO?.name }}
           </div>
-
           <div class="grid grid-cols-2 w-full h-full">
             <div
+              v-if="selectedCLO != null"
               class="col-span-1 h-full border-r max-h-[calc(100vh-380px)] overflow-y-scroll scrollbar-set"
             >
               <div
@@ -184,11 +185,11 @@
                 </div>
                 <div v-if="selectedCLO" class="px-4">
                   <div v-if="!editMode">
-                    {{ selectedCLO.description_th }}
+                    {{ selectedCLO.description_en }}
                   </div>
                   <div v-else>
                     <textarea
-                      v-model="selectedCLO.description_th"
+                      v-model="selectedCLO.description_en"
                       class="w-full px-4 py-2 border border-grey-secondary rounded-xl outline-none text-sm"
                       rows="3"
                       placeholder="Description in English"
@@ -222,13 +223,11 @@
                     Expected Passing Student
                   </div>
                   <div v-if="!editMode">
-                    {{ selectedCLO.expected_passing_assignment_percentage }}%
+                    {{ selectedCLO.expected_passing_student_percentage }}%
                   </div>
                   <div v-if="editMode">
                     <input
-                      v-model="
-                        selectedCLO.expected_passing_assignment_percentage
-                      "
+                      v-model="selectedCLO.expected_passing_student_percentage"
                       type="number"
                       class="border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary w-16 text-center"
                       placeholder="%"
@@ -237,7 +236,10 @@
                 </div>
               </div>
             </div>
-            <div class="col-span-1 h-full border-r py-3">
+            <div
+              v-if="selectedCLO != null"
+              class="col-span-1 h-full border-r py-3"
+            >
               <div class="flex flex-row gap-4 px-4 justify-between">
                 <div class="border border-grey-secondary rounded-xl mb-4 flex">
                   <button
@@ -496,12 +498,14 @@
     :program_id="program_id"
     :name="name"
     @close="showAddCLOPopup = false"
+    @updated="updated"
   />
   <DeleteCLO
     v-if="showDeleteCLOPopup"
     :id="selectedCLO.id"
     :name="selectedCLO.code"
     @close="showDeleteCLOPopup = false"
+    @deleted="updated"
   />
   <AddPLO
     v-if="showAddPLOPopup"
@@ -562,7 +566,8 @@ const selectedSSO = ref([]);
 
 const updated = async () => {
   await fetchCourseClos(clos, id.value);
-  selectedCLO.value = clos.value.find((clo) => clo.id === selectedCLO.value.id);
+  selectedCLO.value =
+    clos.value.find((clo) => clo.id === selectedCLO.value?.id) || clos.value[0];
 };
 
 const LinkSPLO = async () => {
@@ -720,14 +725,38 @@ const editLearningOutcome = () => {
   editMode.value = true;
 };
 
-const saveLearningOutcome = () => {
+const saveLearningOutcome = async () => {
+  await updateCLO();
   editMode.value = false;
+};
+
+const updateCLO = async () => {
+  try {
+    const response = await fetch(`${BaseURL}clos/${selectedCLO.value.id}`, {
+      credentials: "include",
+      method: "PATCH",
+      body: JSON.stringify({
+        name: selectedCLO.value.name,
+        description_th: selectedCLO.value.description_th,
+        description_en: selectedCLO.value.description_en,
+        expected_passing_assignment_percentage:
+          selectedCLO.value.expected_passing_assignment_percentage,
+        expected_passing_student_percentage:
+          selectedCLO.value.expected_passing_student_percentage,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Failed to update CLO");
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 const showDeleteCLOPopup = ref(false);
 
 const deleteCLO = (code) => {
-  console.log("Delete CLO:", code);
   showDeleteCLOPopup.value = true;
 };
 
@@ -739,7 +768,6 @@ const showAddCLOPopup = ref(false);
 
 const addCLO = () => {
   id.value = router.currentRoute.value.params.id;
-  name.value = "Computer Engineering (Regular) year 2565";
   showAddCLOPopup.value = true;
 };
 
@@ -837,7 +865,7 @@ const clos = ref([
   },
 ]);
 
-const selectedCLO = ref(clos.value[0]);
+const selectedCLO = ref(null);
 
 function selectCLO(clo) {
   selectedCLO.value = clo;
@@ -851,7 +879,7 @@ onMounted(async () => {
   }
   await fetchCourseClos(clos, id.value);
   console.log(clos.value);
-  selectedCLO.value = clos.value[0];
+  selectedCLO.value = clos.value[0] || null;
 });
 </script>
 
