@@ -114,7 +114,8 @@
             </div>
             <div>
               <p class="text-sm text-grey-primary text-end">
-                {{ feedback.semester }}
+                {{ feedback.from_course.semester.semester_sequence }} /
+                {{ feedback.from_course.semester.year }}
               </p>
             </div>
           </div>
@@ -186,7 +187,8 @@
             </div>
             <div>
               <p class="text-sm text-grey-primary text-end">
-                {{ feedback.semester }}
+                {{ feedback.from_course.semester.semester_sequence }} /
+                {{ feedback.from_course.semester.year }}
               </p>
             </div>
           </div>
@@ -215,6 +217,7 @@
     :id="id"
     :course="course"
     @close="showSendFeedbackPopup = false"
+    @submit-feedback="updatedFeedbacks"
   />
 </template>
 
@@ -227,9 +230,13 @@ import { useI18n } from "vue-i18n";
 import Delete from "@/components/icons/Delete.vue";
 import SendButton from "@/components/button/SendButton.vue";
 import SendFeedback from "@/components/popups/SendFeedback.vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
+import { onMounted } from "vue";
+import { fetchSentFeedbacks, BaseURL } from "~/api/api";
+import { useUserStore } from "@/store/user";
+
+const userStore = useUserStore();
 const router = useRouter();
-import { useRoute } from "vue-router";
 const route = useRoute();
 
 const formatBangkokTime = (dateString) => {
@@ -259,7 +266,7 @@ const steamStatus = ref("default");
 const dateTimeStatus = ref("default");
 
 const totalFeedbacks = computed(() => {
-  return send_feedbacks.value.length + mockOtherFeedbacks.value.length;
+  return sendFeedbacks.value.length + mockOtherFeedbacks.value.length;
 });
 
 const id = ref(router.currentRoute.value.params.id);
@@ -272,12 +279,11 @@ const onClickSendFeedback = () => {
   showSendFeedbackPopup.value = true;
 };
 
-const send_feedbacks = ref([
+const sendFeedbacks = ref([
   {
     id: "1",
     stream_type: "UPSTREAM",
     comment: "This is a sample comment",
-    semester: "1st/2024",
     created_at: "2025-04-05T07:59:50.856Z",
     user: {
       title_en_short: "Assoc. Prof.",
@@ -287,13 +293,16 @@ const send_feedbacks = ref([
     from_course: {
       code: "CPE101",
       name: "Introduction to Programming I",
+      semester: {
+        year: 2024,
+        semester_sequence: "1",
+      },
     },
   },
   {
     id: "2",
     stream_type: "DOWNSTREAM",
     comment: "Another feedback comment",
-    semester: "2nd/2023",
     created_at: "2025-04-04T10:30:00.000Z",
     user: {
       title_en_short: "Dr.",
@@ -303,6 +312,10 @@ const send_feedbacks = ref([
     from_course: {
       code: "CPE102",
       name: "Introduction to Programming II",
+      semester: {
+        year: 2024,
+        semester_sequence: "1",
+      },
     },
   },
 ]);
@@ -311,7 +324,6 @@ const mockOtherFeedbacks = ref([
   {
     id: "3",
     comment: "Mock feedback from another user",
-    semester: "1st/2024",
     created_at: "2025-04-03T12:00:00.000Z",
     stream_type: "UPSTREAM",
     user: {
@@ -322,12 +334,16 @@ const mockOtherFeedbacks = ref([
     from_course: {
       code: "CPE103",
       name: "Data Structures",
+      semester: {
+        year: 2024,
+        semester_sequence: "1",
+      },
     },
   },
 ]);
 
 const sortedFeedbacks = computed(() => {
-  return [...send_feedbacks.value].sort((a, b) => {
+  return [...sendFeedbacks.value].sort((a, b) => {
     // Sort by stream_type if steamStatus is not "default"
     if (steamStatus.value !== "default") {
       const streamComparison =
@@ -355,12 +371,6 @@ const sortedFeedbacks = computed(() => {
     return 0; // If both criteria are equal
   });
 });
-
-const deleteFeedback = (id) => {
-  send_feedbacks.value = send_feedbacks.value.filter(
-    (feedback) => feedback.id !== id
-  );
-};
 
 const toggleSteam = () => {
   if (steamStatus.value === "default") {
@@ -392,6 +402,41 @@ const dateTimeStatusClass = computed(() => {
   return dateTimeStatus.value === "default"
     ? "bg-white text-black-primary"
     : " bg-black-primary text-white";
+});
+
+const splitFeedbacks = () => {
+  mockOtherFeedbacks.value = sendFeedbacks.value.filter(
+    (feedback) => feedback.user.id != userStore.userData.id
+  );
+  sendFeedbacks.value = sendFeedbacks.value.filter(
+    (feedback) => feedback.user.id == userStore.userData.id
+  );
+};
+
+const updatedFeedbacks = async () => {
+  await fetchSentFeedbacks(sendFeedbacks, id.value);
+  splitFeedbacks();
+};
+
+const deleteFeedback = async (feedbackId) => {
+  try {
+    const response = await fetch(BaseURL + "course-streams/" + feedbackId, {
+      credentials: "include",
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Failed to delete feedback");
+    await updatedFeedbacks();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+onMounted(async () => {
+  await fetchSentFeedbacks(sendFeedbacks, id.value);
+  splitFeedbacks();
 });
 </script>
 
