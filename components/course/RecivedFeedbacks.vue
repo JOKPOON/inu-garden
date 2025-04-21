@@ -20,20 +20,20 @@
             <ArrowDown class="w-5 h-5" />
           </template>
         </button> -->
-        <div class ="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-2 gap-2 bg-grey-tertiary ">
-        <p class="text-sm text-grey-primary ">
-          Total :
-        </p>
-        <p class="text-sm text-black-primary font-semibold">
-          <span class="font-semibold  text-black-primary">{{
-            downstreamFeedbacks.length + upstreamFeedbacks.length
-          }}</span>
-          Feedbacks
-        </p>
+        <div
+          class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-2 gap-2 bg-grey-tertiary"
+        >
+          <p class="text-sm text-grey-primary">Total :</p>
+          <p class="text-sm text-black-primary font-semibold">
+            <span class="font-semibold text-black-primary">{{
+              downstreamFeedbacks.length + upstreamFeedbacks.length
+            }}</span>
+            Feedbacks
+          </p>
         </div>
         <button
           @click="toggleDateTime"
-          :class="[ 
+          :class="[
             'flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-2 gap-2 transition-all duration-300',
             dateTimeStatusClass,
           ]"
@@ -52,10 +52,11 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-4 mt-4 max-h-[calc(100vh-370px)] overflow-y-scroll scrollbar-set">
+    <div
+      class="grid grid-cols-2 gap-4 mt-4 max-h-[calc(100vh-370px)] overflow-y-scroll scrollbar-set"
+    >
       <!-- Downstream Feedbacks -->
       <div>
-        
         <div
           v-for="feedback in downstreamFeedbacks"
           :key="feedback.id"
@@ -78,12 +79,15 @@
             </div>
             <div>
               <p class="text-sm text-grey-primary text-end">
-                {{ feedback.semester }}
+                {{ feedback.from_course.semester.semester_sequence }} /
+                {{ feedback.from_course.semester.year }}
               </p>
             </div>
           </div>
 
-          <p class="text-sm p-3 my-3 text-center text-black-primary border border-grey-secondary rounded-lg">
+          <p
+            class="text-sm p-3 my-3 text-center text-black-primary border border-grey-secondary rounded-lg"
+          >
             "{{ feedback.comment }}"
           </p>
 
@@ -101,7 +105,6 @@
 
       <!-- Upstream Feedbacks -->
       <div>
-       
         <div
           v-for="feedback in upstreamFeedbacks"
           :key="feedback.id"
@@ -124,12 +127,15 @@
             </div>
             <div>
               <p class="text-sm text-grey-primary text-end">
-                {{ feedback.semester }}
+                {{ feedback.from_course.semester.semester_sequence }} /
+                {{ feedback.from_course.semester.year }}
               </p>
             </div>
           </div>
 
-          <p class="text-sm p-3 my-3 text-center text-black-primary border border-grey-secondary rounded-lg">
+          <p
+            class="text-sm p-3 my-3 text-center text-black-primary border border-grey-secondary rounded-lg"
+          >
             "{{ feedback.comment }}"
           </p>
 
@@ -154,6 +160,10 @@ import Status from "@/components/icons/Status.vue";
 import ArrowUp from "@/components/icons/ArrowUp.vue";
 import ArrowDown from "@/components/icons/ArrowDown.vue";
 import { useI18n } from "vue-i18n";
+import { fetchReceivedFeedbacks } from "~/api/api";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const formatBangkokTime = (dateString) => {
   return new Intl.DateTimeFormat("en-TH", {
@@ -181,12 +191,11 @@ definePageMeta({
 const steamStatus = ref("default");
 const dateTimeStatus = ref("default");
 
-const received_feedbacks = ref([
+const receivedFeedbacks = ref([
   {
     id: "1",
     stream_type: "UPSTREAM",
     comment: "This is a sample comment",
-    semester: "1st/2024",
     created_at: "2025-04-05T07:59:50.856Z",
     user: {
       title_en_short: "Assoc. Prof.",
@@ -196,13 +205,16 @@ const received_feedbacks = ref([
     from_course: {
       code: "CPE101",
       name: "Introduction to Programming I",
+      semester: {
+        year: 2024,
+        semester_sequence: "1",
+      },
     },
   },
   {
     id: "2",
     stream_type: "DOWNSTREAM",
     comment: "Another feedback comment",
-    semester: "2nd/2023",
     created_at: "2025-04-04T10:30:00.000Z",
     user: {
       title_en_short: "Dr.",
@@ -212,60 +224,16 @@ const received_feedbacks = ref([
     from_course: {
       code: "CPE102",
       name: "Introduction to Programming II",
-    },
-  },
-  {
-    id: "3",
-    stream_type: "UPSTREAM",
-    comment: "Yet another feedback comment",
-    semester: "3rd/2022",
-    created_at: "2025-04-03T15:45:00.000Z",
-    user: {
-      title_en_short: "Prof.",
-      first_name_en: "John",
-      last_name_en: "Smith",
-    },
-    from_course: {
-      code: "CPE103",
-      name: "Introduction to Programming III",
-    },
-  },
-  {
-    id: "4",
-    stream_type: "DOWNSTREAM",
-    comment: "Feedback comment here",
-    semester: "4th/2021",
-    created_at: "2025-04-02T12:00:00.000Z",
-    user: {
-      title_en_short: "Mr.",
-      first_name_en: "Jack",
-      last_name_en: "Johnson",
-    },
-    from_course: {
-      code: "CPE104",
-      name: "Introduction to Programming IV",
-    },
-  },
-  {
-    id: "5",
-    stream_type: "UPSTREAM",
-    comment: "Feedback comment here",
-    semester: "5th/2020",
-    created_at: "2025-04-01T09:15:00.000Z",
-    user: {
-      title_en_short: "Ms.",
-      first_name_en: "Emily",
-      last_name_en: "Davis",
-    },
-    from_course: {
-      code: "CPE105",
-      name: "Introduction to Programming V",
+      semester: {
+        year: 2024,
+        semester_sequence: "1",
+      },
     },
   },
 ]);
 
 const sortedFeedbacks = computed(() => {
-  let feedbacks = [...received_feedbacks.value];
+  let feedbacks = [...receivedFeedbacks.value];
 
   if (steamStatus.value === "ascending") {
     feedbacks.sort((a, b) => {
@@ -291,11 +259,15 @@ const sortedFeedbacks = computed(() => {
 });
 
 const downstreamFeedbacks = computed(() =>
-  sortedFeedbacks.value.filter((feedback) => feedback.stream_type === "DOWNSTREAM")
+  sortedFeedbacks.value.filter(
+    (feedback) => feedback.stream_type === "DOWNSTREAM"
+  )
 );
 
 const upstreamFeedbacks = computed(() =>
-  sortedFeedbacks.value.filter((feedback) => feedback.stream_type === "UPSTREAM")
+  sortedFeedbacks.value.filter(
+    (feedback) => feedback.stream_type === "UPSTREAM"
+  )
 );
 
 const toggleSteam = () => {
@@ -328,6 +300,13 @@ const dateTimeStatusClass = computed(() => {
   return dateTimeStatus.value === "default"
     ? "bg-white text-black-primary"
     : " bg-black-primary text-white";
+});
+
+onMounted(async () => {
+  await fetchReceivedFeedbacks(
+    receivedFeedbacks,
+    router.currentRoute.value.params.id
+  );
 });
 </script>
 

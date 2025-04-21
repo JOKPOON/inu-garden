@@ -68,7 +68,7 @@
             </div>
           </div>
 
-          <div
+          <!-- <div
             v-if="selectedCourse"
             class="flex flex-col items-start w-full gap-2"
           >
@@ -90,7 +90,7 @@
                 <option value="Winter">Winter</option>
               </select>
             </div>
-          </div>
+          </div> -->
 
           <!-- Stream Type -->
           <div class="flex flex-col items-start w-full gap-2">
@@ -154,6 +154,11 @@
 import { ref, computed } from "vue";
 import { defineProps, defineEmits } from "vue";
 import Delete from "@/components/icons/Delete.vue";
+import { fetchCourses } from "~/api/api";
+import { BaseURL } from "~/api/api";
+import { useUserStore } from "~/store/user";
+
+const userStore = useUserStore();
 
 const emit = defineEmits(["close", "submit-feedback"]);
 
@@ -202,16 +207,16 @@ const clearSelectedCourse = () => {
   courseSearch.value = "";
 };
 
-const submitFeedback = () => {
+const submitFeedback = async () => {
   if (!selectedCourse.value) {
     alert("Please select a course.");
     return;
   }
 
-  if (!semester.value) {
-    alert("Please select a semester.");
-    return;
-  }
+  // if (!semester.value) {
+  //   alert("Please select a semester.");
+  //   return;
+  // }
 
   if (!Feedback.value.trim()) {
     alert("Please enter a Feedback.");
@@ -223,16 +228,10 @@ const submitFeedback = () => {
     return;
   }
 
-  const feedbackData = {
-    course_code: selectedCourse.value.code,
-    course_name: selectedCourse.value.name,
-    semester: semester.value,
-    stream_type: streamType.value,
-    Feedback: Feedback.value,
-    date_time: new Date().toISOString(),
-  };
+  // Send feedback data to the server
+  await sentFeedback();
 
-  emit("submit-feedback", feedbackData);
+  emit("submit-feedback");
   emit("close");
 
   // Reset fields
@@ -242,6 +241,33 @@ const submitFeedback = () => {
   semester.value = "";
   courseSearch.value = "";
 };
+
+const sentFeedback = async () => {
+  try {
+    const response = await fetch(BaseURL + "course-streams", {
+      credentials: "include",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from_course_id: props.id,
+        target_course_id: selectedCourse.value.id,
+        stream_type: streamType.value,
+        comment: Feedback.value,
+        sender_id: userStore.userData.id,
+      }),
+    });
+    if (!response.ok) throw new Error("Failed to send feedback");
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+onMounted(async () => {
+  await fetchCourses(courses, "", "", "");
+  console.log(courses.value);
+});
 </script>
 
 <style scoped>
