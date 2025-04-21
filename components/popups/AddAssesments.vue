@@ -52,17 +52,20 @@
               />
             </div>
             <div class="flex flex-row items-center w-full gap-2">
-              <div class="flex flex-col items-start w-full gap-2 ">
+              <div class="flex flex-col items-start w-full gap-2">
                 <label class="font-semibold text-black-primary"
                   >Include CLO</label
                 >
-                <div class="flex flex-row items-center w-full gap-2 p-2 border border-grey-secondary rounded-xl">
+                <div
+                  class="flex flex-row items-center w-full gap-2 p-2 border border-grey-secondary rounded-xl"
+                >
                   <input
                     v-model="assessmentsGroup.includeCLO"
                     type="checkbox"
-                    class="w-4 h-4 rounded-xl "
+                    class="w-4 h-4 rounded-xl"
                   />
-                  <label class="font-semibold text-black-primary border-l border-grey-secondary  pl-2"
+                  <label
+                    class="font-semibold text-black-primary border-l border-grey-secondary pl-2"
                     ><span
                       v-if="assessmentsGroup.includeCLO"
                       class="text-green-500"
@@ -75,9 +78,7 @@
             </div>
           </div>
           <div class="flex flex-col items-start w-full gap-2">
-            <label class="font-semibold text-black-primary"
-              >Max Scored</label
-            >
+            <label class="font-semibold text-black-primary">Max Scored</label>
             <input
               v-model="assessmentsGroup.maxScored"
               type="number"
