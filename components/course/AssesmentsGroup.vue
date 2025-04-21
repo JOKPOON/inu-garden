@@ -22,13 +22,20 @@
         <div class="font-semibold w-full text-center">Max Weighted Score</div>
         <div class="font-semibold w-full text-center">Action</div>
       </div>
-        <div v-for="group in assessmentGroups" :key="group.id" class="contents rounded-xl">
-          <div @click="showGroup(group.id, group.name)" class="grid grid-cols-5 gap-2 mt-4 hover:cursor-pointer hover:bg-[#F6F8F8] px-4 rounded-xl py-2   items-center">
-          <div  class="col-span-3">
+      <div
+        v-for="group in assessmentGroups"
+        :key="group.id"
+        class="contents rounded-xl"
+      >
+        <div
+          @click="showGroup(group.id, group.name)"
+          class="grid grid-cols-5 gap-2 mt-4 hover:cursor-pointer hover:bg-[#F6F8F8] px-4 rounded-xl py-2 items-center"
+        >
+          <div class="col-span-3">
             {{ group.name }}
           </div>
           <div class="text-center">
-            {{ group.maxWeightedScore }}
+            {{ group.weight }}
           </div>
           <div class="flex flex-row gap-2 items-center justify-center">
             <button
@@ -49,17 +56,18 @@ import { ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import Export from "@/components/button/ExportButton.vue";
 import ShowUser from "@/components/icons/ShowUser.vue";
+import { fetchAssignmentGroups } from "~/api/api";
+import { onMounted } from "vue";
 
-const searchQuery = ref("");
 const router = useRouter();
 const route = useRoute();
 const course_code = route.query.code;
 const course_id = router.currentRoute.value.params.id;
 
 const assessmentGroups = ref([
-  { id: 1, name: "Midterm", maxWeightedScore: 30 },
-  { id: 2, name: "Final", maxWeightedScore: 40 },
-  { id: 3, name: "Assignment", maxWeightedScore: 30 },
+  { id: 1, name: "Midterm", weight: 30 },
+  { id: 2, name: "Final", weight: 40 },
+  { id: 3, name: "Assignment", weight: 30 },
 ]);
 
 const showGroup = (groupId, groupName) => {
@@ -72,6 +80,10 @@ const showGroup = (groupId, groupName) => {
     },
   });
 };
+
+onMounted(() => {
+  fetchAssignmentGroups(assessmentGroups, course_id, false);
+});
 </script>
 
 <style lang="scss" scoped>

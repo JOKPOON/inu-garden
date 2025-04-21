@@ -446,7 +446,11 @@ import AddStudentToAssessment from "@/components/popups/AddStudentToAssessment.v
 import AddAssesments from "@/components/popups/AddAssesments.vue";
 import SmallEditButton from "@/components/button/SmallEditButton.vue";
 import SmallSaveButton from "@/components/button/SmallSaveButton.vue";
-import { BaseURL, fetchAssignments, fetchAssignmentScores } from "~/api/api";
+import {
+  BaseURL,
+  fetchAssignmentGroups,
+  fetchAssignmentScores,
+} from "~/api/api";
 
 const props = defineProps({
   courseId: {
@@ -633,9 +637,8 @@ const addStudentToAssessment = () => {
 };
 
 onMounted(async () => {
-  await fetchAssignments(assessments, props.courseId);
+  await fetchAssignmentGroups(assessments, props.courseId, true, groupID);
   setActiveAssessment(assessments.value[0]);
-
   const active = getActiveAssessment();
   chartData.value = {
     datasets: [
