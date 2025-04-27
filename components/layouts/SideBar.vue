@@ -113,7 +113,7 @@
                 {{ t("layout.lecturers") }}
               </div>
             </button>
-            <button
+            <!-- <button
               class="flex flex-row items-center gap-2 p-2 rounded-xl hover:translate-x-1 transition-transform"
               :class="{
                 'bg-black-primary text-white':
@@ -132,7 +132,7 @@
               <div v-if="!smallNav" class="font-medium">
                 {{ t("layout.graduation") }}
               </div>
-            </button>
+            </button> -->
             <button
               class="flex flex-row items-center gap-2 p-2 rounded-xl hover:translate-x-1 transition-transform"
               :class="{
@@ -247,7 +247,8 @@
         </div>
       </div>
       <div class="w-full h-full p-6 bg-white shadow-sm rounded-xl">
-        <slot class="w-full h-full" />
+        <slot v-if="route.path !== '/students'" class="w-full h-full" />
+        <Students v-if="route.path === '/students'" :smallNav="smallNav" />
       </div>
     </div>
     <LogoutPopup v-if="showLogoutPopup" @close="showLogoutPopup = false" />
@@ -259,6 +260,7 @@ import { ref, computed, onMounted, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useUserStore } from "@/store/user";
 import { useRouter, useRoute } from "vue-router";
+import Students from "@/pages/students.vue";
 import Course from "@/components/icons/Course.vue";
 import Student from "@/components/icons/Student.vue";
 import Lecturer from "@/components/icons/Lecturer.vue";
