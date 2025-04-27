@@ -76,8 +76,8 @@
       <div
         class="flex flex-col gap-4 p-4 pb-0 max-w-full max-h-[calc(100vh-380px)] overflow-auto scrollbar-set"
         :class="{
-          'max-w-[calc(100vw-275px)]': smallNav,
-          'max-w-[calc(100vw-480px)]': !smallNav,
+          'max-w-[calc(100vw-277px)]': smallNav,
+          'max-w-[calc(100vw-482px)]': !smallNav,
         }"
       >
         <table
@@ -362,7 +362,7 @@ const Students = ref([
     faculty: "Science",
     department: "Biology",
     program: "Undergraduate",
-    gpax : 3.8,
+    gpax: 3.8,
     highSchoolGpax: 3.8,
     scienceGpax: 3.9,
     englishGpax: 3.7,
@@ -377,7 +377,7 @@ const Students = ref([
     faculty: "Engineering",
     department: "Computer Engineering",
     program: "Undergraduate",
-    gpax : 3.6,
+    gpax: 3.6,
     highSchoolGpax: 3.6,
     scienceGpax: 3.8,
     englishGpax: 3.5,
@@ -392,7 +392,7 @@ const Students = ref([
     faculty: "Arts",
     department: "History",
     program: "Undergraduate",
-    gpax : 3.9,
+    gpax: 3.9,
     highSchoolGpax: 3.9,
     scienceGpax: 3.4,
     englishGpax: 4.0,
@@ -407,7 +407,7 @@ const Students = ref([
     faculty: "Business",
     department: "Marketing",
     program: "Undergraduate",
-    gpax : 3.7,
+    gpax: 3.7,
     highSchoolGpax: 3.7,
     scienceGpax: 3.6,
     englishGpax: 3.8,
@@ -422,7 +422,7 @@ const Students = ref([
     faculty: "Law",
     department: "Criminal Law",
     program: "Undergraduate",
-    gpax : 3.5,
+    gpax: 3.5,
     highSchoolGpax: 3.5,
     scienceGpax: 3.3,
     englishGpax: 3.9,
@@ -437,7 +437,7 @@ const Students = ref([
     faculty: "Medicine",
     department: "Anatomy",
     program: "Undergraduate",
-    gpax : 3.95,
+    gpax: 3.95,
     highSchoolGpax: 3.95,
     scienceGpax: 4.0,
     englishGpax: 3.8,

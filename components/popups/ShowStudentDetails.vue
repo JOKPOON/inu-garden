@@ -270,7 +270,7 @@
                     </span>
                   </div>
                 </div>
-             
+
                 <div
                   class="text-sm w-full text-center text-black-primary col-span-1 h-full items-center flex justify-center"
                 >
