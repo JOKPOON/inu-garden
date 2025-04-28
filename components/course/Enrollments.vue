@@ -44,7 +44,7 @@
     <StudentEnrollments :refresh="studentListUpdated" />
   </div>
   <div v-else-if="activeButton === 'Student Results'">
-    <StudentResult />
+    <StudentResult :courseId="id" />
   </div>
   <AddStudent
     v-if="showAddStudentPopup"
@@ -64,7 +64,6 @@ import AddStudent from "@/components/popups/AddStudent.vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
-
 
 const { t } = useI18n();
 

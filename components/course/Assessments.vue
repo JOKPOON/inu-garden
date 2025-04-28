@@ -413,11 +413,13 @@
   />
   <AddStudentToAssessment
     v-if="isAddStudentShow"
+    @updated="updateAddScore"
     @close="isAddStudentShow = false"
     :groupID="assesmentsGroupID"
     :groupName="assesmentsGroupName"
     :id="assesmentsID"
     :name="assesmentsName"
+    :courseId="props.courseId"
   />
 </template>
 
@@ -692,6 +694,15 @@ const deleteClo = async (cloId) => {
     if (response.ok) {
       clos.value = clos.value.filter((clo) => clo.id !== cloId);
     }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+//  emit("updated",studentSelected.value.student_id,studentSelected.value.score);
+const updateAddScore = async (score) => {
+  try {
+    scores.value = { ...scores.value, score };
   } catch (error) {
     console.error(error);
   }
