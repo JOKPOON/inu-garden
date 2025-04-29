@@ -96,7 +96,7 @@
                   {{ selectedPO.detail.desc_th }}
                 </div>
                 <div v-if="selectedPO.detail" class="px-4">
-                  {{ selectedPO.detail.desc }}
+                  {{ selectedPO.detail.desc_en }}
                 </div>
               </div>
             </div>
@@ -143,16 +143,17 @@
                     Expected Course PO passing rate (%)
                   </div>
                   <div>
-                    <div v-if="!editMode" class="flex items-center justify-center w-16 border p-1 rounded-lg border-grey-tertiary">
+                    <div
+                      v-if="!editMode"
+                      class="flex items-center justify-center w-16 border p-1 rounded-lg border-grey-tertiary"
+                    >
                       {{ selectedPO.detail.expectedCoursePOPassingRate }}
                     </div>
                     <div v-if="editMode">
                       <input
                         type="text"
                         class="bg-transparent text-center focus:ring-0 outline-none text-base w-16 border p-1 rounded-lg border-grey-primary"
-                        v-model="
-                          selectedPO.detail.expectedCoursePOPassingRate
-                        "
+                        v-model="selectedPO.detail.expectedCoursePOPassingRate"
                       />
                     </div>
                   </div>
@@ -295,7 +296,6 @@ const showAddPO = () => {
   POName.value = "Computer Engineering (Regular) year 2565";
   showAddPOPopup.value = true;
 };
-
 
 const PO = ref([
   {

@@ -439,6 +439,23 @@ const fetchStudentsPassingCLOs = async (passingOutcomes, course_id) => {
   }
 };
 
+const fetchFaculties = async (faculties) => {
+  try {
+    const response = await fetch(`${BaseURL}faculties`, {
+      credentials: "include",
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Failed to fetch students passing CLOs");
+    const res = await response.json();
+    faculties.value = res.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export {
   BaseURL,
   fetchMe,
@@ -458,6 +475,7 @@ export {
   fetchInstructorCourses,
   fetchReceivedFeedbacks,
   fetchSentFeedbacks,
+  fetchFaculties,
   fetchDepartments,
   fetchPLOs,
   fetchPOs,

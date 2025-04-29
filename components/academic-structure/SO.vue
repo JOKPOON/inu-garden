@@ -57,7 +57,7 @@
               :class="{
                 'bg-grey-secondary text-black-primary':
                   selectedSO.name === so.name,
-                'bg-white':  selectedSO.name !== so.name,
+                'bg-white': selectedSO.name !== so.name,
               }"
               class="w-full flex items-center justify-center py-3 border-b border-grey-secondary"
             >
@@ -96,7 +96,7 @@
                   {{ selectedSO.detail.desc_th }}
                 </div>
                 <div v-if="selectedSO.detail" class="px-4">
-                  {{ selectedSO.detail.desc }}
+                  {{ selectedSO.detail.desc_en }}
                 </div>
               </div>
               <div class="w-full flex flex-col gap-2 pt-3">
@@ -251,16 +251,17 @@
                     Expected Course SO passing rate (%)
                   </div>
                   <div>
-                    <div v-if="!editMode" class="flex items-center justify-center w-16 border p-1 rounded-lg border-grey-tertiary">
+                    <div
+                      v-if="!editMode"
+                      class="flex items-center justify-center w-16 border p-1 rounded-lg border-grey-tertiary"
+                    >
                       {{ selectedSO.detail.expectedCourseSOPassingRate }}
                     </div>
                     <div v-if="editMode">
                       <input
                         type="text"
                         class="bg-transparent text-center focus:ring-0 outline-none text-base w-16 border p-1 rounded-lg border-grey-primary"
-                        v-model="
-                          selectedSO.detail.expectedCourseSOPassingRate
-                        "
+                        v-model="selectedSO.detail.expectedCourseSOPassingRate"
                       />
                     </div>
                   </div>
@@ -419,7 +420,7 @@ const addSO = () => {
 
 const addSubSO = () => {
   id.value = router.currentRoute.value.params.id;
-  SOid.value ="SO1";
+  SOid.value = "SO1";
   SOName.value = "Computer Engineering (Regular) year 2565";
   showAddSubSOPopup.value = true;
 };
