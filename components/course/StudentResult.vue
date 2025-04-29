@@ -43,7 +43,7 @@
     </div>
   </div>
   <div v-if="activeButton === 'CLO'">
-    <CLO />
+    <CLO :result="studentResults?.result" :allCLOs="studentResults?.clos" />
   </div>
   <div v-if="activeButton === 'PLO'">
     <PLO />
@@ -66,6 +66,7 @@ import Search from "@/components/icons/Search.vue";
 import Export from "@/components/button/ExportButton.vue";
 
 import { useI18n } from "vue-i18n";
+import { fetchStudentsPassingCLOs } from "~/api/api";
 
 const { t } = useI18n();
 
@@ -78,12 +79,24 @@ definePageMeta({
   layout: "landing",
 });
 
+const props = defineProps({
+  courseId: {
+    type: String,
+    required: true,
+  },
+});
+
 const buttons = ["CLO", "PLO", "PO", "SO"];
 const activeButton = ref("CLO");
+const studentResults = ref(null);
 
 const setActionButton = (button) => {
   activeButton.value = button;
 };
+
+onMounted(async () => {
+  await fetchStudentsPassingCLOs(studentResults, props.courseId);
+});
 </script>
 
 <style lang="scss" scoped></style>

@@ -16,25 +16,38 @@
       </div>
     </div>
     <div
-      v-if="studentResults.length > 0"
+      v-if="result.length > 0"
       class="max-h-[calc(100vh-480px)] overflow-y-scroll scrollbar-set w-full"
     >
       <div
-        v-for="student in studentResults"
-        :key="student.studentID"
+        v-for="student in result"
+        :key="student.student_id"
         class="flex gap-4 p-4 border-b"
       >
-        <div class="flex-1">{{ student.studentID }}</div>
-        <div class="flex-2">{{ student.studentName }}</div>
+        <div class="flex-1">{{ student.student_id }}</div>
+        <div class="flex-2">{{ student.student_name_en }}</div>
         <div class="flex-6 flex gap-2">
           <div
             v-for="clo in allCLOs"
             :key="clo"
             class="flex-1 flex items-center justify-center"
           >
+            <div></div>
             <component
-              :is="student.CLO[clo] ? Include : NotInclude"
-              :class="student.CLO[clo] ? 'text-green-700' : 'text-red-700'"
+              :is="
+                student.clos.find((clos) => {
+                  return clos.code == clo;
+                })
+                  ? Include
+                  : NotInclude
+              "
+              :class="
+                student.clos.find((clos) => {
+                  return clos.pass;
+                })
+                  ? 'text-green-700'
+                  : 'text-red-700'
+              "
               class="w-5 h-5"
             />
           </div>
@@ -59,103 +72,15 @@ import Include from "@/components/icons/Include.vue";
 import NotInclude from "@/components/icons/NotInclude.vue";
 import BannerLogin from "@/components/images/BannerLogin.jpg";
 
-const studentResults = [
-  {
-    studentID: "64070501000",
-    studentName: "John Doe",
-    CLO: {
-      CLO1: true,
-      CLO2: true,
-      CLO3: true,
-      CLO4: true,
-      CLO5: true,
-    },
+const props = defineProps({
+  result: {
+    type: Object,
+    required: true,
   },
-  {
-    studentID: "64070501001",
-    studentName: "Jane Smith",
-    CLO: {
-      CLO1: true,
-      CLO2: true,
-      CLO4: true,
-      CLO8: true,
-      CLO9: true,
-    },
+  allCLOs: {
+    type: Array,
+    required: true,
   },
-  {
-    studentID: "64070501002",
-    studentName: "Alice Johnson",
-    CLO: {
-      CLO1: true,
-      CLO2: true,
-      CLO3: true,
-      CLO4: true,
-      CLO5: true,
-    },
-  },
-  {
-    studentID: "64070501003",
-    studentName: "Bob Brown",
-    CLO: {
-      CLO1: true,
-      CLO2: true,
-      CLO3: true,
-      CLO6: true,
-      CLO8: true,
-    },
-  },
-  {
-    studentID: "64070501004",
-    studentName: "Charlie Davis",
-    CLO: {
-      CLO1: true,
-      CLO2: true,
-      CLO3: true,
-      CLO4: true,
-      CLO5: true,
-    },
-  },
-  {
-    studentID: "64070501005",
-    studentName: "Eve Wilson",
-    CLO: {
-      CLO1: true,
-      CLO2: true,
-      CLO3: true,
-      CLO4: true,
-      CLO5: true,
-    },
-  },
-  {
-    studentID: "64070501006",
-    studentName: "Frank Thompson",
-    CLO: {
-      CLO1: true,
-      CLO2: true,
-      CLO3: true,
-      CLO4: true,
-      CLO5: true,
-    },
-  },
-  {
-    studentID: "64070501007",
-    studentName: "Grace Martinez",
-    CLO: {
-      CLO1: true,
-      CLO2: true,
-      CLO3: true,
-      CLO4: true,
-      CLO5: true,
-    },
-  },
-];
-
-const allCLOs = Array.from(
-  new Set(studentResults.flatMap((student) => Object.keys(student.CLO)))
-).sort((a, b) => {
-  const numA = parseInt(a.replace("CLO", ""), 10);
-  const numB = parseInt(b.replace("CLO", ""), 10);
-  return numA - numB;
 });
 </script>
 
