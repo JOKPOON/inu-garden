@@ -76,8 +76,8 @@
       <div
         class="flex flex-col gap-4 p-4 pb-0 max-w-full max-h-[calc(100vh-380px)] overflow-auto scrollbar-set"
         :class="{
-          'max-w-[calc(100vw-277px)]': smallNav,
-          'max-w-[calc(100vw-482px)]': !smallNav,
+          'max-w-[calc(100vw-280px)]': smallNav,
+          'max-w-[calc(100vw-485px)]': !smallNav,
         }"
       >
         <table
