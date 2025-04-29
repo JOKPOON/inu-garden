@@ -11,21 +11,22 @@
             Faculty
           </div>
           <div
+            v-if="selectFaculty"
             class="max-h-[calc(100vh-346px)] overflow-y-scroll scrollbar-set"
           >
             <button
-              v-for="faculty in AcadamicManagement.faculty"
-              :key="faculty.name"
+              v-for="faculty in AcadamicManagement"
+              :key="faculty.id"
               :class="{
                 'bg-grey-secondary text-black-primary':
-                  selectedFaculty === faculty.name,
-                'bg-white': selectedFaculty !== faculty.name,
+                  selectedFaculty === faculty.id,
+                'bg-white': selectedFaculty !== faculty.id,
               }"
               class="w-full flex items-center justify-center py-3 border-b border-grey-secondary"
-              @click="selectFaculty(faculty.name)"
+              @click="selectFaculty(faculty.id)"
             >
               {{ faculty.name_th }}<br />
-              {{ faculty.name }}
+              {{ faculty.name_en }}
             </button>
           </div>
           <div class="w-full mt-4 flex items-center justify-center">
@@ -43,7 +44,7 @@
           <div
             class="w-full flex items-center justify-center py-3 border-b border-grey-secondary font-semibold text-grey-primary"
           >
-            Details of {{ selectedFaculty }}
+            Details of {{ selectedFacultyDetails.name_en }}
           </div>
           <div
             v-if="selectedFacultyDetails"
@@ -53,7 +54,7 @@
               <span class="font-semibold"> Name(Th):</span>
               {{ selectedFacultyDetails.name_th }}<br />
               <span class="font-semibold">Name(En):</span>
-              {{ selectedFacultyDetails.name }}<br />
+              {{ selectedFacultyDetails.name_en }}<br />
             </div>
             <div v-else class="py-4 w-full flex flex-col gap-2">
               <input
@@ -63,13 +64,13 @@
                 class="w-full px-4 py-2 border border-grey-secondary rounded-xl outline-none"
               />
               <input
-                v-model="selectedFacultyDetails.name"
+                v-model="selectedFacultyDetails.name_en"
                 type="text"
                 placeholder="Faculty Name (EN)"
                 class="w-full px-4 py-2 border border-grey-secondary rounded-xl outline-none"
               />
             </div>
-            <div v-if="!editFacultyMode" class="py-4 w-full">
+            <!-- <div v-if="!editFacultyMode" class="py-4 w-full">
               <span class="font-semibold">Abbreviate(Th):</span>
               {{ selectedFacultyDetails.abbreviate_th }}<br />
               <span class="font-semibold">Abbreviate(En):</span>
@@ -88,7 +89,7 @@
                 placeholder="Faculty Abbreviation (EN)"
                 class="w-full px-4 py-2 border border-grey-secondary rounded-xl outline-none"
               />
-            </div>
+            </div> -->
 
             <div class="py-4 flex justify-end">
               <button
@@ -109,23 +110,26 @@
             </div>
           </div>
           <div class="grid grid-cols-4 h-full w-full">
-            <div class="col-span-1 h-full border-r flex flex-col">
+            <div
+              v-if="selectedDepartmentDetails"
+              class="col-span-1 h-full border-r flex flex-col"
+            >
               <div
                 class="max-h-[calc(100vh-418.5px)] overflow-y-scroll scrollbar-set"
               >
                 <button
-                  v-for="department in selectedFacultyDetails.details"
-                  :key="department.departments"
+                  v-for="department in selectedFacultyDetails.departments"
+                  :key="department.id"
                   :class="{
                     'bg-grey-secondary text-black-primary':
-                      selectedDepartment === department.departments,
-                    'bg-white': selectedDepartment !== department.departments,
+                      selectedDepartment === department.id,
+                    'bg-white': selectedDepartment !== department.id,
                   }"
                   class="w-full flex items-center justify-center py-3 border-b border-grey-secondary"
-                  @click="selectDepartment(department.departments)"
+                  @click="selectDepartment(department.id)"
                 >
-                  {{ department.departments_th }}<br />
-                  {{ department.departments }}
+                  {{ department.name_th }}<br />
+                  {{ department.name_en }}
                 </button>
               </div>
               <div class="w-full mt-4 flex items-center justify-center">
@@ -139,31 +143,33 @@
                 </SmallAddButton>
               </div>
             </div>
-            <div class="col-span-3 h-full flex flex-col">
+            <div
+              v-if="selectedDepartmentDetails"
+              class="col-span-3 h-full flex flex-col"
+            >
               <div
                 class="w-full flex items-center justify-center py-3 border-b border-grey-secondary font-semibold text-grey-primary"
               >
-                Details of {{ selectedDepartment }}
+                Details of {{ selectedDepartmentDetails.name_en }}
               </div>
               <div
-                v-if="selectedFacultyDetails"
                 class="w-full flex px-12 flex-row justify-between border-b border-grey-secondary gap-6"
               >
                 <div v-if="!editDepartmentMode" class="py-4 w-full">
                   <span class="font-semibold"> Name(Th):</span>
-                  {{ selectedDepartmentDetails.departments_th }}<br />
+                  {{ selectedDepartmentDetails.name_th }}<br />
                   <span class="font-semibold">Name(En):</span>
-                  {{ selectedDepartmentDetails.departments }}<br />
+                  {{ selectedDepartmentDetails.name_en }}<br />
                 </div>
                 <div v-else class="py-4 w-full flex flex-col gap-2">
                   <input
-                    v-model="selectedDepartmentDetails.departments_th"
+                    v-model="selectedDepartmentDetails.name_th"
                     type="text"
                     placeholder="Department Name (TH)"
                     class="w-full px-4 py-2 border border-grey-secondary rounded-xl outline-none"
                   />
                   <input
-                    v-model="selectedDepartmentDetails.departments"
+                    v-model="selectedDepartmentDetails.name_en"
                     type="text"
                     placeholder="Department Name (EN)"
                     class="w-full px-4 py-2 border border-grey-secondary rounded-xl outline-none"
@@ -188,25 +194,28 @@
                 </div>
               </div>
               <div class="grid grid-cols-3 h-full w-full">
-                <div class="col-span-1 h-full border-r flex flex-col">
+                <div
+                  v-if="selectedDepartmentDetails"
+                  class="col-span-1 h-full border-r flex flex-col"
+                >
                   <div
                     class="max-h-[calc(100vh-520px)] overflow-y-scroll scrollbar-set"
                   >
                     <button
                       v-if="selectedDepartmentDetails"
-                      v-for="program in selectedDepartmentDetails.programs"
-                      :key="program.type"
+                      v-for="program in selectedDepartmentDetails.programmes"
+                      :key="program.id"
                       :class="{
                         'bg-grey-secondary text-black-primary':
-                          selectedProgram === program.type,
+                          selectedProgram === program.id,
 
-                        'bg-white': selectedProgram !== program.type,
+                        'bg-white': selectedProgram !== program.id,
                       }"
                       class="w-full flex items-center justify-center py-3 border-b border-grey-secondary"
-                      @click="selectProgram(program.type)"
+                      @click="selectProgram(program.id)"
                     >
-                      {{ program.type_th }}<br />
-                      {{ program.type }}
+                      {{ program.name_th }}<br />
+                      {{ program.name_en }}
                     </button>
                   </div>
                   <div class="w-full mt-4 flex items-center justify-center">
@@ -220,31 +229,35 @@
                     </SmallAddButton>
                   </div>
                 </div>
-                <div class="col-span-2 h-full flex flex-col">
+                <div
+                  v-if="selectedProgramDetails"
+                  class="col-span-2 h-full flex flex-col"
+                >
                   <div
+                    v-if="selectedProgramDetails"
                     class="w-full flex items-center justify-center py-3 border-b border-grey-secondary font-semibold text-grey-primary"
                   >
-                    Details of {{ selectedProgram }}
+                    Details of {{ selectedProgramDetails.name_en }}
                   </div>
-
                   <div
+                    v-if="selectedProgramDetails"
                     class="w-full flex px-12 flex-row justify-between border-b border-grey-secondary gap-6"
                   >
                     <div v-if="!editTypeMode" class="py-4 w-full">
                       <span class="font-semibold"> Name(Th):</span>
-                      {{ selectedProgramDetails.type_th }}<br />
+                      {{ selectedProgramDetails.name_th }}<br />
                       <span class="font-semibold">Name(En):</span>
-                      {{ selectedProgramDetails.type }}<br />
+                      {{ selectedProgramDetails.name_en }}<br />
                     </div>
                     <div v-else class="py-4 w-full flex flex-col gap-2">
                       <input
-                        v-model="selectedProgramDetails.type_th"
+                        v-model="selectedProgramDetails.name_th"
                         type="text"
                         placeholder="Program Name (TH)"
                         class="w-full px-4 py-2 border border-grey-secondary rounded-xl outline-none"
                       />
                       <input
-                        v-model="selectedProgramDetails.type"
+                        v-model="selectedProgramDetails.name_en"
                         type="text"
                         placeholder="Program Name (EN)"
                         class="w-full px-4 py-2 border border-grey-secondary rounded-xl outline-none"
@@ -282,7 +295,7 @@
                           Description(Th)
                         </div>
                         <div class="mt-1">
-                          {{ selectedProgramDetails.details.description_th }}
+                          {{ selectedProgramDetails.description_th }}
                         </div>
                       </div>
                       <div class="flex flex-col w-full">
@@ -292,7 +305,7 @@
                           Description(En)
                         </div>
                         <div class="mt-1">
-                          {{ selectedProgramDetails.details.description }}
+                          {{ selectedProgramDetails.description_en }}
                         </div>
                       </div>
                       <div class="flex mb-4 w-full items-center justify-center">
@@ -336,6 +349,7 @@ import AddFaculty from "@/components/popups/AddFaculty.vue";
 import AddProgram from "@/components/popups/AddProgram.vue";
 import AddDepartment from "@/components/popups/AddDepartment.vue";
 import { useRouter } from "vue-router";
+import { fetchFaculties } from "~/api/api";
 
 const router = useRouter();
 
@@ -387,164 +401,186 @@ const saveType = () => {
   editTypeMode.value = false;
 };
 
-const AcadamicManagement = ref({
-  faculty: [
-    {
-      name: "Engineering",
-      name_th: "วิศวกรรมศาสตร์",
-      abbreviate: "B.Eng",
-      abbreviate_th: "วศ.บ.",
-      details: [
-        {
-          departments: "Computer Engineering",
-          departments_th: "วิศวกรรมคอมพิวเตอร์",
-          programs: [
-            {
-              type: "Regular (2555)",
-              type_th: "ปกติ (2555)",
-              details: {
-                description:
-                  "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-                description_th:
-                  "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้ ",
-              },
+const AcadamicManagement = ref([
+  {
+    id: "01JSYTYQWGR0B7FTY048RWA15C",
+    name_th: "วิศวกรรมศาสตร์",
+    name_en: "Engineering",
+    departments: [
+      {
+        id: "01JSYV7A3RK5HC8J05D59N1X6K",
+        name_th: "วิศวกรรมคอมพิวเตอร์",
+        name_en: "Computer Engineering",
+        faculty_id: "01JSYTYQWGR0B7FTY048RWA15C",
+        programmes: [
+          {
+            id: "01JT07KAN3V5YMG1YC7AEH7RKG",
+            name_th: "หลักสูตรปกติ",
+            name_en: "Regular Program",
+            description_th:
+              "วิศวกรรมศาสตร์คือการประยุกต์ใช้หลักการทางวิทยาศาสตร์อย่างสร้างสรรค์เพื่อการออกแบบและพัฒนาโครงสร้าง, เครื่องจักร, เครื่องมือ, หรือกระบวนการผลิต หรืองานเพื่อการใช้ประโยชน์สิ่งเหล่านี้โดดๆหรือประยุกต์เข้าด้วยกัน หรือเพื่อการสร้างหรือใช้งานสิ่งเหล่านั้นด้วยความรู้ความเข้าใจเกี่ยวกับสิ่งที่ใช้งานอย่างหมดจด หรือเพื่อการพยากรณ์พฤติกรรมของสิ่งเหล่านั้นภายใต้สภาวะที่เจาะจง สิ่งที่กล่าวมาทั้งหมดนี้จักต้องคำนึงถึงความมุ่งหมายในการใช้งาน, ความคุ้มค่าในการปฏิบัติการ แลความปลอดภัยต่อชีวิตและทรัพยสินด้วย",
+            description_en:
+              "The discipline of engineering encompasses a broad range of more specialized fields of engineering, each with a more specific emphasis for applications of mathematics and science. See glossary of engineering",
+            degree_th: "วิศวกรรมศาสตรบัณฑิต",
+            degree_en: "Bachelor of Engineering",
+            degree_short_th: "วศ.บ.",
+            degree_short_en: "B.Eng.",
+            year: "2021",
+            academic_year: "",
+            department_id: "01JSYV7A3RK5HC8J05D59N1X6K",
+            structure: {
+              category: [
+                {
+                  sub: null,
+                  name: "ก. หมวดวิชาศึกษาทั่วไป",
+                  credit: 31,
+                },
+                {
+                  sub: [
+                    {
+                      name: "วิชาแกนทางวิศวกรรม",
+                      credit: 30,
+                    },
+                    {
+                      name: "วิชาเฉพาะด้าน",
+                      credit: 51,
+                    },
+                    {
+                      name: "วิชาเลือก",
+                      credit: 12,
+                    },
+                  ],
+                  name: "ข. หมวดวิชาเฉพาะ",
+                  credit: 93,
+                },
+                {
+                  sub: null,
+                  name: "ค. หมวดวิชาเลือกเสรี",
+                  credit: 6,
+                },
+              ],
+              totals_credit: 130,
             },
-            {
-              type: "Regular (2556)",
-              type_th: "ปกติ (2556)",
-              details: {
-                description:
-                  "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-                description_th:
-                  "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้ ",
-              },
+            program_outcomes: null,
+            program_learning_outcomes: null,
+            student_outcomes: null,
+          },
+          {
+            id: "01JT08A4JZ7MBHXHD58TRMGRQP",
+            name_th: "หลักสูตรปกติ 2",
+            name_en: "Regular Program II",
+            description_th:
+              "วิศวกรรมศาสตร์คือการประยุกต์ใช้หลักการทางวิทยาศาสตร์อย่างสร้างสรรค์เพื่อการออกแบบและพัฒนาโครงสร้าง, เครื่องจักร, เครื่องมือ, หรือกระบวนการผลิต หรืองานเพื่อการใช้ประโยชน์สิ่งเหล่านี้โดดๆหรือประยุกต์เข้าด้วยกัน หรือเพื่อการสร้างหรือใช้งานสิ่งเหล่านั้นด้วยความรู้ความเข้าใจเกี่ยวกับสิ่งที่ใช้งานอย่างหมดจด หรือเพื่อการพยากรณ์พฤติกรรมของสิ่งเหล่านั้นภายใต้สภาวะที่เจาะจง สิ่งที่กล่าวมาทั้งหมดนี้จักต้องคำนึงถึงความมุ่งหมายในการใช้งาน, ความคุ้มค่าในการปฏิบัติการ แลความปลอดภัยต่อชีวิตและทรัพยสินด้วย",
+            description_en:
+              "The discipline of engineering encompasses a broad range of more specialized fields of engineering, each with a more specific emphasis for applications of mathematics and science. See glossary of engineering",
+            degree_th: "วิศวกรรมศาสตรบัณฑิต",
+            degree_en: "Bachelor of Engineering",
+            degree_short_th: "วศ.บ.",
+            degree_short_en: "B.Eng.",
+            year: "2021",
+            academic_year: "",
+            department_id: "01JSYV7A3RK5HC8J05D59N1X6K",
+            structure: {
+              category: [
+                {
+                  sub: null,
+                  name: "ก. หมวดวิชาศึกษาทั่วไป",
+                  credit: 31,
+                },
+                {
+                  sub: [
+                    {
+                      name: "วิชาแกนทางวิศวกรรม",
+                      credit: 30,
+                    },
+                    {
+                      name: "วิชาเฉพาะด้าน",
+                      credit: 51,
+                    },
+                    {
+                      name: "วิชาเลือก",
+                      credit: 12,
+                    },
+                  ],
+                  name: "ข. หมวดวิชาเฉพาะ",
+                  credit: 93,
+                },
+                {
+                  sub: null,
+                  name: "ค. หมวดวิชาเลือกเสรี",
+                  credit: 6,
+                },
+              ],
+              totals_credit: 130,
             },
-            {
-              type: "Regular (2557)",
-              type_th: "ปกติ (2557)",
-              details: {
-                description:
-                  "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-                description_th:
-                  "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้ ",
-              },
-            },
-          ],
-        },
-        {
-          departments: "Software Engineering",
-          departments_th: "วิศวกรรมซอฟต์แวร์",
-          programs: [
-            {
-              type: "Regular (2555)",
-              type_th: "ปกติ (2555)",
-              details: {
-                description:
-                  "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-                description_th:
-                  "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้ ",
-              },
-            },
-          ],
-        },
-      ],
-    },
-    {
-      name: "Science",
-      name_th: "วิทยาศาสตร์",
-      abbreviate: "B.Sc",
-      abbreviate_th: "วศ.บ.",
-      details: [
-        {
-          departments: "Computer Science",
-          departments_th: "วิทยาการคอมพิวเตอร์",
-          programs: [
-            {
-              type: "Regular (2555)",
-              type_th: "ปกติ (2555)",
-              details: {
-                description:
-                  "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-                description_th:
-                  "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้ ",
-              },
-            },
-          ],
-        },
-      ],
-    },
-  ],
-});
+            program_outcomes: null,
+            program_learning_outcomes: null,
+            student_outcomes: null,
+          },
+        ],
+      },
+      {
+        id: "01JT089HVNVVBSFEV42CG3N4G1",
+        name_th: "วิศวกรรมคอมพิวเตอร์ 2",
+        name_en: "Computer Engineering II",
+        faculty_id: "01JSYTYQWGR0B7FTY048RWA15C",
+        programmes: [],
+      },
+    ],
+  },
+  {
+    id: "01JT088QZV5E7QPXJ9K00404DK",
+    name_th: "วิศวกรรมศาสตร์ 2",
+    name_en: "Engineering II",
+    departments: [],
+  },
+]);
 
-const selectedFaculty = ref(AcadamicManagement.value.faculty[0].name);
-const selectedDepartment = ref(
-  AcadamicManagement.value.faculty[0].details[0].departments
-);
+const selectedFaculty = ref(AcadamicManagement.value[0].id);
+const selectedDepartment = ref(AcadamicManagement.value[0].departments[0].id);
 const selectedProgram = ref(
-  AcadamicManagement.value.faculty[0].details[0].programs[0].type
+  AcadamicManagement.value[0].departments[0].programmes[0].id
 );
 
 const selectedFacultyDetails = computed(() => {
-  return AcadamicManagement.value.faculty.find(
-    (faculty) => faculty.name === selectedFaculty.value
+  return AcadamicManagement.value.find(
+    (faculty) => faculty.id === selectedFaculty.value
   );
 });
 
 const selectedDepartmentDetails = computed(() => {
-  return selectedFacultyDetails.value?.details.find(
-    (department) => department.departments === selectedDepartment.value
+  return selectedFacultyDetails.value.departments?.find(
+    (department) => department.id === selectedDepartment.value
   );
 });
 
 const selectedProgramDetails = computed(() => {
-  return selectedDepartmentDetails.value?.programs.find(
-    (program) => program.type === selectedProgram.value
+  return selectedDepartmentDetails.value?.programmes?.find(
+    (program) => program.id === selectedProgram.value
   );
 });
 
-const selectFaculty = (facultyName) => {
-  selectedFaculty.value = facultyName;
-  const facultyDetails = AcadamicManagement.value.faculty.find(
-    (faculty) => faculty.name === facultyName
-  );
-  if (facultyDetails && facultyDetails.details.length > 0) {
-    selectedDepartment.value = facultyDetails.details[0].departments;
-    if (facultyDetails.details[0].programs.length > 0) {
-      selectedProgram.value = facultyDetails.details[0].programs[0].type;
-    } else {
-      selectedProgram.value = "";
-    }
-  } else {
-    selectedDepartment.value = "";
-    selectedProgram.value = "";
-  }
+const selectFaculty = (faculty) => {
+  selectedFaculty.value = faculty;
 };
 
-const selectDepartment = (departmentName) => {
-  selectedDepartment.value = departmentName;
-  const departmentDetails = selectedFacultyDetails.value?.details.find(
-    (department) => department.departments === departmentName
-  );
-  if (departmentDetails && departmentDetails.programs.length > 0) {
-    selectedProgram.value = departmentDetails.programs[0].type;
-  } else {
-    selectedProgram.value = "";
-  }
+const selectDepartment = (department) => {
+  selectedDepartment.value = department;
 };
 
-const selectProgram = (programType) => {
-  selectedProgram.value = programType;
+const selectProgram = (program) => {
+  selectedProgram.value = program;
 };
 
 watch(
   AcadamicManagement,
   (newVal) => {
-    if (newVal.faculty.length > 0) {
-      selectedFaculty.value = newVal.faculty[0].name;
-      if (newVal.faculty[0].details.length > 0) {
-        selectedDepartment.value = newVal.faculty[0].details[0].departments;
-        if (newVal.faculty[0].details[0].programs.length > 0) {
-          selectedProgram.value = newVal.faculty[0].details[0].programs[0].type;
+    if (newVal.length > 0) {
+      selectedFaculty.value = newVal[0].id;
+      if (newVal[0].departments.length > 0) {
+        selectedDepartment.value = newVal[0].departments[0].id;
+        if (newVal[0].departments[0].programmes.length > 0) {
+          selectedProgram.value = newVal[0].departments[0].programmes[0].id;
         }
       }
     }
@@ -557,10 +593,16 @@ const name = "Computer Engineering (Regular)";
 
 const manageOutcome = () => {
   router.push({
-    path: `/academic-structure/mange-outcome/${path}`,
-    query: { name: name },
+    path: `/academic-structure/mange-outcome/${selectedProgramDetails.value.id}`,
+    query: { name: selectedProgramDetails.value.name_en },
   });
 };
+
+const faculties = ref([]);
+
+onMounted(async () => {
+  await fetchFaculties(faculties);
+});
 </script>
 
 <style lang="scss" scoped>

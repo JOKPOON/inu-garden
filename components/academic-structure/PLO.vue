@@ -95,7 +95,7 @@
                   {{ selectedPLO.detail.desc_th }}
                 </div>
                 <div v-if="selectedPLO.detail" class="px-4">
-                  {{ selectedPLO.detail.desc }}
+                  {{ selectedPLO.detail.desc_en }}
                 </div>
               </div>
               <div class="w-full flex flex-col gap-2 pt-3">
@@ -427,7 +427,8 @@ const PLO = ref([
   {
     name: "PLO 1",
     detail: {
-      desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
+      desc_en:
+        "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
       desc_th:
         "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
       subPLO: [
