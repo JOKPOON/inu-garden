@@ -349,8 +349,7 @@
                             :class="[
                               'flex',
                               course.plo_passing_percentage >=
-                              selectedPLO.detail
-                                .expected_course_passing_percentage
+                              selectedPLO.expected_course_passing_percentage
                                 ? 'bg-green-500'
                                 : 'bg-red-500',
                             ]"

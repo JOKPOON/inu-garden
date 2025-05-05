@@ -52,16 +52,16 @@
           >
             <button
               v-for="so in SO"
-              :key="so.name"
+              :key="so.id"
               @click="selectSO(so)"
               :class="{
                 'bg-grey-secondary text-black-primary':
-                  selectedSO.name === so.name,
-                'bg-white': selectedSO.name !== so.name,
+                  selectedSO.code === so.code,
+                'bg-white': selectedSO.code !== so.code,
               }"
               class="w-full flex items-center justify-center py-3 border-b border-grey-secondary"
             >
-              {{ so.name }}
+              {{ so.code }}
             </button>
           </div>
           <div class="w-full mt-4 flex items-center justify-center">
@@ -79,7 +79,7 @@
           <div
             class="w-full flex items-center justify-center py-3 border-b border-grey-secondary font-semibold text-grey-primary"
           >
-            Detail of {{ selectedSO.name }}
+            Detail of {{ selectedSO.code }}
           </div>
 
           <div class="grid grid-cols-2 w-full h-full">
@@ -92,11 +92,11 @@
                 <div class="font-semibold text-black-primary px-4">
                   Description
                 </div>
-                <div v-if="selectedSO.detail" class="px-4">
-                  {{ selectedSO.detail.desc_th }}
+                <div v-if="selectedSO" class="px-4">
+                  {{ selectedSO.description_thai }}
                 </div>
-                <div v-if="selectedSO.detail" class="px-4">
-                  {{ selectedSO.detail.desc_en }}
+                <div v-if="selectedSO" class="px-4">
+                  {{ selectedSO.description_eng }}
                 </div>
               </div>
               <div class="w-full flex flex-col gap-2 pt-3">
@@ -132,7 +132,7 @@
                     </SmallAddButton>
                   </div>
                 </div>
-                <div v-if="selectedSO.detail && selectedSO.detail.subSO">
+                <div v-if="selectedSO && selectedSO.sub_student_outcomes">
                   <table
                     class="min-w-full divide-y border-grey-secondary mt-4 border-y"
                   >
@@ -160,8 +160,8 @@
                     </thead>
                     <tbody class="bg-white divide-y border-grey-secondary">
                       <tr
-                        v-for="subSO in selectedSO.detail.subSO"
-                        :key="subSO.code"
+                        v-for="subSO in selectedSO.sub_student_outcomes"
+                        :key="subSO.id"
                       >
                         <td
                           class="px-6 py-4 whitespace-nowrap text-sm font-medium border-r border-grey-secondary"
@@ -171,9 +171,9 @@
                         <td class="px-6 py-4 border-r border-grey-secondary">
                           <div class="w-full flex flex-col gap-2">
                             <div>
-                              {{ subSO.desc_th }}
+                              {{ subSO.description_thai }}
                             </div>
-                            <div>{{ subSO.desc }}</div>
+                            <div>{{ subSO.description_eng }}</div>
                           </div>
                         </td>
                         <td
@@ -182,20 +182,21 @@
                           <div
                             class="flex flex-col gap-2 items-center justify-center"
                           >
-                            <button
+                            <!-- <button
                               class="flex items-center justify-center bg-white rounded-xl p-2 border border-grey-secondary hover:bg-black-primary text-black-primary hover:text-white"
                             >
                               <Edit class="w-5 h-5" />
-                            </button>
+                            </button> -->
                             <button
                               class="flex items-center justify-center bg-white rounded-xl p-2 border border-grey-secondary hover:bg-red-500 text-black-primary hover:text-white"
+                              @click="deleteSubSO(subSO)"
                             >
                               <Delete class="w-5 h-5" />
                             </button>
                           </div>
                         </td>
                       </tr>
-                      <tr v-if="!selectedSO.detail.subSO.length">
+                      <tr v-if="!selectedSO.sub_student_outcomes.length">
                         <td
                           colspan="3"
                           class="px-6 py-4 whitespace-nowrap text-sm font-medium border-r border-grey-secondary text-center"
@@ -255,13 +256,13 @@
                       v-if="!editMode"
                       class="flex items-center justify-center w-16 border p-1 rounded-lg border-grey-tertiary"
                     >
-                      {{ selectedSO.detail.expectedCourseSOPassingRate }}
+                      {{ selectedSO.expected_course_passing_percentage }}
                     </div>
                     <div v-if="editMode">
                       <input
-                        type="text"
+                        type="number"
                         class="bg-transparent text-center focus:ring-0 outline-none text-base w-16 border p-1 rounded-lg border-grey-primary"
-                        v-model="selectedSO.detail.expectedCourseSOPassingRate"
+                        v-model="selectedSO.expected_course_passing_percentage"
                       />
                     </div>
                   </div>
@@ -324,8 +325,8 @@
                   </thead>
                   <tbody class="bg-white divide-y border-grey-secondary">
                     <tr
-                      v-for="course in selectedSO.detail.involvedCourses"
-                      :key="course.code"
+                      v-for="course in selectedSO.involvedCourses"
+                      :key="course.id"
                     >
                       <td
                         class="px-4 py-4 text-sm border-r border-grey-secondary"
@@ -344,7 +345,7 @@
                             :class="[
                               'flex',
                               course.courseSOPassingRate >=
-                              selectedSO.detail.expectedCourseSOPassingRate
+                              selectedSO.expected_course_passing_percentage
                                 ? 'bg-green-500'
                                 : 'bg-red-500',
                             ]"
@@ -368,6 +369,7 @@
     v-if="showAddSOPopup"
     :id="id"
     :name="SOName"
+    :SOs="SO"
     @close="showAddSOPopup = false"
   />
   <AddSubSO
@@ -375,6 +377,8 @@
     :id="id"
     :So="SOid"
     :name="SOName"
+    :soId="selectedSO.id"
+    :subSOs="selectedSO.sub_student_outcomes"
     @close="showAddSubSOPopup = false"
   />
 </template>
@@ -393,6 +397,7 @@ import AddSO from "@/components/popups/AddSO.vue";
 import AddSubSO from "@/components/popups/AddSubSO.vue";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
+import { fetchSOs, BaseURL } from "~/api/api";
 
 const router = useRouter();
 
@@ -402,8 +407,42 @@ const editSO = () => {
   editMode.value = true;
 };
 
-const saveSO = () => {
+const saveSO = async () => {
+  try {
+    console.log(selectedSO);
+    const response = await fetch(`${BaseURL}sos/${selectedSO.value.id}`, {
+      credentials: "include",
+      method: "PATCH",
+      body: JSON.stringify(selectedSO.value),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Failed to update SO");
+  } catch (error) {
+    console.error(error);
+  }
   editMode.value = false;
+};
+
+const deleteSubSO = async (SubSO) => {
+  console.log(SubSO);
+  try {
+    const response = await fetch(`${BaseURL}ssos/${SubSO.id}`, {
+      credentials: "include",
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Failed to delete SSO");
+    selectedSO.value.sub_student_outcomes =
+      selectedSO.value.sub_student_outcomes.filter((sso) => {
+        return sso.id != SubSO.id;
+      });
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 const showAddSOPopup = ref(false);
@@ -478,11 +517,26 @@ const SO = ref([
   },
 ]);
 
-const selectedSO = ref(SO.value[0]);
+const selectedSO = ref({
+  id: "",
+  code: "",
+  description_thai: "",
+  description_eng: "",
+  expected_course_passing_percentage: "",
+  program_id: "",
+  sub_student_outcomes: [],
+});
 
 function selectSO(so) {
   selectedSO.value = so;
 }
+
+onMounted(async () => {
+  id.value = router.currentRoute.value.params.id;
+  await fetchSOs(SO, id.value);
+  console.log(SO.value);
+  selectSO(SO.value[0]);
+});
 </script>
 
 <style lang="scss" scoped>

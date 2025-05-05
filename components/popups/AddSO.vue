@@ -31,7 +31,7 @@
               >Description (Eng)</label
             >
             <textarea
-              v-model="newSO.desc"
+              v-model="newSO.description_eng"
               rows="3"
               placeholder="SO Description"
               class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
@@ -42,30 +42,19 @@
               >Description (TH)</label
             >
             <textarea
-              v-model="newSO.desc_th"
+              v-model="newSO.description_thai"
               rows="3"
               placeholder="SO Description (TH)"
               class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
             ></textarea>
           </div>
           <div class="w-full flex flex-row gap-2 items-center -mt-2">
-            <div class="w-full text-left">Expected Passing SO Rate (%)</div>
+            <div class="w-full text-left">Expected Course Passing Rate (%)</div>
             <input
-              v-model="newSO.expectedSORate"
+              v-model="newSO.expected_course_passing_percentage"
               class="border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary w-12 text-center"
               type="number"
-              placeholder="Expected Passing SO"
-            />
-          </div>
-          <div class="w-full flex flex-row gap-2 items-center -mt-2">
-            <div class="w-full text-left">
-              Expected Passing Student Rate (%)
-            </div>
-            <input
-              v-model="newSO.expectedRate"
-              class="border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary w-12 text-center"
-              type="number"
-              placeholder="Expected Passing Student"
+              placeholder="Expected Passing CLO"
             />
           </div>
         </div>
@@ -110,7 +99,7 @@
                 </tr>
               </thead>
               <tbody class="bg-white divide-y border-grey-secondary">
-                <tr v-for="subSO in subSOs" :key="subSO.code">
+                <tr v-for="subSO in subSOs" :key="subSO.id">
                   <td
                     class="px-6 py-4 whitespace-nowrap text-sm font-medium border-r border-grey-secondary"
                   >
@@ -119,20 +108,20 @@
                   <td class="px-6 py-4 border-r border-grey-secondary">
                     <div class="w-full flex flex-col gap-2">
                       <div v-if="!subSO.editMode">
-                        {{ subSO.desc_th }}
+                        {{ subSO.description_thai }}
                       </div>
                       <textarea
                         v-else
-                        v-model="subSO.desc_th"
+                        v-model="subSO.description_thai"
                         rows="4"
                         class="w-full p-2 border border-grey-secondary rounded-xl outline-none"
                       ></textarea>
                       <div v-if="!subSO.editMode">
-                        {{ subSO.desc }}
+                        {{ subSO.description_eng }}
                       </div>
                       <textarea
                         v-else
-                        v-model="subSO.desc"
+                        v-model="subSO.description_eng"
                         rows="4"
                         class="w-full p-2 border border-grey-secondary rounded-xl outline-none"
                       ></textarea>
@@ -191,6 +180,7 @@
       v-if="showAddSubSOPopup"
       :id="id"
       :name="SOName"
+      :subSOs="subSOs"
       @close="showAddSubSOPopup = false"
     />
   </teleport>
@@ -204,6 +194,7 @@ import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
 import SmallAddButton from "@/components/button/SmallAddButton.vue";
 import AddSubSO from "@/components/popups/AddSubSO.vue";
+import { BaseURL } from "~/api/api";
 
 const router = useRouter();
 
@@ -229,44 +220,44 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  SOs: {
+    type: Array,
+    required: true,
+  },
 });
 
 const emit = defineEmits(["close", "add"]);
 
 const newSO = ref({
   code: "",
-  desc: "",
-  desc_th: "",
-  expectedRate: 0,
-  expectedSORate: 0,
+  description_thai: "",
+  description_eng: "",
+  expected_course_passing_percentage: 50,
+  program_id: "",
 });
 
-const subSOs = ref([
-  {
-    code: "SO 1.1",
-    desc: "Apply knowledge of mathematics, science, and engineering to computer engineering problems.",
-    desc_th:
-      "ใช้ความรู้ด้านคณิตศาสตร์ วิทยาศาสตร์ และวิศวกรรมศาสตร์ในการแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์",
-    editMode: false,
-  },
-  {
-    code: "SO 1.2",
-    desc: "Apply knowledge of mathematics, science, and engineering to computer engineering problems.",
-    desc_th:
-      "ใช้ความรู้ด้านคณิตศาสตร์ วิทยาศาสตร์ และวิศวกรรมศาสตร์ในการแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์",
-    editMode: false,
-  },
-]);
+const subSOs = ref([]);
 
-const addSO = () => {
+const addSO = async () => {
   emit("add", newSO.value);
-  newSO.value = {
-    code: "",
-    desc: "",
-    desc_th: "",
-    expectedRate: 0,
-    expectedSORate: 0,
-  };
+  try {
+    newSO.value.program_id = props.id;
+    newSO.value.sub_student_outcomes = subSOs.value;
+    const response = await fetch(`${BaseURL}sos`, {
+      credentials: "include",
+      method: "POST",
+      body: JSON.stringify({
+        student_outcomes: [newSO.value],
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Failed to create PLO");
+    props.SOs.push(newSO.value);
+  } catch (error) {
+    console.error(error);
+  }
   emit("close");
 };
 
