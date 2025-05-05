@@ -52,7 +52,7 @@
           >
             <button
               v-for="plo in PLO"
-              :key="plo.name"
+              :key="plo.id"
               :class="{
                 'bg-grey-secondary text-black-primary': selectedPLO === plo,
                 'bg-white': selectedPLO !== plo,
@@ -60,7 +60,7 @@
               @click="selectPLO(plo)"
               class="w-full flex items-center justify-center py-3 border-b border-grey-secondary"
             >
-              {{ plo.name }}
+              {{ plo.code }}
             </button>
           </div>
           <div class="w-full mt-4 flex items-center justify-center">
@@ -78,7 +78,7 @@
           <div
             class="w-full flex items-center justify-center py-3 border-b border-grey-secondary font-semibold text-grey-primary"
           >
-            Detail of {{ selectedPLO.name }}
+            Detail of {{ selectedPLO.code }}
           </div>
 
           <div class="grid grid-cols-2 w-full h-full">
@@ -91,11 +91,11 @@
                 <div class="font-semibold text-black-primary px-4">
                   Description
                 </div>
-                <div v-if="selectedPLO.detail" class="px-4">
-                  {{ selectedPLO.detail.desc_th }}
+                <div v-if="selectedPLO" class="px-4">
+                  {{ selectedPLO.description_thai }}
                 </div>
-                <div v-if="selectedPLO.detail" class="px-4">
-                  {{ selectedPLO.detail.desc_en }}
+                <div v-if="selectedPLO" class="px-4">
+                  {{ selectedPLO.description_eng }}
                 </div>
               </div>
               <div class="w-full flex flex-col gap-2 pt-3">
@@ -131,7 +131,11 @@
                     </SmallAddButton>
                   </div>
                 </div>
-                <div v-if="selectedPLO.detail && selectedPLO.detail.subPLO">
+                <div
+                  v-if="
+                    selectedPLO && selectedPLO.sub_program_learning_outcomes
+                  "
+                >
                   <table
                     class="min-w-full divide-y border-grey-secondary mt-4 border-y"
                   >
@@ -159,8 +163,8 @@
                     </thead>
                     <tbody class="bg-white divide-y border-grey-secondary">
                       <tr
-                        v-for="subPLO in selectedPLO.detail.subPLO"
-                        :key="subPLO.code"
+                        v-for="subPLO in selectedPLO.sub_program_learning_outcomes"
+                        :key="subPLO.id"
                       >
                         <td
                           class="px-6 py-4 whitespace-nowrap text-sm font-medium border-r border-grey-secondary"
@@ -170,9 +174,9 @@
                         <td class="px-6 py-4 border-r border-grey-secondary">
                           <div class="w-full flex flex-col gap-2">
                             <div>
-                              {{ subPLO.desc_th }}
+                              {{ subPLO.description_thai }}
                             </div>
-                            <div>{{ subPLO.desc }}</div>
+                            <div>{{ subPLO.description_eng }}</div>
                           </div>
                         </td>
                         <td
@@ -181,20 +185,23 @@
                           <div
                             class="flex flex-col gap-2 items-center justify-center"
                           >
-                            <button
+                            <!-- <button
                               class="flex items-center justify-center bg-white rounded-xl p-2 border border-grey-secondary hover:bg-black-primary text-black-primary hover:text-white"
                             >
                               <Edit class="w-5 h-5" />
-                            </button>
+                            </button> -->
                             <button
                               class="flex items-center justify-center bg-white rounded-xl p-2 border border-grey-secondary hover:bg-red-500 text-black-primary hover:text-white"
+                              @click="deleteSubPLO(subPLO)"
                             >
                               <Delete class="w-5 h-5" />
                             </button>
                           </div>
                         </td>
                       </tr>
-                      <tr v-if="!selectedPLO.detail.subPLO.length">
+                      <tr
+                        v-if="!selectedPLO.sub_program_learning_outcomes.length"
+                      >
                         <td
                           colspan="3"
                           class="px-6 py-4 whitespace-nowrap text-sm font-medium border-r border-grey-secondary text-center"
@@ -253,15 +260,13 @@
                       v-if="!editMode"
                       class="flex items-center justify-center w-16 border p-1 rounded-lg border-grey-tertiary"
                     >
-                      {{ selectedPLO.detail.expectedCoursePLOPassingRate }}
+                      {{ selectedPLO.expected_course_passing_percentage }}
                     </div>
                     <div v-if="editMode">
                       <input
-                        type="text"
+                        type="number"
                         class="bg-transparent text-center focus:ring-0 outline-none text-base w-16 border p-1 rounded-lg border-grey-primary"
-                        v-model="
-                          selectedPLO.detail.expectedCoursePLOPassingRate
-                        "
+                        v-model="selectedPLO.expected_course_passing_percentage"
                       />
                     </div>
                   </div>
@@ -324,8 +329,8 @@
                   </thead>
                   <tbody class="bg-white divide-y border-grey-secondary">
                     <tr
-                      v-for="course in selectedPLO.detail.involvedCourses"
-                      :key="course.code"
+                      v-for="course in selectedPLO?.involvedCourses"
+                      :key="course.id"
                     >
                       <td
                         class="px-4 py-4 text-sm border-r border-grey-secondary"
@@ -343,14 +348,15 @@
                           <div
                             :class="[
                               'flex',
-                              course.coursePLOPassingRate >=
-                              selectedPLO.detail.expectedCoursePLOPassingRate
+                              course.plo_passing_percentage >=
+                              selectedPLO.detail
+                                .expected_course_passing_percentage
                                 ? 'bg-green-500'
                                 : 'bg-red-500',
                             ]"
                             class="py-1 px-3 rounded-full text-white"
                           >
-                            {{ course.coursePLOPassingRate }}%
+                            {{ course.plo_passing_percentage }}%
                           </div>
                         </div>
                       </td>
@@ -367,14 +373,16 @@
   <AddPLO
     v-if="showAddPLOPopup"
     :id="id"
-    :name="PLOName"
+    :name="name"
+    :PLOs="PLO"
     @close="showAddPLOPopup = false"
   />
   <AddSubPLO
     v-if="showAddSubPLOPopup"
     :id="id"
-    :plo="PLOid"
-    :name="PLOName"
+    :name="name"
+    :ploId="selectedPLO.id"
+    :subPLOs="selectedPLO.sub_program_learning_outcomes"
     @close="showAddSubPLOPopup = false"
   />
 </template>
@@ -393,24 +401,19 @@ import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { fetchPLOs, BaseURL } from "~/api/api";
 
 const router = useRouter();
 const id = ref("");
-const PLOName = ref("");
-const PLOid = ref("");
+const name = ref("");
 
 const showAddPLOPopup = ref(false);
 const showAddSubPLOPopup = ref(false);
 const addPLO = () => {
-  id.value = router.currentRoute.value.params.id;
-  PLOName.value = "Computer Engineering (Regular) year 2565";
   showAddPLOPopup.value = true;
 };
 
 const addSubPLO = () => {
-  id.value = router.currentRoute.value.params.id;
-  PLOid.value = "PLO1";
-  PLOName.value = "Computer Engineering (Regular) year 2565";
   showAddSubPLOPopup.value = true;
 };
 
@@ -420,7 +423,21 @@ const editPLO = () => {
   editMode.value = true;
 };
 
-const savePLO = () => {
+const savePLO = async () => {
+  try {
+    console.log(selectedPLO);
+    const response = await fetch(`${BaseURL}plos/${selectedPLO.value.id}`, {
+      credentials: "include",
+      method: "PATCH",
+      body: JSON.stringify(selectedPLO.value),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Failed to update PLO");
+  } catch (error) {
+    console.error(error);
+  }
   editMode.value = false;
 };
 const PLO = ref([
@@ -445,9 +462,6 @@ const PLO = ref([
             "ใช้ความรู้ด้านคณิตศาสตร์ วิทยาศาสตร์ และวิศวกรรมศาสตร์ในการแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์",
         },
       ],
-      expectedWeightPassingCLORate: 50,
-      expectOverallRate: 50,
-      overallPassingRate: 50,
       expectedCoursePLOPassingRate: 50,
       involvedCourses: [
         {
@@ -477,11 +491,47 @@ const PLO = ref([
   },
 ]);
 
-const selectedPLO = ref(PLO.value[0]);
+const selectedPLO = ref({
+  id: "",
+  code: "",
+  description_thai: "",
+  description_eng: "",
+  program_id: "",
+  sub_program_learning_outcomes: [],
+});
 
 function selectPLO(plo) {
   selectedPLO.value = plo;
 }
+
+const deleteSubPLO = async (SubPLO) => {
+  console.log(SubPLO);
+  try {
+    const response = await fetch(`${BaseURL}splos/${SubPLO.id}`, {
+      credentials: "include",
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Failed to delete SPLO");
+    selectedPLO.value.sub_program_learning_outcomes =
+      selectedPLO.value.sub_program_learning_outcomes.filter((splo) => {
+        return splo.id != SubPLO.id;
+      });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+onMounted(async () => {
+  id.value = router.currentRoute.value.params.id;
+  name.value = router.currentRoute.value.query.name;
+
+  await fetchPLOs(PLO, id.value);
+  console.log(PLO.value);
+  selectPLO(PLO.value[0]);
+});
 </script>
 
 <style lang="scss" scoped>
