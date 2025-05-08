@@ -60,18 +60,29 @@
               @click="selectPLO(plo)"
               class="w-full flex items-center justify-center py-3 border-b border-grey-secondary"
             >
-              {{ plo.code }}
+              <div class="w-full flex items-center justify-evenly gap-2">
+                <span class="text-black-primary">
+                  {{ plo.code }}
+                </span>
+                <button
+                  v-if="editMode"
+                  class="bg-white rounded-xl p-2 border border-grey-secondary hover:bg-red-500 text-black-primary hover:text-white"
+                  @click="deletePLO(plo)"
+                >
+                  <Delete class="w-4 h-4" />
+                </button>
+              </div>
             </button>
-          </div>
-          <div class="w-full mt-4 flex items-center justify-center">
-            <SmallAddButton
-              @click="addPLO"
-              class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-3 py-2 gap-2"
-            >
-              <span class="text-black-primary font-semibold text-base"
-                >Add</span
+            <div class="w-full my-4 flex items-center justify-center">
+              <SmallAddButton
+                @click="addPLO"
+                class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-3 py-2 gap-2"
               >
-            </SmallAddButton>
+                <span class="text-black-primary font-semibold text-base"
+                  >Add</span
+                >
+              </SmallAddButton>
+            </div>
           </div>
         </div>
         <div class="col-span-8 h-full flex flex-col">
@@ -502,6 +513,25 @@ const selectedPLO = ref({
 function selectPLO(plo) {
   selectedPLO.value = plo;
 }
+
+const deletePLO = async (plo) => {
+  console.log(PLO);
+  try {
+    const response = await fetch(`${BaseURL}plos/${plo.id}`, {
+      credentials: "include",
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Failed to delete PLO");
+    PLO.value = PLO.value.filter((p) => {
+      return p.id != plo.id;
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 const deleteSubPLO = async (SubPLO) => {
   console.log(SubPLO);

@@ -55,13 +55,23 @@
               :key="so.id"
               @click="selectSO(so)"
               :class="{
-                'bg-grey-secondary text-black-primary':
-                  selectedSO.code === so.code,
-                'bg-white': selectedSO.code !== so.code,
+                'bg-grey-secondary text-black-primary': selectedSO.id === so.id,
+                'bg-white': selectedSO.id !== so.id,
               }"
               class="w-full flex items-center justify-center py-3 border-b border-grey-secondary"
             >
-              {{ so.code }}
+              <div class="w-full flex items-center justify-evenly gap-2">
+                <span class="text-black-primary">
+                  {{ so.code }}
+                </span>
+                <button
+                  v-if="editMode"
+                  class="bg-white rounded-xl p-2 border border-grey-secondary hover:bg-red-500 text-black-primary hover:text-white"
+                  @click="deleteSO(so)"
+                >
+                  <Delete class="w-4 h-4" />
+                </button>
+              </div>
             </button>
           </div>
           <div class="w-full mt-4 flex items-center justify-center">
@@ -423,6 +433,22 @@ const saveSO = async () => {
     console.error(error);
   }
   editMode.value = false;
+};
+
+const deleteSO = async (so) => {
+  try {
+    const response = await fetch(`${BaseURL}sos/${so.id}`, {
+      credentials: "include",
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Failed to delete SO");
+    SO.value = SO.value.filter((item) => item.id !== so.id);
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 const deleteSubSO = async (SubSO) => {

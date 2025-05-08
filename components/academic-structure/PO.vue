@@ -52,16 +52,26 @@
           >
             <button
               v-for="po in PO"
-              :key="po.name"
+              :key="po.id"
               @click="selectPO(po)"
               :class="{
-                'bg-grey-secondary text-black-primary':
-                  selectedPO.name === po.name,
-                'bg-white': selectedPO.name !== po.name,
+                'bg-grey-secondary text-black-primary': selectedPO.id === po.id,
+                'bg-white': selectedPO.id !== po.id,
               }"
               class="w-full flex items-center justify-center py-3 border-b border-grey-secondary"
             >
-              {{ po.name }}
+              <div class="w-full flex items-center justify-evenly gap-2">
+                <span class="text-black-primary">
+                  {{ po.code }}
+                </span>
+                <button
+                  v-if="editMode"
+                  class="bg-white rounded-xl p-2 border border-grey-secondary hover:bg-red-500 text-black-primary hover:text-white"
+                  @click="deletePO(po)"
+                >
+                  <Delete class="w-4 h-4" />
+                </button>
+              </div>
             </button>
           </div>
           <div class="w-full mt-4 flex items-center justify-center">
@@ -79,7 +89,7 @@
           <div
             class="w-full flex items-center justify-center py-3 border-b border-grey-secondary font-semibold text-grey-primary"
           >
-            Detail of {{ selectedPO.name }}
+            Detail of {{ selectedPO.code }}
           </div>
 
           <div class="grid grid-cols-2 w-full h-full">
@@ -92,11 +102,8 @@
                 <div class="font-semibold text-black-primary px-4">
                   Description
                 </div>
-                <div v-if="selectedPO.detail" class="px-4">
-                  {{ selectedPO.detail.desc_th }}
-                </div>
-                <div v-if="selectedPO.detail" class="px-4">
-                  {{ selectedPO.detail.desc_en }}
+                <div v-if="selectedPO" class="px-4">
+                  {{ selectedPO.description }}
                 </div>
               </div>
             </div>
@@ -147,13 +154,13 @@
                       v-if="!editMode"
                       class="flex items-center justify-center w-16 border p-1 rounded-lg border-grey-tertiary"
                     >
-                      {{ selectedPO.detail.expectedCoursePOPassingRate }}
+                      {{ selectedPO.expected_course_passing_percentage }}
                     </div>
                     <div v-if="editMode">
                       <input
-                        type="text"
+                        type="number"
                         class="bg-transparent text-center focus:ring-0 outline-none text-base w-16 border p-1 rounded-lg border-grey-primary"
-                        v-model="selectedPO.detail.expectedCoursePOPassingRate"
+                        v-model="selectedPO.expected_course_passing_percentage"
                       />
                     </div>
                   </div>
@@ -216,7 +223,7 @@
                   </thead>
                   <tbody class="bg-white divide-y border-grey-secondary">
                     <tr
-                      v-for="course in selectedPO.detail.involvedCourses"
+                      v-for="course in selectedPO.involvedCourses"
                       :key="course.code"
                     >
                       <td
@@ -236,7 +243,7 @@
                             :class="[
                               'flex',
                               course.coursePOPassingRate >=
-                              selectedPO.detail.expectedCoursePOPassingRate
+                              selectedPO.expected_course_passing_percentage
                                 ? 'bg-green-500'
                                 : 'bg-red-500',
                             ]"
@@ -259,7 +266,8 @@
   <AddPO
     v-if="showAddPOPopup"
     :id="id"
-    :name="POName"
+    :name="name"
+    :POs="PO"
     @close="showAddPOPopup = false"
   />
 </template>
@@ -276,24 +284,21 @@ import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
 import AddPO from "@/components/popups/AddPO.vue";
 import { ref } from "vue";
+import { fetchPOs, BaseURL } from "~/api/api";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const searchQuery = ref("");
 const editMode = ref(false);
 const editPO = () => {
   editMode.value = true;
 };
 
-const savePO = () => {
-  editMode.value = false;
-};
-
 const showAddPOPopup = ref(false);
-const POName = ref("");
+const name = ref("");
 const id = ref("");
 
 const showAddPO = () => {
-  id.value = "PLO1";
-  POName.value = "Computer Engineering (Regular) year 2565";
   showAddPOPopup.value = true;
 };
 
@@ -355,6 +360,49 @@ const selectedPO = ref(PO.value[0]);
 function selectPO(po) {
   selectedPO.value = po;
 }
+
+const savePO = async () => {
+  try {
+    console.log(selectedPO);
+    const response = await fetch(`${BaseURL}pos/${selectedPO.value.id}`, {
+      credentials: "include",
+      method: "PATCH",
+      body: JSON.stringify(selectedPO.value),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Failed to update PO");
+  } catch (error) {
+    console.error(error);
+  }
+  editMode.value = false;
+};
+
+const deletePO = async (po) => {
+  try {
+    const response = await fetch(`${BaseURL}pos/${po.id}`, {
+      credentials: "include",
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Failed to delete PO");
+    PO.value = PO.value.filter((item) => item.id !== po.id);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+onMounted(async () => {
+  id.value = router.currentRoute.value.params.id;
+  name.value = router.currentRoute.value.query.name;
+
+  await fetchPOs(PO, id.value);
+  selectPO(PO.value[0] || {});
+  console.log(PO.value);
+});
 </script>
 
 <style lang="scss" scoped>
