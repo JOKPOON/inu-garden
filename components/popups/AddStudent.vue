@@ -26,13 +26,13 @@
                 v-model="selectedDepartment"
                 class="bg-transparent w-[26rem] border-none focus:ring-0 outline-none text-base pr-2 hover:cursor-pointer"
               >
-                <option value="">All Departments</option>
+                <option value="">Departments</option>
                 <option
                   v-for="department in departments"
-                  :key="department.name"
-                  :value="department.name"
+                  :key="department.id"
+                  :value="department.id"
                 >
-                  {{ department.name }}
+                  {{ department.name_en }}
                 </option>
               </select>
             </div>
@@ -43,7 +43,7 @@
                 v-model="selectedProgram"
                 class="bg-transparent w-[26rem] border-none focus:ring-0 outline-none text-base pr-2 hover:cursor-pointer"
               >
-                <option value="">All Programs</option>
+                <option value="">Programs</option>
                 <option
                   v-for="program in programs"
                   :key="program.id"
@@ -60,7 +60,7 @@
                 v-model="selectedYear"
                 class="bg-transparent w-[26rem] border-none focus:ring-0 outline-none text-base pr-2 hover:cursor-pointer"
               >
-                <option value="">All Years</option>
+                <option value="">Years</option>
                 <option v-for="year in years" :key="year" :value="year">
                   {{ year }}
                 </option>
@@ -85,11 +85,11 @@
             </h3>
             <div>
               <ul
-                v-if="filteredStudents.length"
+                v-if="students.students"
                 class="max-h-60 overflow-y-scroll scrollbar-set w-[28rem] bg-white border border-grey-secondary rounded-xl mt-2"
               >
                 <li
-                  v-for="student in displayedStudents"
+                  v-for="student in students.students"
                   :key="student.id"
                   @click="selectStudent(student)"
                   class="px-4 py-2 cursor-pointer hover:bg-grey-secondary"
@@ -192,28 +192,6 @@ const selectedProgram = ref("");
 const selectedDepartment = ref("");
 const selectedYear = ref("");
 
-const filteredStudents = computed(() => {
-  return students.value.filter((s) => {
-    const matchesProgram =
-      selectedProgram.value === "none" ||
-      s.programme_id === selectedProgram.value;
-    const matchesDepartment =
-      selectedDepartment.value === "none" ||
-      s.department_name === selectedDepartment.value;
-    const matchesYear =
-      selectedYear.value === "none" || s.year === selectedYear.value;
-    const matchesStudentId =
-      student.value.id === "" || s.id.includes(student.value.id);
-    return (
-      matchesProgram && matchesDepartment && matchesYear && matchesStudentId
-    );
-  });
-});
-
-const displayedStudents = computed(() => {
-  return student.value.id ? filteredStudents.value : filteredStudents.value;
-});
-
 const selectStudent = (selectedStudent) => {
   student.value = { ...selectedStudent };
   addStudent();
@@ -253,9 +231,9 @@ onMounted(() => {
 watch(selectedDepartment, () => {
   fetchPrograms(programs, selectedDepartment.value);
   if (
-    selectedDepartment.value != null &&
-    selectedProgram.value != null &&
-    selectedYear.value != null
+    selectedDepartment.value != "" &&
+    selectedProgram.value != "" &&
+    selectedYear.value != ""
   ) {
     fetchStudents(
       students,
@@ -269,9 +247,9 @@ watch(selectedDepartment, () => {
 
 watch(selectedProgram, () => {
   if (
-    selectedDepartment.value != null &&
-    selectedProgram.value != null &&
-    selectedYear.value != null
+    selectedDepartment.value != "" &&
+    selectedProgram.value != "" &&
+    selectedYear.value != ""
   ) {
     fetchStudents(
       students,
@@ -285,9 +263,9 @@ watch(selectedProgram, () => {
 
 watch(selectedYear, () => {
   if (
-    selectedDepartment.value != null &&
-    selectedProgram.value != null &&
-    selectedYear.value != null
+    selectedDepartment.value != "" &&
+    selectedProgram.value != "" &&
+    selectedYear.value != ""
   ) {
     fetchStudents(
       students,

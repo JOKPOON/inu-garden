@@ -343,14 +343,14 @@ const fetchStudents = async (
   students,
   query = "",
   programme_id = "",
-  department_name = "",
+  department_id = "",
   year = "",
   limit = 5,
   offset = 0
 ) => {
   try {
     const response = await fetch(
-      `${BaseURL}students?query=${query}&programme_id=${programme_id}&department_name=${department_name}&year=${year}&limit=${limit}&offset=${offset}`,
+      `${BaseURL}students?query=${query}&programme_id=${programme_id}&department_name=${department_id}&year=${year}&limit=${limit}&offset=${offset}`,
       {
         credentials: "include",
         method: "GET",
