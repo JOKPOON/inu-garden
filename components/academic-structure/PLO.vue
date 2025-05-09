@@ -1,21 +1,7 @@
 <template>
   <div class="flex flex-col gap-4">
     <div class="flex flex-row justify-between gap-6 items-center w-full">
-      <div class="flex">
-        <div
-          class="px-4 py-3 bg-white border border-grey-secondary rounded-xl flex flex-row gap-4 items-center"
-        >
-          <input
-            type="text"
-            v-model="searchQuery"
-            class="bg-transparent border-none focus:ring-0 outline-none text-base w-48"
-            placeholder="Search..."
-          />
-          <button class="flex items-center justify-center bg-white rounded-xl">
-            <Search class="w-6 h-6" />
-          </button>
-        </div>
-      </div>
+      <div class="flex"></div>
       <div class="flex flex-row gap-4">
         <TemplateButton
           class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
@@ -114,23 +100,7 @@
                 <div
                   class="flex flex-row justify-between gap-6 items-center w-full px-4"
                 >
-                  <div class="flex">
-                    <div
-                      class="px-3 py-2 bg-white border border-grey-secondary rounded-xl flex flex-row gap-4 items-center"
-                    >
-                      <input
-                        type="text"
-                        v-model="searchQuery"
-                        class="bg-transparent border-none focus:ring-0 outline-none text-base w-48"
-                        placeholder="Search..."
-                      />
-                      <button
-                        class="flex items-center justify-center bg-white rounded-xl"
-                      >
-                        <Search class="w-6 h-6" />
-                      </button>
-                    </div>
-                  </div>
+                  <div class="flex"></div>
                   <div class="flex flex-row gap-4">
                     <SmallAddButton
                       @click="addSubPLO"
@@ -283,23 +253,7 @@
                   </div>
                 </div>
                 <div class="flex flex-row gap-4 px-4 mt-2 justify-between">
-                  <div class="flex">
-                    <div
-                      class="px-3 py-2 bg-white border border-grey-secondary rounded-xl flex flex-row gap-4 items-center"
-                    >
-                      <input
-                        type="text"
-                        v-model="searchQuery"
-                        class="bg-transparent border-none focus:ring-0 outline-none text-base w-48"
-                        placeholder="Search..."
-                      />
-                      <button
-                        class="flex items-center justify-center bg-white rounded-xl"
-                      >
-                        <Search class="w-6 h-6" />
-                      </button>
-                    </div>
-                  </div>
+                  <div class="flex"></div>
                   <SmallEditButton
                     v-if="!editMode"
                     @click="editPLO"
@@ -407,7 +361,6 @@ import SmallSaveButton from "@/components/button/SmallSaveButton.vue";
 import AddPLO from "@/components/popups/AddPLO.vue";
 import AddSubPLO from "@/components/popups/AddSubPLO.vue";
 import Search from "@/components/icons/Search.vue";
-import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";

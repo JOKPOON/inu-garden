@@ -12,7 +12,7 @@
         </div>
         <div class="text-base text-grey-primary text-end -mt-2">
           <span class="font-semibold text-2xl text-black-primary">{{
-            Students.length
+            Students.total
           }}</span>
           Students
         </div>
@@ -110,100 +110,68 @@
           </thead>
           <tbody>
             <tr
-              v-for="(user, index) in paginatedStudents"
+              v-for="user in Students.students"
               :key="user.id"
               class="hover:bg-[#F6F8F8] text-black-primary hover:cursor-pointer"
             >
               <td
-                @click="openPopup(user.studentId, 'show')"
+                @click="openPopup(user.id, 'show')"
                 class="px-4 py-3 border-b border-grey-secondary"
               >
-                {{ user.studentId }}
+                {{ user.id }}
               </td>
               <td
-                @click="openPopup(user.studentId, 'show')"
+                @click="openPopup(user.id, 'show')"
                 class="px-4 py-3 border-b border-grey-secondary"
               >
-                {{ user.name }}
+                {{ user?.first_name_th }} {{ user?.last_name_th }} <br />
+                {{ user?.first_name_en }} {{ user?.last_name_en }}
               </td>
               <td
-                @click="openPopup(user.studentId, 'show')"
+                @click="openPopup(user.id, 'show')"
                 class="px-4 py-3 border-b border-grey-secondary"
               >
                 {{ user.email }}
               </td>
               <td
-                @click="openPopup(user.studentId, 'show')"
+                @click="openPopup(user.id, 'show')"
                 class="px-4 py-3 border-b border-grey-secondary"
               >
-                {{ user.faculty }}
+                {{ user.department.name_th }} <br />
+                {{ user.department.name_en }}
               </td>
               <td
-                @click="openPopup(user.studentId, 'show')"
+                @click="openPopup(user.id, 'show')"
                 class="px-4 py-3 border-b border-grey-secondary"
               >
-                {{ user.department }}
+                {{ user.programme.name_th }} <br />
+                {{ user.programme.name_en }}
               </td>
+
               <td
-                @click="openPopup(user.studentId, 'show')"
+                @click="openPopup(user.id, 'show')"
                 class="px-4 py-3 border-b border-grey-secondary"
               >
-                {{ user.program }}
-              </td>
-              <td
-                @click="openPopup(user.studentId, 'show')"
-                class="px-4 py-3 border-b border-grey-secondary text-center"
-              >
-                {{ user.gpax }}
-              </td>
-              <td
-                @click="openPopup(user.studentId, 'show')"
-                class="px-4 py-3 border-b border-grey-secondary text-center"
-              >
-                {{ user.highSchoolGpax }}
-              </td>
-              <td
-                @click="openPopup(user.studentId, 'show')"
-                class="px-4 py-3 border-b border-grey-secondary text-center"
-              >
-                {{ user.scienceGpax }}
-              </td>
-              <td
-                @click="openPopup(user.studentId, 'show')"
-                class="px-4 py-3 border-b border-grey-secondary text-center"
-              >
-                {{ user.englishGpax }}
-              </td>
-              <td
-                @click="openPopup(user.studentId, 'show')"
-                class="px-4 py-3 border-b border-grey-secondary text-center"
-              >
-                {{ user.admissionGpax }}
-              </td>
-              <td
-                @click="openPopup(user.studentId, 'show')"
-                class="px-4 py-3 border-b border-grey-secondary"
-              >
-                {{ user.schoolName }}
+                {{ user.year }}
               </td>
               <td class="px-4 py-3 border-b border-grey-secondary">
                 <div class="flex-row gap-4 flex items-center justify-center">
                   <button
                     class="flex items-center justify-center bg-white rounded-xl p-2 border hover:bg-black-primary hover:text-white"
-                    @click="openPopup(user.studentId, 'show')"
+                    @click="openPopup(user, 'show')"
                     aria-label="Show Student"
                   >
                     <ShowUser class="w-5 h-5" />
                   </button>
                   <button
-                    @click="openPopup(user.studentId, 'edit')"
+                    @click="openPopup(user.id, 'edit')"
                     class="flex items-center justify-center rounded-xl p-2 border bg-white hover:bg-black-primary hover:text-white"
                     aria-label="Edit Student"
                   >
                     <Edit class="w-5 h-5" />
                   </button>
                   <button
-                    @click="openPopup(user.studentId, 'delete')"
+                    @click="openPopup(user.id, 'delete')"
                     class="flex items-center justify-center rounded-xl p-2 border hover:bg-red-500 hover:text-white"
                     aria-label="Delete Student"
                   >
@@ -212,7 +180,7 @@
                 </div>
               </td>
             </tr>
-            <tr v-if="filteredStudents.length === 0">
+            <!-- <tr v-if="filteredStudents.length === 0">
               <td colspan="13" class="text-center py-6">
                 <div class="flex justify-center items-center">
                   <img
@@ -225,7 +193,7 @@
                   No students match your search criteria.
                 </div>
               </td>
-            </tr>
+            </tr> -->
           </tbody>
         </table>
       </div>
@@ -265,22 +233,22 @@
   <ShowStudentDetails
     v-if="showStudentDetailsPopup"
     @close="showStudentDetailsPopup = false"
-    :studentId="selectedStudentId"
+    :Student="selectedStudent"
   />
   <EditStudentPage
     v-if="showEditStudentPopup"
     @close="showEditStudentPopup = false"
-    :studentId="selectedStudentId"
+    :Student="selectedStudent"
   />
   <DeleteStudentPage
     v-if="showDeleteStudentPopup"
     @close="showDeleteStudentPopup = false"
-    :studentId="selectedStudentId"
+    :Student="selectedStudent"
   />
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, defineProps } from "vue";
+import { ref, onMounted, defineProps } from "vue";
 import { useI18n } from "vue-i18n";
 import AddUserButton from "@/components/button/AddUserButton.vue";
 import TemplateButton from "@/components/button/TemplateButton.vue";
@@ -290,11 +258,11 @@ import ShowUser from "@/components/icons/ShowUser.vue";
 import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
 import ArrowRight from "@/components/icons/ArrowRight.vue";
-import BannerLogin from "@/components/images/BannerLogin.jpg";
 import AddStudent from "@/components/popups/AddStudentsPage.vue";
 import ShowStudentDetails from "@/components/popups/ShowStudentDetails.vue";
 import EditStudentPage from "@/components/popups/EditStudentPage.vue";
 import DeleteStudentPage from "@/components/popups/DeleteStudentPage.vue";
+import { fetchStudents } from "~/api/api";
 
 const { t } = useI18n();
 
@@ -319,151 +287,19 @@ const columns = [
   { key: "studentId", label: "Student ID" },
   { key: "name", label: "Name" },
   { key: "email", label: "Email" },
-  { key: "faculty", label: "Faculty" },
   { key: "department", label: "Department" },
   { key: "program", label: "Program" },
-  { key: "gpax", label: "GPAX" },
-  { key: "highSchoolGpax", label: "High School GPAX" },
-  { key: "scienceGpax", label: "Science GPAX" },
-  { key: "englishGpax", label: "English GPAX" },
-  { key: "admissionGpax", label: "Admission GPAX" },
-  { key: "schoolName", label: "School Name" },
+  { key: "year", label: "Year" },
 ];
-
-const sortKey = ref("");
-const sortOrder = ref("asc");
-const sortBy = (key) => {
-  if (sortKey.value === key) {
-    sortOrder.value = sortOrder.value === "asc" ? "desc" : "asc";
-  } else {
-    sortKey.value = key;
-    sortOrder.value = "asc";
-  }
-
-  Students.value.sort((a, b) => {
-    const aValue = a[key];
-    const bValue = b[key];
-
-    if (aValue < bValue) return sortOrder.value === "asc" ? -1 : 1;
-    if (aValue > bValue) return sortOrder.value === "asc" ? 1 : -1;
-    return 0;
-  });
-};
 
 const searchQuery = ref("");
 const currentPage = ref(1);
-const itemsPerPage = 5;
-const Students = ref([
-  {
-    id: 1,
-    studentId: "S001",
-    name: "Alice Johnson",
-    email: "alice.johnson@example.com",
-    faculty: "Science",
-    department: "Biology",
-    program: "Undergraduate",
-    gpax: 3.8,
-    highSchoolGpax: 3.8,
-    scienceGpax: 3.9,
-    englishGpax: 3.7,
-    admissionGpax: 3.85,
-    schoolName: "Greenwood High School",
-  },
-  {
-    id: 2,
-    studentId: "S002",
-    name: "Bob Smith",
-    email: "bob.smith@example.com",
-    faculty: "Engineering",
-    department: "Computer Engineering",
-    program: "Undergraduate",
-    gpax: 3.6,
-    highSchoolGpax: 3.6,
-    scienceGpax: 3.8,
-    englishGpax: 3.5,
-    admissionGpax: 3.7,
-    schoolName: "Tech Valley High School",
-  },
-  {
-    id: 3,
-    studentId: "S003",
-    name: "Charlie Brown",
-    email: "charlie.brown@example.com",
-    faculty: "Arts",
-    department: "History",
-    program: "Undergraduate",
-    gpax: 3.9,
-    highSchoolGpax: 3.9,
-    scienceGpax: 3.4,
-    englishGpax: 4.0,
-    admissionGpax: 3.85,
-    schoolName: "Riverside High School",
-  },
-  {
-    id: 4,
-    studentId: "S004",
-    name: "Diana Prince",
-    email: "diana.prince@example.com",
-    faculty: "Business",
-    department: "Marketing",
-    program: "Undergraduate",
-    gpax: 3.7,
-    highSchoolGpax: 3.7,
-    scienceGpax: 3.6,
-    englishGpax: 3.8,
-    admissionGpax: 3.75,
-    schoolName: "Sunrise High School",
-  },
-  {
-    id: 5,
-    studentId: "S005",
-    name: "Ethan Hunt",
-    email: "ethan.hunt@example.com",
-    faculty: "Law",
-    department: "Criminal Law",
-    program: "Undergraduate",
-    gpax: 3.5,
-    highSchoolGpax: 3.5,
-    scienceGpax: 3.3,
-    englishGpax: 3.9,
-    admissionGpax: 3.65,
-    schoolName: "Hilltop High School",
-  },
-  {
-    id: 6,
-    studentId: "S006",
-    name: "Fiona Apple",
-    email: "fiona.apple@example.com",
-    faculty: "Medicine",
-    department: "Anatomy",
-    program: "Undergraduate",
-    gpax: 3.95,
-    highSchoolGpax: 3.95,
-    scienceGpax: 4.0,
-    englishGpax: 3.8,
-    admissionGpax: 3.9,
-    schoolName: "Maple Leaf High School",
-  },
-]);
+const itemsPerPage = 2;
+const Students = ref([]);
+const totalPages = ref(10);
 
-const filteredStudents = computed(() => {
-  if (!searchQuery.value) return Students.value;
-  return Students.value.filter((student) =>
-    student.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-  );
-});
-
-const paginatedStudents = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage;
-  const end = start + itemsPerPage;
-  return filteredStudents.value.slice(start, end);
-});
-
-const totalPages = computed(() => {
-  return Math.ceil(filteredStudents.value.length / itemsPerPage);
-});
-
-const getStudent = (query) => {
+const getStudent = async (query) => {
+  await fetchStudents(Students, query);
   console.log("Searching for:", query);
 };
 
@@ -492,10 +328,10 @@ const onClickImportStudent = () => {
 const showStudentDetailsPopup = ref(false);
 const showEditStudentPopup = ref(false);
 const showDeleteStudentPopup = ref(false);
-const selectedStudentId = ref(null);
+const selectedStudent = ref(null);
 
 const openPopup = (id, action) => {
-  selectedStudentId.value = id;
+  selectedStudent.value = id;
   if (action === "show") {
     showStudentDetailsPopup.value = true;
   } else if (action === "edit") {
@@ -504,6 +340,28 @@ const openPopup = (id, action) => {
     showDeleteStudentPopup.value = true;
   }
 };
+
+onMounted(async () => {
+  await fetchStudents(
+    Students,
+    "",
+    "",
+    "",
+    "",
+    itemsPerPage,
+    currentPage.value
+  );
+
+  console.log("Students:", Students.value);
+  totalPages.value = Students.value.total_page;
+});
+
+watch(
+  () => currentPage.value,
+  async (newPage) => {
+    await fetchStudents(Students, "", "", "", "", itemsPerPage, newPage - 1);
+  }
+);
 </script>
 
 <style lang="scss" scoped>

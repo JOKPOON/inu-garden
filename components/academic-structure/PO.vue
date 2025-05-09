@@ -1,21 +1,7 @@
 <template>
   <div class="flex flex-col gap-4">
     <div class="flex flex-row justify-between gap-6 items-center w-full">
-      <div class="flex">
-        <div
-          class="px-4 py-3 bg-white border border-grey-secondary rounded-xl flex flex-row gap-4 items-center"
-        >
-          <input
-            type="text"
-            v-model="searchQuery"
-            class="bg-transparent border-none focus:ring-0 outline-none text-base w-48"
-            placeholder="Search..."
-          />
-          <button class="flex items-center justify-center bg-white rounded-xl">
-            <Search class="w-6 h-6" />
-          </button>
-        </div>
-      </div>
+      <div class="flex"></div>
       <div class="flex flex-row gap-4">
         <TemplateButton
           class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
@@ -89,7 +75,7 @@
           <div
             class="w-full flex items-center justify-center py-3 border-b border-grey-secondary font-semibold text-grey-primary"
           >
-            Detail of {{ selectedPO.code }}
+            Detail of {{ selectedPO?.code }}
           </div>
 
           <div class="grid grid-cols-2 w-full h-full">
@@ -104,6 +90,12 @@
                 </div>
                 <div v-if="selectedPO" class="px-4">
                   {{ selectedPO.description }}
+                </div>
+                <div class="font-semibold text-black-primary px-4">
+                  Category
+                </div>
+                <div v-if="selectedPO" class="px-4">
+                  {{ selectedPO.category }}
                 </div>
               </div>
             </div>
@@ -154,7 +146,7 @@
                       v-if="!editMode"
                       class="flex items-center justify-center w-16 border p-1 rounded-lg border-grey-tertiary"
                     >
-                      {{ selectedPO.expected_course_passing_percentage }}
+                      {{ selectedPO?.expected_course_passing_percentage }}
                     </div>
                     <div v-if="editMode">
                       <input
@@ -166,23 +158,7 @@
                   </div>
                 </div>
                 <div class="flex flex-row gap-4 px-4 mt-2 justify-between">
-                  <div class="flex">
-                    <div
-                      class="px-3 py-2 bg-white border border-grey-secondary rounded-xl flex flex-row gap-4 items-center"
-                    >
-                      <input
-                        type="text"
-                        v-model="searchQuery"
-                        class="bg-transparent border-none focus:ring-0 outline-none text-base w-48"
-                        placeholder="Search..."
-                      />
-                      <button
-                        class="flex items-center justify-center bg-white rounded-xl"
-                      >
-                        <Search class="w-6 h-6" />
-                      </button>
-                    </div>
-                  </div>
+                  <div class="flex"></div>
                   <SmallEditButton
                     v-if="!editMode"
                     @click="editPO"
@@ -223,8 +199,8 @@
                   </thead>
                   <tbody class="bg-white divide-y border-grey-secondary">
                     <tr
-                      v-for="course in selectedPO.involvedCourses"
-                      :key="course.code"
+                      v-for="course in selectedPO?.involvedCourses"
+                      :key="course?.code"
                     >
                       <td
                         class="px-4 py-4 text-sm border-r border-grey-secondary"
@@ -302,60 +278,9 @@ const showAddPO = () => {
   showAddPOPopup.value = true;
 };
 
-const PO = ref([
-  {
-    name: "PO 1",
-    detail: {
-      desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-      desc_th:
-        "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
-      subPO: [
-        {
-          code: "PO 1.1",
-          desc: "Apply knowledge of mathematics, science, and engineering to computer engineering problems.",
-          desc_th:
-            "ใช้ความรู้ด้านคณิตศาสตร์ วิทยาศาสตร์ และวิศวกรรมศาสตร์ในการแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์",
-        },
-        {
-          code: "PO 1.2",
-          desc: "Apply knowledge of mathematics, science, and engineering to computer engineering problems.",
-          desc_th:
-            "ใช้ความรู้ด้านคณิตศาสตร์ วิทยาศาสตร์ และวิศวกรรมศาสตร์ในการแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์",
-        },
-      ],
-      expectedWeightPassingCLORate: 50,
-      expectOverallRate: 50,
-      overallPassingRate: 50,
-      expectedCoursePOPassingRate: 50,
-      involvedCourses: [
-        {
-          code: "CPE231",
-          name: "Computer Engineering Project",
-          semester: "1/2021",
-          coursePOPassingRate: 50,
-        },
-        {
-          code: "CPE232",
-          name: "Algorithms",
-          semester: "1/2021",
-          coursePOPassingRate: 50,
-        },
-        {
-          code: "CPE233",
-          name: "Computer Engineering",
-          semester: "1/2021",
-          coursePOPassingRate: 50,
-        },
-      ],
-    },
-  },
-  {
-    name: "PO 2",
-    detail: {},
-  },
-]);
+const PO = ref([]);
 
-const selectedPO = ref(PO.value[0]);
+const selectedPO = ref({});
 
 function selectPO(po) {
   selectedPO.value = po;
