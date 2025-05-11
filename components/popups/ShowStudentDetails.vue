@@ -13,7 +13,7 @@
           <div class="text-sm text-grey-primary mt-1">
             Details of
             <span class="font-normal text-grey-primary">{{
-              student.name
+              props.Student.id
             }}</span>
           </div>
         </div>
@@ -26,15 +26,18 @@
             <div
               class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl"
             >
-              {{ student.studentId }}
+              {{ props.Student.id }}
             </div>
           </div>
           <div class="flex flex-col items-start w-full gap-2">
-            <label class="font-normal text-grey-primary">Name</label>
+            <label class="font-normal text-grey-primary">Name (TH)</label>
             <div
               class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl"
             >
-              {{ student.name }}
+              {{ props.Student.first_name_th }}
+              {{ props.Student.last_name_th }} -
+              {{ props.Student.first_name_en }}
+              {{ props.Student.last_name_en }}
             </div>
           </div>
           <div class="flex flex-col items-start w-full gap-2">
@@ -42,15 +45,7 @@
             <div
               class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl"
             >
-              {{ student.email }}
-            </div>
-          </div>
-          <div class="flex flex-col items-start w-full gap-2">
-            <label class="font-normal text-grey-primary">Faculty</label>
-            <div
-              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl"
-            >
-              {{ student.faculty }}
+              {{ props.Student.email }}
             </div>
           </div>
           <div class="flex flex-col items-start w-full gap-2">
@@ -58,7 +53,8 @@
             <div
               class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl"
             >
-              {{ student.department }}
+              {{ props.Student.department.name_th }} -
+              {{ props.Student.department.name_en }}
             </div>
           </div>
           <div class="flex flex-col items-start w-full gap-2">
@@ -66,80 +62,12 @@
             <div
               class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl"
             >
-              {{ student.program }}
-            </div>
-          </div>
-          <div class="grid grid-cols-2 w-[32rem] gap-2">
-            <div class="flex flex-col items-start w-full gap-2">
-              <label class="font-normal text-grey-primary">GPAX</label>
-              <div
-                class="w-full px-4 py-2 border border-grey-secondary rounded-xl"
-              >
-                {{ student.gpax }}
-              </div>
-            </div>
-            <div class="flex flex-col items-start w-full gap-2">
-              <label class="font-normal text-grey-primary"
-                >High School GPAX</label
-              >
-              <div
-                class="w-full px-4 py-2 border border-grey-secondary rounded-xl"
-              >
-                {{ student.highSchoolGpax }}
-              </div>
-            </div>
-
-            <div class="grid grid-cols-2 w-[32rem] gap-2">
-              <div class="flex flex-col items-start w-full gap-2">
-                <label class="font-normal text-grey-primary">Math GPAX</label>
-                <div
-                  class="w-full px-4 py-2 border border-grey-secondary rounded-xl"
-                >
-                  {{ student.mathGpax }}
-                </div>
-              </div>
-              <div class="flex flex-col items-start w-full gap-2">
-                <label class="font-normal text-grey-primary"
-                  >Science GPAX</label
-                >
-                <div
-                  class="w-full px-4 py-2 border border-grey-secondary rounded-xl"
-                >
-                  {{ student.scienceGpax }}
-                </div>
-              </div>
-              <div class="flex flex-col items-start w-full gap-2">
-                <label class="font-normal text-grey-primary"
-                  >English GPAX</label
-                >
-                <div
-                  class="w-full px-4 py-2 border border-grey-secondary rounded-xl"
-                >
-                  {{ student.englishGpax }}
-                </div>
-              </div>
-              <div class="flex flex-col items-start w-full gap-2">
-                <label class="font-normal text-grey-primary"
-                  >Admission Score</label
-                >
-                <div
-                  class="w-full px-4 py-2 border border-grey-secondary rounded-xl"
-                >
-                  {{ student.admission }}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="flex flex-col items-start w-full gap-2 mb-4">
-            <label class="font-normal text-grey-primary">School Name</label>
-            <div
-              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl"
-            >
-              {{ student.schoolName }}
+              {{ props.Student.programme.name_th }} -
+              {{ props.Student.programme.name_en }}
             </div>
           </div>
         </div>
-        <div
+        <!-- <div
           v-if="showGradeDetails"
           class="mt-4 text-start flex gap-4 flex-col text-sm max-h-[50vh] w-[32rem] overflow-y-scroll scrollbar-set"
         >
@@ -175,7 +103,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
         <div
           v-if="showPLODetails"
           class="mt-4 text-start flex gap-4 flex-col text-sm max-h-[50vh] max-w-[50vw] overflow-y-scroll scrollbar-set w-full"
@@ -345,7 +273,7 @@
             >
               Details
             </button>
-            <button
+            <!-- <button
               @click="GradeDetails"
               :class="[
                 'py-2 font-medium border border-grey-secondary rounded-lg w-full',
@@ -355,7 +283,7 @@
               ]"
             >
               Grade
-            </button>
+            </button> -->
             <button
               @click="PLODetails"
               :class="[
@@ -415,529 +343,83 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  Student: {
+    type: Object,
+    required: true,
+  },
 });
 
 const student = ref({});
 const overallDetails = ref(true);
 
-const Students = ref([
-  {
-    id: 1,
-    studentId: "S001",
-    name: "Alice Johnson",
-    email: "alice.johnson@example.com",
-    faculty: "Science",
-    department: "Biology",
-    program: "Undergraduate",
-    gpax: 3.85,
-    highSchoolGpax: 3.8,
-    mathGpax: 3.9,
-    scienceGpax: 3.9,
-    englishGpax: 3.7,
-    admission: 3.85,
-    schoolName: "Greenwood High School",
-    grade: [
-      {
-        semester: "1st/2023",
-        gpax: 3.8,
-      },
-      {
-        semester: "2nd/2023",
-        gpax: 3.9,
-      },
-      {
-        semester: "3rd/2023",
-        gpax: 4.0,
-      },
-      {
-        semester: "4th/2023",
-        gpax: 3.7,
-      },
-    ],
-    PLO: [
-      {
-        code: "PLO1",
-        desc: "Understand the basic concepts of biology",
-        course: [
-          { id: "CPE2", name: "Biology 101" },
-          { id: "CPE3", name: "Biology Lab" },
-        ],
-        status: 0,
-      },
-      {
-        code: "PLO2",
-        desc: "Apply biological concepts to real-world problems",
-        course: [
-          { id: "CPE4", name: "Biology 201" },
-          { id: "CPE5", name: "Biology Lab II" },
-        ],
-        status: 1,
-      },
-    ],
-    PO: [
-      {
-        code: "PO1",
-        desc: "Demonstrate knowledge of biology",
-        course: [
-          { id: "CPE4", name: "Biology 201" },
-          { id: "CPE5", name: "Biology Lab II" },
-        ],
-        status: 0,
-      },
-    ],
-    SO: [
-      {
-        code: "SO1",
-        desc: "Conduct experiments in biology",
-        course: [
-          { id: "CPE4", name: "Biology 201" },
-          { id: "CPE5", name: "Biology Lab II" },
-        ],
-        status: 0,
-      },
-    ],
-  },
-  {
-    id: 2,
-    studentId: "S002",
-    name: "Bob Smith",
-    email: "bob.smith@example.com",
-    faculty: "Engineering",
-    department: "Computer Engineering",
-    program: "Undergraduate",
-    gpax: 3.7,
-    highSchoolGpax: 3.6,
-    mathGpax: 3.9,
-    scienceGpax: 3.8,
-    englishGpax: 3.5,
-    admission: 3.7,
-    schoolName: "Tech Valley High School",
-    grade: [
-      {
-        semester: "1st/2023",
-        gpax: 3.8,
-      },
-      {
-        semester: "2nd/2023",
-        gpax: 3.9,
-      },
-      {
-        semester: "3rd/2023",
-        gpax: 4.0,
-      },
-      {
-        semester: "4th/2023",
-        gpax: 3.7,
-      },
-    ],
-    PLO: [
-      {
-        code: "PLO1",
-        desc: "Understand the basic concepts of biology",
-        course: [
-          { id: "CPE2", name: "Biology 101" },
-          { id: "CPE3", name: "Biology Lab" },
-        ],
-        status: 0,
-      },
-      {
-        code: "PLO2",
-        desc: "Apply biological concepts to real-world problems",
-        course: [
-          { id: "CPE4", name: "Biology 201" },
-          { id: "CPE5", name: "Biology Lab II" },
-        ],
-        status: 1,
-      },
-    ],
-    PO: [
-      {
-        code: "PO1",
-        desc: "Demonstrate knowledge of biology",
-        course: [
-          { id: "CPE4", name: "Biology 201" },
-          { id: "CPE5", name: "Biology Lab II" },
-        ],
-        status: 0,
-      },
-    ],
-    SO: [
-      {
-        code: "SO1",
-        desc: "Conduct experiments in biology",
-        course: [
-          { id: "CPE4", name: "Biology 201" },
-          { id: "CPE5", name: "Biology Lab II" },
-        ],
-        status: 0,
-      },
-    ],
-  },
-  {
-    id: 3,
-    studentId: "S003",
-    name: "Charlie Brown",
-    email: "charlie.brown@example.com",
-    faculty: "Arts",
-    department: "History",
-    program: "Undergraduate",
-    gpax: 3.8,
-    highSchoolGpax: 3.9,
-    mathGpax: 3.9,
-    scienceGpax: 3.4,
-    englishGpax: 4.0,
-    admission: 3.85,
-    schoolName: "Riverside High School",
-    grade: [
-      {
-        semester: "1st/2023",
-        gpax: 3.8,
-      },
-      {
-        semester: "2nd/2023",
-        gpax: 3.9,
-      },
-      {
-        semester: "3rd/2023",
-        gpax: 4.0,
-      },
-      {
-        semester: "4th/2023",
-        gpax: 3.7,
-      },
-    ],
-    PLO: [
-      {
-        code: "PLO1",
-        desc: "Understand the basic concepts of biology",
-        course: [
-          { id: "CPE2", name: "Biology 101" },
-          { id: "CPE3", name: "Biology Lab" },
-        ],
-        status: 0,
-      },
-      {
-        code: "PLO2",
-        desc: "Apply biological concepts to real-world problems",
-        course: [
-          { id: "CPE4", name: "Biology 201" },
-          { id: "CPE5", name: "Biology Lab II" },
-        ],
-        status: 1,
-      },
-    ],
-    PO: [
-      {
-        code: "PO1",
-        desc: "Demonstrate knowledge of biology",
-        course: [
-          { id: "CPE4", name: "Biology 201" },
-          { id: "CPE5", name: "Biology Lab II" },
-        ],
-        status: 0,
-      },
-    ],
-    SO: [
-      {
-        code: "SO1",
-        desc: "Conduct experiments in biology",
-        course: [
-          { id: "CPE4", name: "Biology 201" },
-          { id: "CPE5", name: "Biology Lab II" },
-        ],
-        status: 0,
-      },
-    ],
-  },
-  {
-    id: 4,
-    studentId: "S004",
-    name: "Diana Prince",
-    email: "diana.prince@example.com",
-    faculty: "Business",
-    department: "Marketing",
-    program: "Undergraduate",
-    gpax: 3.9,
-    highSchoolGpax: 3.7,
-    mathGpax: 3.9,
-    scienceGpax: 3.6,
-    englishGpax: 3.8,
-    admission: 3.75,
-    schoolName: "Sunrise High School",
-    grade: [
-      {
-        semester: "1st/2023",
-        gpax: 3.8,
-      },
-      {
-        semester: "2nd/2023",
-        gpax: 3.9,
-      },
-      {
-        semester: "3rd/2023",
-        gpax: 4.0,
-      },
-      {
-        semester: "4th/2023",
-        gpax: 3.7,
-      },
-    ],
-    PLO: [
-      {
-        code: "PLO1",
-        desc: "Understand the basic concepts of biology",
-        course: [
-          { id: "CPE2", name: "Biology 101" },
-          { id: "CPE3", name: "Biology Lab" },
-        ],
-        status: 0,
-      },
-      {
-        code: "PLO2",
-        desc: "Apply biological concepts to real-world problems",
-        course: [
-          { id: "CPE4", name: "Biology 201" },
-          { id: "CPE5", name: "Biology Lab II" },
-        ],
-        status: 1,
-      },
-    ],
-    PO: [
-      {
-        code: "PO1",
-        desc: "Demonstrate knowledge of biology",
-        course: [
-          { id: "CPE4", name: "Biology 201" },
-          { id: "CPE5", name: "Biology Lab II" },
-        ],
-        status: 0,
-      },
-    ],
-    SO: [
-      {
-        code: "SO1",
-        desc: "Conduct experiments in biology",
-        course: [
-          { id: "CPE4", name: "Biology 201" },
-          { id: "CPE5", name: "Biology Lab II" },
-        ],
-        status: 0,
-      },
-    ],
-  },
-  {
-    id: 5,
-    studentId: "S005",
-    name: "Ethan Hunt",
-    email: "ethan.hunt@example.com",
-    faculty: "Law",
-    department: "Criminal Law",
-    program: "Undergraduate",
-    gpax: 3.6,
-    highSchoolGpax: 3.5,
-    mathGpax: 3.9,
-    scienceGpax: 3.3,
-    englishGpax: 3.9,
-    admission: 3.65,
-    schoolName: "Hilltop High School",
-    grade: [
-      {
-        semester: "1st/2023",
-        gpax: 3.5,
-      },
-      {
-        semester: "2nd/2023",
-        gpax: 3.6,
-      },
-      {
-        semester: "3rd/2023",
-        gpax: 3.7,
-      },
-      {
-        semester: "4th/2023",
-        gpax: 3.8,
-      },
-    ],
-    PLO: [
-      {
-        code: "PLO1",
-        desc: "Understand the basic concepts of law",
-        desc_th: "เข้าใจแนวคิดพื้นฐานของกฎหมาย",
-        expectedRate: 80,
-        status: 0,
-      },
-      {
-        code: "PLO2",
-        desc: "Apply legal concepts to real-world problems",
-        desc_th: "นำแนวคิดทางกฎหมายไปใช้ในปัญหาในโลกแห่งความเป็นจริง",
-        expectedRate: 75,
-        status: 1,
-      },
-    ],
-    PO: [
-      {
-        code: "PO1",
-        desc: "Demonstrate knowledge of law",
-        desc_th: "แสดงความรู้ด้านกฎหมาย",
-        expectedRate: 85,
-        status: 0,
-      },
-    ],
-    SO: [
-      {
-        code: "SO1",
-        desc: "Conduct experiments in law",
-        desc_th: "ทำการทดลองในกฎหมาย",
-        expectedRate: 90,
-        status: 0,
-      },
-    ],
-    grade: [
-      {
-        semester: "1st/2023",
-        gpax: 3.8,
-      },
-      {
-        semester: "2nd/2023",
-        gpax: 3.9,
-      },
-      {
-        semester: "3rd/2023",
-        gpax: 4.0,
-      },
-      {
-        semester: "4th/2023",
-        gpax: 3.7,
-      },
-    ],
-    PLO: [
-      {
-        code: "PLO1",
-        desc: "Understand the basic concepts of biology",
-        course: [
-          { id: "CPE2", name: "Biology 101" },
-          { id: "CPE3", name: "Biology Lab" },
-        ],
-        status: 0,
-      },
-      {
-        code: "PLO2",
-        desc: "Apply biological concepts to real-world problems",
-        course: [
-          { id: "CPE4", name: "Biology 201" },
-          { id: "CPE5", name: "Biology Lab II" },
-        ],
-        status: 1,
-      },
-    ],
-    PO: [
-      {
-        code: "PO1",
-        desc: "Demonstrate knowledge of biology",
-        course: [
-          { id: "CPE4", name: "Biology 201" },
-          { id: "CPE5", name: "Biology Lab II" },
-        ],
-        status: 0,
-      },
-    ],
-    SO: [
-      {
-        code: "SO1",
-        desc: "Conduct experiments in biology",
-        course: [
-          { id: "CPE4", name: "Biology 201" },
-          { id: "CPE5", name: "Biology Lab II" },
-        ],
-        status: 0,
-      },
-    ],
-  },
-  {
-    id: 6,
-    studentId: "S006",
-    name: "Fiona Apple",
-    email: "fiona.apple@example.com",
-    faculty: "Medicine",
-    department: "Anatomy",
-    program: "Undergraduate",
-    gpax: 3.95,
-    highSchoolGpax: 3.95,
-    mathGpax: 3.9,
-    scienceGpax: 4.0,
-    englishGpax: 3.8,
-    admission: 3.9,
-    schoolName: "Maple Leaf High School",
-    grade: [
-      {
-        semester: "1st/2023",
-        gpax: 3.8,
-      },
-      {
-        semester: "2nd/2023",
-        gpax: 3.9,
-      },
-      {
-        semester: "3rd/2023",
-        gpax: 4.0,
-      },
-      {
-        semester: "4th/2023",
-        gpax: 3.7,
-      },
-    ],
-    PLO: [
-      {
-        code: "PLO1",
-        desc: "Understand the basic concepts of biology",
-        course: [
-          { id: "CPE2", name: "Biology 101" },
-          { id: "CPE3", name: "Biology Lab" },
-        ],
-        status: 0,
-      },
-      {
-        code: "PLO2",
-        desc: "Apply biological concepts to real-world problems",
-        course: [
-          { id: "CPE4", name: "Biology 201" },
-          { id: "CPE5", name: "Biology Lab II" },
-        ],
-        status: 1,
-      },
-    ],
-    PO: [
-      {
-        code: "PO1",
-        desc: "Demonstrate knowledge of biology",
-        course: [
-          { id: "CPE4", name: "Biology 201" },
-          { id: "CPE5", name: "Biology Lab II" },
-        ],
-        status: 0,
-      },
-    ],
-    SO: [
-      {
-        code: "SO1",
-        desc: "Conduct experiments in biology",
-        course: [
-          { id: "CPE4", name: "Biology 201" },
-          { id: "CPE5", name: "Biology Lab II" },
-        ],
-        status: 0,
-      },
-    ],
-  },
-]);
-
-watch(
-  () => props.studentId,
-  (newId) => {
-    student.value = Students.value.find((s) => s.studentId === newId) || {};
-  },
-  { immediate: true }
-);
+const Student = ref({
+  id: 1,
+  studentId: "S001",
+  name: "Alice Johnson",
+  email: "alice.johnson@example.com",
+  department: "Biology",
+  program: "Undergraduate",
+  grade: [
+    {
+      semester: "1st/2023",
+      gpax: 3.8,
+    },
+    {
+      semester: "2nd/2023",
+      gpax: 3.9,
+    },
+    {
+      semester: "3rd/2023",
+      gpax: 4.0,
+    },
+    {
+      semester: "4th/2023",
+      gpax: 3.7,
+    },
+  ],
+  PLO: [
+    {
+      code: "PLO1",
+      desc: "Understand the basic concepts of biology",
+      course: [
+        { id: "CPE2", name: "Biology 101" },
+        { id: "CPE3", name: "Biology Lab" },
+      ],
+      status: 0,
+    },
+    {
+      code: "PLO2",
+      desc: "Apply biological concepts to real-world problems",
+      course: [
+        { id: "CPE4", name: "Biology 201" },
+        { id: "CPE5", name: "Biology Lab II" },
+      ],
+      status: 1,
+    },
+  ],
+  PO: [
+    {
+      code: "PO1",
+      desc: "Demonstrate knowledge of biology",
+      course: [
+        { id: "CPE4", name: "Biology 201" },
+        { id: "CPE5", name: "Biology Lab II" },
+      ],
+      status: 0,
+    },
+  ],
+  SO: [
+    {
+      code: "SO1",
+      desc: "Conduct experiments in biology",
+      course: [
+        { id: "CPE4", name: "Biology 201" },
+        { id: "CPE5", name: "Biology Lab II" },
+      ],
+      status: 0,
+    },
+  ],
+});
 
 const showGradeDetails = ref(false);
 const showPLODetails = ref(false);

@@ -31,9 +31,9 @@
               >Description (Eng)</label
             >
             <textarea
-              v-model="newPLO.desc"
+              v-model="newPLO.description_eng"
               rows="3"
-              placeholder="PLO Description"
+              placeholder="PLO Description (EN)"
               class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
             ></textarea>
           </div>
@@ -42,30 +42,19 @@
               >Description (TH)</label
             >
             <textarea
-              v-model="newPLO.desc_th"
+              v-model="newPLO.description_thai"
               rows="3"
               placeholder="PLO Description (TH)"
               class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
             ></textarea>
           </div>
           <div class="w-full flex flex-row gap-2 items-center -mt-2">
-            <div class="w-full text-left">Expected Passing CLO Rate (%)</div>
+            <div class="w-full text-left">Expected Course Passing Rate (%)</div>
             <input
-              v-model="newPLO.expectedCLORate"
+              v-model="newPLO.expected_course_passing_percentage"
               class="border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary w-12 text-center"
               type="number"
               placeholder="Expected Passing CLO"
-            />
-          </div>
-          <div class="w-full flex flex-row gap-2 items-center -mt-2">
-            <div class="w-full text-left">
-              Expected Passing Student Rate (%)
-            </div>
-            <input
-              v-model="newPLO.expectedRate"
-              class="border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary w-12 text-center"
-              type="number"
-              placeholder="Expected Passing Student"
             />
           </div>
         </div>
@@ -119,20 +108,20 @@
                   <td class="px-6 py-4 border-r border-grey-secondary">
                     <div class="w-full flex flex-col gap-2">
                       <div v-if="!subPLO.editMode">
-                        {{ subPLO.desc_th }}
+                        {{ subPLO.description_thai }}
                       </div>
                       <textarea
                         v-else
-                        v-model="subPLO.desc_th"
+                        v-model="subPLO.description_thai"
                         rows="4"
                         class="w-full p-2 border border-grey-secondary rounded-xl outline-none"
                       ></textarea>
                       <div v-if="!subPLO.editMode">
-                        {{ subPLO.desc }}
+                        {{ subPLO.description_eng }}
                       </div>
                       <textarea
                         v-else
-                        v-model="subPLO.desc"
+                        v-model="subPLO.description_eng"
                         rows="4"
                         class="w-full p-2p-2 border border-grey-secondary rounded-xl outline-none"
                       ></textarea>
@@ -196,6 +185,7 @@
       v-if="showAddSubPLOPopup"
       :id="id"
       :name="PLOName"
+      :subPLOs="subPLOs"
       @close="showAddSubPLOPopup = false"
     />
   </teleport>
@@ -210,11 +200,20 @@ import Include from "@/components/icons/Include.vue";
 import Delete from "@/components/icons/Delete.vue";
 import SmallAddButton from "@/components/button/SmallAddButton.vue";
 import AddSubPLO from "@/components/popups/AddSubPLO.vue";
+import { BaseURL } from "~/api/api";
 
 const router = useRouter();
 
 const showAddSubPLOPopup = ref(false);
 
+const newPLO = ref({
+  code: "",
+  name: "",
+  description_eng: "",
+  description_thai: "",
+  expected_course_passing_percentage: 50,
+  program_id: "",
+});
 const PLOName = ref("");
 const id = ref("");
 const PLOid = ref("");
@@ -235,44 +234,36 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  PLOs: {
+    type: Array,
+    required: true,
+  },
 });
 
 const emit = defineEmits(["close", "add"]);
 
-const newPLO = ref({
-  code: "",
-  desc: "",
-  desc_th: "",
-  expectedRate: 0,
-  expectedCLORate: 0,
-});
+const subPLOs = ref([]);
 
-const subPLOs = ref([
-  {
-    code: "PLO 1.1",
-    desc: "Apply knowledge of mathematics, science, and engineering to computer engineering problems.",
-    desc_th:
-      "ใช้ความรู้ด้านคณิตศาสตร์ วิทยาศาสตร์ และวิศวกรรมศาสตร์ในการแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์",
-    editMode: false,
-  },
-  {
-    code: "PLO 1.2",
-    desc: "Apply knowledge of mathematics, science, and engineering to computer engineering problems.",
-    desc_th:
-      "ใช้ความรู้ด้านคณิตศาสตร์ วิทยาศาสตร์ และวิศวกรรมศาสตร์ในการแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์",
-    editMode: false,
-  },
-]);
-
-const addPLO = () => {
+const addPLO = async () => {
   emit("add", newPLO.value);
-  newPLO.value = {
-    code: "",
-    desc: "",
-    desc_th: "",
-    expectedRate: 0,
-    expectedCLORate: 0,
-  };
+  try {
+    newPLO.value.program_id = props.id;
+    newPLO.value.sub_program_learning_outcomes = subPLOs.value;
+    const response = await fetch(`${BaseURL}plos`, {
+      credentials: "include",
+      method: "POST",
+      body: JSON.stringify({
+        program_learning_outcomes: [newPLO.value],
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Failed to create PLO");
+    props.PLOs.push(newPLO.value);
+  } catch (error) {
+    console.error(error);
+  }
   emit("close");
 };
 

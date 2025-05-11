@@ -23,23 +23,13 @@
               class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
             />
           </div>
-          <div class="flex flex-col items-start w-full gap-2">
-            <label class="font-semibold text-black-primary"
-              >Description (Eng)</label
-            >
-            <textarea
-              v-model="newPO.desc"
-              rows="3"
-              placeholder="PO Description"
-              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
-            ></textarea>
-          </div>
+
           <div class="flex flex-col items-start w-full gap-2">
             <label class="font-semibold text-black-primary"
               >Description (TH)</label
             >
             <textarea
-              v-model="newPO.desc_th"
+              v-model="newPO.description"
               rows="3"
               placeholder="PO Description (TH)"
               class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
@@ -61,7 +51,7 @@
             </div>
 
             <input
-              v-model="newPO.expectedRate"
+              v-model="newPO.expected_course_passing_percentage"
               class="border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary w-12 text-center"
               type="number"
               placeholder="ExpectedPassingCLO"
@@ -92,6 +82,7 @@
 <script setup>
 import { ref } from "vue";
 import { defineProps, defineEmits } from "vue";
+import { BaseURL } from "~/api/api";
 
 const props = defineProps({
   id: {
@@ -102,29 +93,40 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  POs: {
+    type: Array,
+    required: true,
+  },
 });
 
 const emit = defineEmits(["close", "add"]);
 
 const newPO = ref({
-  desc: "",
-  desc_th: "",
   code: "",
   description: "",
   category: "",
-  expectedRate: 0,
+  expected_course_passing_percentage: 0,
 });
 
-const addPO = () => {
+const addPO = async () => {
   emit("add", newPO.value);
-  newPO.value = {
-    desc: "",
-    desc_th: "",
-    code: "",
-    description: "",
-    category: "",
-    expectedRate: 0,
-  };
+  try {
+    newPO.value.program_id = props.id;
+    const response = await fetch(`${BaseURL}pos`, {
+      credentials: "include",
+      method: "POST",
+      body: JSON.stringify({
+        program_outcomes: [newPO.value],
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Failed to create PO");
+    props.POs.push(newPO.value);
+  } catch (error) {
+    console.error(error);
+  }
   emit("close");
 };
 </script>

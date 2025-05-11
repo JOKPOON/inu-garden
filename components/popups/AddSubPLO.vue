@@ -12,44 +12,44 @@
           </div>
           <div class="text-sm text-grey-primary mt-1">
             Add Sub PLO of
-            <span class="font-semibold text-black-primary">{{ plo }}</span> <br /> of
+            <span class="font-semibold text-black-primary">{{ ploId }}</span>
+            <br />
+            of
             <span class="font-semibold text-black-primary">{{ name }}</span>
           </div>
         </div>
         <div class="mt-4 text-center flex gap-4 flex-col text-sm">
           <div class="flex flex-col items-start w-full gap-2">
-            <label class="font-semibold text-black-primary"
-              >Sub PLO Code</label
-            >
-          <input
-            v-model="newSubPLO.code"
-            type="text"
-            placeholder="Sub PLO Code"
-            class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
-          />
+            <label class="font-semibold text-black-primary">Sub PLO Code</label>
+            <input
+              v-model="newSubPLO.code"
+              type="text"
+              placeholder="Sub PLO Code"
+              class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
+            />
           </div>
           <div class="flex flex-col items-start w-full gap-2">
             <label class="font-semibold text-black-primary"
               >Description (Eng)</label
             >
-          <textarea
-            v-model="newSubPLO.desc"
-            rows="3"
-            placeholder="Sub PLO Description"
-            class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
-          ></textarea>
+            <textarea
+              v-model="newSubPLO.description_eng"
+              rows="3"
+              placeholder="Sub PLO Description"
+              class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
+            ></textarea>
           </div>
           <div class="flex flex-col items-start w-full gap-2">
             <label class="font-semibold text-black-primary"
               >Description (TH)</label
             >
-          <textarea
-            v-model="newSubPLO.desc_th"
-            rows="3"
-            placeholder="Sub PLO Description (TH)"
-            class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl mb-4 outline-none"
-          ></textarea>
-        </div>
+            <textarea
+              v-model="newSubPLO.description_thai"
+              rows="3"
+              placeholder="Sub PLO Description (TH)"
+              class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl mb-4 outline-none"
+            ></textarea>
+          </div>
         </div>
         <div
           class="flex flex-row items-center justify-center gap-4 w-full mt-4"
@@ -75,18 +75,23 @@
 <script setup>
 import { ref } from "vue";
 import { defineProps, defineEmits } from "vue";
+import { BaseURL } from "~/api/api";
 
 const props = defineProps({
   id: {
     type: String,
     required: true,
   },
-  plo: {
+  ploId: {
     type: String,
     required: true,
   },
   name: {
     type: String,
+    required: true,
+  },
+  subPLOs: {
+    type: Array,
     required: true,
   },
 });
@@ -95,17 +100,34 @@ const emit = defineEmits(["close", "add"]);
 
 const newSubPLO = ref({
   code: "",
-  desc: "",
-  desc_th: "",
+  description_thai: "",
+  description_eng: "",
+  editMode: false,
 });
 
-const addSubPLO = () => {
-  emit("add", newPLO.value);
-  newPLO.value = {
-    code: "",
-    desc: "",
-    desc_th: "",
-  };
+const addSubPLO = async () => {
+  emit("add");
+  if (props.ploId) {
+    try {
+      newSubPLO.value.program_learning_outcome_id = props.ploId;
+      const response = await fetch(`${BaseURL}splos`, {
+        credentials: "include",
+        method: "POST",
+        body: JSON.stringify({
+          sub_program_learning_outcomes: [newSubPLO.value],
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) throw new Error("Failed to create SPLO");
+      props.subPLOs.push(newSubPLO.value);
+    } catch (error) {
+      console.error(error);
+    }
+  } else {
+    props.subPLOs.push(newSubPLO.value);
+  }
   emit("close");
 };
 </script>

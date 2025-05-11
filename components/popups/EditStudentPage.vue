@@ -380,6 +380,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  Student: {
+    type: Object,
+    required: true,
+  },
 });
 
 const emit = defineEmits(["close", "save"]);

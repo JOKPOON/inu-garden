@@ -1,21 +1,7 @@
 <template>
   <div class="flex flex-col gap-4">
     <div class="flex flex-row justify-between gap-6 items-center w-full">
-      <div class="flex">
-        <div
-          class="px-4 py-3 bg-white border border-grey-secondary rounded-xl flex flex-row gap-4 items-center"
-        >
-          <input
-            type="text"
-            v-model="searchQuery"
-            class="bg-transparent border-none focus:ring-0 outline-none text-base w-48"
-            placeholder="Search..."
-          />
-          <button class="flex items-center justify-center bg-white rounded-xl">
-            <Search class="w-6 h-6" />
-          </button>
-        </div>
-      </div>
+      <div class="flex"></div>
       <div class="flex flex-row gap-4">
         <TemplateButton
           class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
@@ -52,16 +38,26 @@
           >
             <button
               v-for="po in PO"
-              :key="po.name"
+              :key="po.id"
               @click="selectPO(po)"
               :class="{
-                'bg-grey-secondary text-black-primary':
-                  selectedPO.name === po.name,
-                'bg-white': selectedPO.name !== po.name,
+                'bg-grey-secondary text-black-primary': selectedPO.id === po.id,
+                'bg-white': selectedPO.id !== po.id,
               }"
               class="w-full flex items-center justify-center py-3 border-b border-grey-secondary"
             >
-              {{ po.name }}
+              <div class="w-full flex items-center justify-evenly gap-2">
+                <span class="text-black-primary">
+                  {{ po.code }}
+                </span>
+                <button
+                  v-if="editMode"
+                  class="bg-white rounded-xl p-2 border border-grey-secondary hover:bg-red-500 text-black-primary hover:text-white"
+                  @click="deletePO(po)"
+                >
+                  <Delete class="w-4 h-4" />
+                </button>
+              </div>
             </button>
           </div>
           <div class="w-full mt-4 flex items-center justify-center">
@@ -79,7 +75,7 @@
           <div
             class="w-full flex items-center justify-center py-3 border-b border-grey-secondary font-semibold text-grey-primary"
           >
-            Detail of {{ selectedPO.name }}
+            Detail of {{ selectedPO?.code }}
           </div>
 
           <div class="grid grid-cols-2 w-full h-full">
@@ -92,11 +88,14 @@
                 <div class="font-semibold text-black-primary px-4">
                   Description
                 </div>
-                <div v-if="selectedPO.detail" class="px-4">
-                  {{ selectedPO.detail.desc_th }}
+                <div v-if="selectedPO" class="px-4">
+                  {{ selectedPO.description }}
                 </div>
-                <div v-if="selectedPO.detail" class="px-4">
-                  {{ selectedPO.detail.desc_en }}
+                <div class="font-semibold text-black-primary px-4">
+                  Category
+                </div>
+                <div v-if="selectedPO" class="px-4">
+                  {{ selectedPO.category }}
                 </div>
               </div>
             </div>
@@ -147,35 +146,19 @@
                       v-if="!editMode"
                       class="flex items-center justify-center w-16 border p-1 rounded-lg border-grey-tertiary"
                     >
-                      {{ selectedPO.detail.expectedCoursePOPassingRate }}
+                      {{ selectedPO?.expected_course_passing_percentage }}
                     </div>
                     <div v-if="editMode">
                       <input
-                        type="text"
+                        type="number"
                         class="bg-transparent text-center focus:ring-0 outline-none text-base w-16 border p-1 rounded-lg border-grey-primary"
-                        v-model="selectedPO.detail.expectedCoursePOPassingRate"
+                        v-model="selectedPO.expected_course_passing_percentage"
                       />
                     </div>
                   </div>
                 </div>
                 <div class="flex flex-row gap-4 px-4 mt-2 justify-between">
-                  <div class="flex">
-                    <div
-                      class="px-3 py-2 bg-white border border-grey-secondary rounded-xl flex flex-row gap-4 items-center"
-                    >
-                      <input
-                        type="text"
-                        v-model="searchQuery"
-                        class="bg-transparent border-none focus:ring-0 outline-none text-base w-48"
-                        placeholder="Search..."
-                      />
-                      <button
-                        class="flex items-center justify-center bg-white rounded-xl"
-                      >
-                        <Search class="w-6 h-6" />
-                      </button>
-                    </div>
-                  </div>
+                  <div class="flex"></div>
                   <SmallEditButton
                     v-if="!editMode"
                     @click="editPO"
@@ -216,8 +199,8 @@
                   </thead>
                   <tbody class="bg-white divide-y border-grey-secondary">
                     <tr
-                      v-for="course in selectedPO.detail.involvedCourses"
-                      :key="course.code"
+                      v-for="course in selectedPO?.involvedCourses"
+                      :key="course?.code"
                     >
                       <td
                         class="px-4 py-4 text-sm border-r border-grey-secondary"
@@ -236,7 +219,7 @@
                             :class="[
                               'flex',
                               course.coursePOPassingRate >=
-                              selectedPO.detail.expectedCoursePOPassingRate
+                              selectedPO.expected_course_passing_percentage
                                 ? 'bg-green-500'
                                 : 'bg-red-500',
                             ]"
@@ -259,7 +242,8 @@
   <AddPO
     v-if="showAddPOPopup"
     :id="id"
-    :name="POName"
+    :name="name"
+    :POs="PO"
     @close="showAddPOPopup = false"
   />
 </template>
@@ -276,85 +260,74 @@ import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
 import AddPO from "@/components/popups/AddPO.vue";
 import { ref } from "vue";
+import { fetchPOs, BaseURL } from "~/api/api";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const searchQuery = ref("");
 const editMode = ref(false);
 const editPO = () => {
   editMode.value = true;
 };
 
-const savePO = () => {
-  editMode.value = false;
-};
-
 const showAddPOPopup = ref(false);
-const POName = ref("");
+const name = ref("");
 const id = ref("");
 
 const showAddPO = () => {
-  id.value = "PLO1";
-  POName.value = "Computer Engineering (Regular) year 2565";
   showAddPOPopup.value = true;
 };
 
-const PO = ref([
-  {
-    name: "PO 1",
-    detail: {
-      desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-      desc_th:
-        "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
-      subPO: [
-        {
-          code: "PO 1.1",
-          desc: "Apply knowledge of mathematics, science, and engineering to computer engineering problems.",
-          desc_th:
-            "ใช้ความรู้ด้านคณิตศาสตร์ วิทยาศาสตร์ และวิศวกรรมศาสตร์ในการแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์",
-        },
-        {
-          code: "PO 1.2",
-          desc: "Apply knowledge of mathematics, science, and engineering to computer engineering problems.",
-          desc_th:
-            "ใช้ความรู้ด้านคณิตศาสตร์ วิทยาศาสตร์ และวิศวกรรมศาสตร์ในการแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์",
-        },
-      ],
-      expectedWeightPassingCLORate: 50,
-      expectOverallRate: 50,
-      overallPassingRate: 50,
-      expectedCoursePOPassingRate: 50,
-      involvedCourses: [
-        {
-          code: "CPE231",
-          name: "Computer Engineering Project",
-          semester: "1/2021",
-          coursePOPassingRate: 50,
-        },
-        {
-          code: "CPE232",
-          name: "Algorithms",
-          semester: "1/2021",
-          coursePOPassingRate: 50,
-        },
-        {
-          code: "CPE233",
-          name: "Computer Engineering",
-          semester: "1/2021",
-          coursePOPassingRate: 50,
-        },
-      ],
-    },
-  },
-  {
-    name: "PO 2",
-    detail: {},
-  },
-]);
+const PO = ref([]);
 
-const selectedPO = ref(PO.value[0]);
+const selectedPO = ref({});
 
 function selectPO(po) {
   selectedPO.value = po;
 }
+
+const savePO = async () => {
+  try {
+    console.log(selectedPO);
+    const response = await fetch(`${BaseURL}pos/${selectedPO.value.id}`, {
+      credentials: "include",
+      method: "PATCH",
+      body: JSON.stringify(selectedPO.value),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Failed to update PO");
+  } catch (error) {
+    console.error(error);
+  }
+  editMode.value = false;
+};
+
+const deletePO = async (po) => {
+  try {
+    const response = await fetch(`${BaseURL}pos/${po.id}`, {
+      credentials: "include",
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Failed to delete PO");
+    PO.value = PO.value.filter((item) => item.id !== po.id);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+onMounted(async () => {
+  id.value = router.currentRoute.value.params.id;
+  name.value = router.currentRoute.value.query.name;
+
+  await fetchPOs(PO, id.value);
+  selectPO(PO.value[0] || {});
+  console.log(PO.value);
+});
 </script>
 
 <style lang="scss" scoped>

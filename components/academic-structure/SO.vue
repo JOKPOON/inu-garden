@@ -1,21 +1,7 @@
 <template>
   <div class="flex flex-col gap-4">
     <div class="flex flex-row justify-between gap-6 items-center w-full">
-      <div class="flex">
-        <div
-          class="px-4 py-3 bg-white border border-grey-secondary rounded-xl flex flex-row gap-4 items-center"
-        >
-          <input
-            type="text"
-            v-model="searchQuery"
-            class="bg-transparent border-none focus:ring-0 outline-none text-base w-48"
-            placeholder="Search..."
-          />
-          <button class="flex items-center justify-center bg-white rounded-xl">
-            <Search class="w-6 h-6" />
-          </button>
-        </div>
-      </div>
+      <div class="flex"></div>
       <div class="flex flex-row gap-4">
         <TemplateButton
           class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
@@ -52,16 +38,26 @@
           >
             <button
               v-for="so in SO"
-              :key="so.name"
+              :key="so.id"
               @click="selectSO(so)"
               :class="{
-                'bg-grey-secondary text-black-primary':
-                  selectedSO.name === so.name,
-                'bg-white': selectedSO.name !== so.name,
+                'bg-grey-secondary text-black-primary': selectedSO.id === so.id,
+                'bg-white': selectedSO.id !== so.id,
               }"
               class="w-full flex items-center justify-center py-3 border-b border-grey-secondary"
             >
-              {{ so.name }}
+              <div class="w-full flex items-center justify-evenly gap-2">
+                <span class="text-black-primary">
+                  {{ so.code }}
+                </span>
+                <button
+                  v-if="editMode"
+                  class="bg-white rounded-xl p-2 border border-grey-secondary hover:bg-red-500 text-black-primary hover:text-white"
+                  @click="deleteSO(so)"
+                >
+                  <Delete class="w-4 h-4" />
+                </button>
+              </div>
             </button>
           </div>
           <div class="w-full mt-4 flex items-center justify-center">
@@ -79,7 +75,7 @@
           <div
             class="w-full flex items-center justify-center py-3 border-b border-grey-secondary font-semibold text-grey-primary"
           >
-            Detail of {{ selectedSO.name }}
+            Detail of {{ selectedSO.code }}
           </div>
 
           <div class="grid grid-cols-2 w-full h-full">
@@ -92,11 +88,11 @@
                 <div class="font-semibold text-black-primary px-4">
                   Description
                 </div>
-                <div v-if="selectedSO.detail" class="px-4">
-                  {{ selectedSO.detail.desc_th }}
+                <div v-if="selectedSO" class="px-4">
+                  {{ selectedSO.description_thai }}
                 </div>
-                <div v-if="selectedSO.detail" class="px-4">
-                  {{ selectedSO.detail.desc_en }}
+                <div v-if="selectedSO" class="px-4">
+                  {{ selectedSO.description_eng }}
                 </div>
               </div>
               <div class="w-full flex flex-col gap-2 pt-3">
@@ -104,23 +100,7 @@
                 <div
                   class="flex flex-row justify-between gap-6 items-center w-full px-4"
                 >
-                  <div class="flex">
-                    <div
-                      class="px-3 py-2 bg-white border border-grey-secondary rounded-xl flex flex-row gap-4 items-center"
-                    >
-                      <input
-                        type="text"
-                        v-model="searchQuery"
-                        class="bg-transparent border-none focus:ring-0 outline-none text-base w-48"
-                        placeholder="Search..."
-                      />
-                      <button
-                        class="flex items-center justify-center bg-white rounded-xl"
-                      >
-                        <Search class="w-6 h-6" />
-                      </button>
-                    </div>
-                  </div>
+                  <div class="flex"></div>
                   <div class="flex flex-row gap-4">
                     <SmallAddButton
                       @click="addSubSO"
@@ -132,7 +112,7 @@
                     </SmallAddButton>
                   </div>
                 </div>
-                <div v-if="selectedSO.detail && selectedSO.detail.subSO">
+                <div v-if="selectedSO && selectedSO.sub_student_outcomes">
                   <table
                     class="min-w-full divide-y border-grey-secondary mt-4 border-y"
                   >
@@ -160,8 +140,8 @@
                     </thead>
                     <tbody class="bg-white divide-y border-grey-secondary">
                       <tr
-                        v-for="subSO in selectedSO.detail.subSO"
-                        :key="subSO.code"
+                        v-for="subSO in selectedSO.sub_student_outcomes"
+                        :key="subSO.id"
                       >
                         <td
                           class="px-6 py-4 whitespace-nowrap text-sm font-medium border-r border-grey-secondary"
@@ -171,9 +151,9 @@
                         <td class="px-6 py-4 border-r border-grey-secondary">
                           <div class="w-full flex flex-col gap-2">
                             <div>
-                              {{ subSO.desc_th }}
+                              {{ subSO.description_thai }}
                             </div>
-                            <div>{{ subSO.desc }}</div>
+                            <div>{{ subSO.description_eng }}</div>
                           </div>
                         </td>
                         <td
@@ -182,20 +162,21 @@
                           <div
                             class="flex flex-col gap-2 items-center justify-center"
                           >
-                            <button
+                            <!-- <button
                               class="flex items-center justify-center bg-white rounded-xl p-2 border border-grey-secondary hover:bg-black-primary text-black-primary hover:text-white"
                             >
                               <Edit class="w-5 h-5" />
-                            </button>
+                            </button> -->
                             <button
                               class="flex items-center justify-center bg-white rounded-xl p-2 border border-grey-secondary hover:bg-red-500 text-black-primary hover:text-white"
+                              @click="deleteSubSO(subSO)"
                             >
                               <Delete class="w-5 h-5" />
                             </button>
                           </div>
                         </td>
                       </tr>
-                      <tr v-if="!selectedSO.detail.subSO.length">
+                      <tr v-if="!selectedSO.sub_student_outcomes.length">
                         <td
                           colspan="3"
                           class="px-6 py-4 whitespace-nowrap text-sm font-medium border-r border-grey-secondary text-center"
@@ -255,35 +236,19 @@
                       v-if="!editMode"
                       class="flex items-center justify-center w-16 border p-1 rounded-lg border-grey-tertiary"
                     >
-                      {{ selectedSO.detail.expectedCourseSOPassingRate }}
+                      {{ selectedSO.expected_course_passing_percentage }}
                     </div>
                     <div v-if="editMode">
                       <input
-                        type="text"
+                        type="number"
                         class="bg-transparent text-center focus:ring-0 outline-none text-base w-16 border p-1 rounded-lg border-grey-primary"
-                        v-model="selectedSO.detail.expectedCourseSOPassingRate"
+                        v-model="selectedSO.expected_course_passing_percentage"
                       />
                     </div>
                   </div>
                 </div>
                 <div class="flex flex-row gap-4 px-4 mt-2 justify-between">
-                  <div class="flex">
-                    <div
-                      class="px-3 py-2 bg-white border border-grey-secondary rounded-xl flex flex-row gap-4 items-center"
-                    >
-                      <input
-                        type="text"
-                        v-model="searchQuery"
-                        class="bg-transparent border-none focus:ring-0 outline-none text-base w-48"
-                        placeholder="Search..."
-                      />
-                      <button
-                        class="flex items-center justify-center bg-white rounded-xl"
-                      >
-                        <Search class="w-6 h-6" />
-                      </button>
-                    </div>
-                  </div>
+                  <div class="flex"></div>
                   <SmallEditButton
                     v-if="!editMode"
                     @click="editSO"
@@ -324,8 +289,8 @@
                   </thead>
                   <tbody class="bg-white divide-y border-grey-secondary">
                     <tr
-                      v-for="course in selectedSO.detail.involvedCourses"
-                      :key="course.code"
+                      v-for="course in selectedSO.involvedCourses"
+                      :key="course.id"
                     >
                       <td
                         class="px-4 py-4 text-sm border-r border-grey-secondary"
@@ -344,7 +309,7 @@
                             :class="[
                               'flex',
                               course.courseSOPassingRate >=
-                              selectedSO.detail.expectedCourseSOPassingRate
+                              selectedSO.expected_course_passing_percentage
                                 ? 'bg-green-500'
                                 : 'bg-red-500',
                             ]"
@@ -368,6 +333,7 @@
     v-if="showAddSOPopup"
     :id="id"
     :name="SOName"
+    :SOs="SO"
     @close="showAddSOPopup = false"
   />
   <AddSubSO
@@ -375,6 +341,8 @@
     :id="id"
     :So="SOid"
     :name="SOName"
+    :soId="selectedSO.id"
+    :subSOs="selectedSO.sub_student_outcomes"
     @close="showAddSubSOPopup = false"
   />
 </template>
@@ -386,24 +354,72 @@ import ExportButton from "@/components/button/ExportButton.vue";
 import SmallAddButton from "@/components/button/SmallAddButton.vue";
 import SmallEditButton from "@/components/button/SmallEditButton.vue";
 import SmallSaveButton from "@/components/button/SmallSaveButton.vue";
-import Search from "@/components/icons/Search.vue";
-import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
 import AddSO from "@/components/popups/AddSO.vue";
 import AddSubSO from "@/components/popups/AddSubSO.vue";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
+import { fetchSOs, BaseURL } from "~/api/api";
 
 const router = useRouter();
 
-const searchQuery = ref("");
 const editMode = ref(false);
 const editSO = () => {
   editMode.value = true;
 };
 
-const saveSO = () => {
+const saveSO = async () => {
+  try {
+    console.log(selectedSO);
+    const response = await fetch(`${BaseURL}sos/${selectedSO.value.id}`, {
+      credentials: "include",
+      method: "PATCH",
+      body: JSON.stringify(selectedSO.value),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Failed to update SO");
+  } catch (error) {
+    console.error(error);
+  }
   editMode.value = false;
+};
+
+const deleteSO = async (so) => {
+  try {
+    const response = await fetch(`${BaseURL}sos/${so.id}`, {
+      credentials: "include",
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Failed to delete SO");
+    SO.value = SO.value.filter((item) => item.id !== so.id);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const deleteSubSO = async (SubSO) => {
+  console.log(SubSO);
+  try {
+    const response = await fetch(`${BaseURL}ssos/${SubSO.id}`, {
+      credentials: "include",
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Failed to delete SSO");
+    selectedSO.value.sub_student_outcomes =
+      selectedSO.value.sub_student_outcomes.filter((sso) => {
+        return sso.id != SubSO.id;
+      });
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 const showAddSOPopup = ref(false);
@@ -425,64 +441,28 @@ const addSubSO = () => {
   showAddSubSOPopup.value = true;
 };
 
-const SO = ref([
-  {
-    name: "SO 1",
-    detail: {
-      desc: "Able to apply principles and knowledge of science, mathematics, and engineering to analyze and design solutions for computer engineering problems.",
-      desc_th:
-        "สามารถใช้หลักการและความรู้ทางวิทยาศาสตร์ คณิตศาสตร์ และวิศวกรรมศาสตร์ ในการวิเคราะห์และออกแบบเพื่อแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ได้",
-      subSO: [
-        {
-          code: "SO 1.1",
-          desc: "Apply knowledge of mathematics, science, and engineering to computer engineering problems.",
-          desc_th:
-            "ใช้ความรู้ด้านคณิตศาสตร์ วิทยาศาสตร์ และวิศวกรรมศาสตร์ในการแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์",
-        },
-        {
-          code: "SO 1.2",
-          desc: "Apply knowledge of mathematics, science, and engineering to computer engineering problems.",
-          desc_th:
-            "ใช้ความรู้ด้านคณิตศาสตร์ วิทยาศาสตร์ และวิศวกรรมศาสตร์ในการแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์",
-        },
-      ],
-      expectedWeightPassingCLORate: 50,
-      expectOverallRate: 50,
-      overallPassingRate: 50,
-      expectedCourseSOPassingRate: 50,
-      involvedCourses: [
-        {
-          code: "CPE231",
-          name: "Computer Engineering Project",
-          semester: "1/2021",
-          courseSOPassingRate: 50,
-        },
-        {
-          code: "CPE232",
-          name: "Algorithms",
-          semester: "1/2021",
-          courseSOPassingRate: 50,
-        },
-        {
-          code: "CPE233",
-          name: "Computer Engineering",
-          semester: "1/2021",
-          courseSOPassingRate: 50,
-        },
-      ],
-    },
-  },
-  {
-    name: "SO 2",
-    detail: {},
-  },
-]);
+const SO = ref([]);
 
-const selectedSO = ref(SO.value[0]);
+const selectedSO = ref({
+  id: "",
+  code: "",
+  description_thai: "",
+  description_eng: "",
+  expected_course_passing_percentage: "",
+  program_id: "",
+  sub_student_outcomes: [],
+});
 
 function selectSO(so) {
   selectedSO.value = so;
 }
+
+onMounted(async () => {
+  id.value = router.currentRoute.value.params.id;
+  await fetchSOs(SO, id.value);
+  console.log(SO.value);
+  selectSO(SO.value[0]);
+});
 </script>
 
 <style lang="scss" scoped>
