@@ -7,11 +7,11 @@
     </div>
     <div class="flex flex-col gap-4 justify-center items-center h-full w-full">
       <img
-        :src="PDF"
-        alt="pdf"
+        :src="Docx"
+        alt="Docx"
         class="w-24 max-w-md object-cover rounded-2xl -ml-4"
       />
-      <div class="text-center text-black-primary text-sm">Report.pdf</div>
+      <div class="text-center text-black-primary text-sm">Report.docx</div>
       <ImportButton
         @click=""
         class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2 hover:cursor-pointer"
@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import PDF from "@/components/images/PDF.png";
+import Docx from "@/components/images/Docx.png";
 </script>
 
 <style lang="scss" scoped></style>
