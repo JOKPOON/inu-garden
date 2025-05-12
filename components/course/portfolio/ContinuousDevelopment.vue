@@ -244,6 +244,12 @@
         </div>
       </div>
     </div>
+    <div
+      v-else-if="activeMenu === 'Feedback'"
+      class="max-h-[calc(100vh-470px)] scrollbar-set overflow-y-scroll"
+    >
+      <RecivedFeedbacks />
+    </div>
   </div>
 </template>
 
@@ -252,6 +258,7 @@ import { ref } from "vue";
 import Delete from "@/components/icons/Delete.vue";
 import Edit from "@/components/icons/Edit.vue";
 import include from "@/components/icons/Include.vue";
+import RecivedFeedbacks from "@/components/course/RecivedFeedbacks.vue";
 import SmallAddButton from "@/components/button/SmallAddButton.vue";
 
 const menus = ["Plan", "Do & Check", "Act", "Feedback"];
