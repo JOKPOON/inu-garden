@@ -458,6 +458,60 @@ const fetchFaculties = async (faculties) => {
   }
 };
 
+const fetchEvaluation = async (
+  programme_id = "",
+  from = "",
+  to = "",
+  topic
+) => {
+  try {
+    let url = ""; // Declare once with let
+
+    if (topic === 0) {
+      url = `${BaseURL}programmes/${programme_id}/clo_assessment?fromSerm=${from}&toSerm=${to}`;
+    } else if (topic === 1) {
+      url = `${BaseURL}programmes/${programme_id}/liked_outcomes?fromSerm=${from}&toSerm=${to}`;
+    } else if (topic === 2) {
+      url = `${BaseURL}programmes/${programme_id}/outcomes_success_rate?fromSerm=${from}&toSerm=${to}`;
+    } else {
+      throw new Error("Invalid topic");
+    }
+
+    console.log("URL:", url);
+
+    const response = await fetch(url, {
+      credentials: "include",
+      method: "GET",
+    });
+
+    if (!response.ok) throw new Error("Failed to fetch evaluation");
+
+    const contentType = response.headers.get("content-type");
+    if (
+      !contentType.includes(
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      )
+    ) {
+      const text = await response.text();
+      console.error("Expected .xlsx, but got:", text);
+      throw new Error("Invalid content-type");
+    }
+
+    const blob = await response.blob();
+    const filename = "evaluation_report.xlsx";
+    const urlObject = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = urlObject;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    window.URL.revokeObjectURL(urlObject);
+    document.body.removeChild(link);
+  } catch (error) {
+    console.error("Download error:", error);
+  }
+};
+
 export {
   BaseURL,
   fetchMe,
@@ -483,4 +537,5 @@ export {
   fetchPOs,
   fetchSOs,
   fetchStudentsPassingCLOs,
+  fetchEvaluation,
 };

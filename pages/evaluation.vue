@@ -4,16 +4,17 @@
       class="px-4 py-3 bg-white border border-grey-secondary rounded-xl flex flex-row gap-4 items-center"
     >
       <select
-        v-model="selectedDepartmentOption"
+        v-model="selectedFacultyOption"
+        @change="getDepartments(selectedFacultyOption)"
         class="bg-transparent border-none focus:ring-0 outline-none text-base pr-2 hover:cursor-pointer"
       >
-        <option value="">All Departments</option>
+        <option value="">Faculties</option>
         <option
-          v-for="option in departmentOptions"
-          :key="option"
+          v-for="option in facultyOptions"
+          :key="option.id"
           :value="option"
         >
-          {{ option }}
+          {{ option.name_en }}
         </option>
       </select>
     </div>
@@ -21,12 +22,17 @@
       class="px-4 py-3 bg-white border border-grey-secondary rounded-xl flex flex-row gap-4 items-center"
     >
       <select
-        v-model="selectedFacultyOption"
+        v-model="selectedDepartmentOption"
+        @change="getPrograms(selectedDepartmentOption)"
         class="bg-transparent border-none focus:ring-0 outline-none text-base pr-2 hover:cursor-pointer"
       >
-        <option value="">All Faculties</option>
-        <option v-for="option in facultyOptions" :key="option" :value="option">
-          {{ option }}
+        <option value="">Departments</option>
+        <option
+          v-for="option in departmentOptions"
+          :key="option.id"
+          :value="option"
+        >
+          {{ option.name_en }}
         </option>
       </select>
     </div>
@@ -37,9 +43,13 @@
         v-model="selectedProgramOption"
         class="bg-transparent border-none focus:ring-0 outline-none text-base pr-2 hover:cursor-pointer"
       >
-        <option value="">All Programs</option>
-        <option v-for="option in programOptions" :key="option" :value="option">
-          {{ option }}
+        <option value="">Programs</option>
+        <option
+          v-for="option in programOptions"
+          :key="option.id"
+          :value="option.id"
+        >
+          {{ option.name_en }}
         </option>
       </select>
     </div>
@@ -78,10 +88,10 @@
           <img
             :src="Exel"
             alt="Banner Login"
-            class="w-24 max-w-md object-cover rounded-2xl -ml-4 "
+            class="w-24 max-w-md object-cover rounded-2xl -ml-4"
           />
           <div class="text-center text-black-primary text-sm">
-            {{ selectedTopic }}.xlsx 
+            {{ selectedTopic }}.xlsx
           </div>
           <ImportButton
             @click="downloadExel(selectedTopic)"
@@ -93,7 +103,10 @@
           </ImportButton>
         </div>
       </div>
-      <div v-else class="col-span-3 flex items-center border-grey-secondary justify-center flex-col overflow-y-scroll min-h-[calc(100vh-360px)] scrollbar-set">
+      <div
+        v-else
+        class="col-span-3 flex items-center border-grey-secondary justify-center flex-col overflow-y-scroll min-h-[calc(100vh-360px)] scrollbar-set"
+      >
         <img
           :src="BannerLogin"
           alt="Banner Login"
@@ -117,15 +130,15 @@
             <option value="">From</option>
             <option
               v-for="year in academicYearOptions"
-              :key="year"
-              :value="year"
+              :key="year.id"
+              :value="year.year"
             >
-              {{ year }}
+              {{ year.semester_sequence }} / {{ year.year }}
             </option>
           </select>
         </div>
         <h3 class="text-base font-semibold text-black-primary mt-4">
-          To Academic Year (Optional)
+          To Academic Year
         </h3>
         <div
           class="px-4 py-3 bg-white border border-grey-secondary rounded-xl flex flex-row gap-4 items-center mt-2"
@@ -137,10 +150,10 @@
             <option value="">Until</option>
             <option
               v-for="year in academicYearOptions"
-              :key="year"
-              :value="year"
+              :key="year.id"
+              :value="year.year"
             >
-              {{ year }}
+              {{ year.semester_sequence }} / {{ year.year }}
             </option>
           </select>
         </div>
@@ -163,6 +176,7 @@ import Exel from "@/components/images/Exel.png";
 import ImportButton from "@/components/button/ImportButton.vue";
 import BannerLogin from "@/components/images/BannerLogin.jpg";
 import StatusPopup from "@/components/popups/StatusPopup.vue";
+import { fetchEvaluation, fetchFaculties, fetchSerms } from "~/api/api";
 const { t } = useI18n();
 
 useHead({
@@ -174,7 +188,6 @@ definePageMeta({
   layout: "landing",
 });
 
-const searchQuery = ref("");
 const selectedDepartmentOption = ref("");
 const selectedFacultyOption = ref("");
 const selectedProgramOption = ref("");
@@ -186,51 +199,62 @@ const status = ref("");
 const message = ref("");
 const path = ref("");
 
-const departmentOptions = ref(["Department 1", "Department 2", "Department 3"]);
-const facultyOptions = ref(["faculty 1", "faculty 2", "faculty 3"]);
-const programOptions = ref(["Program 1", "Program 2", "Program 3"]);
-const academicYearOptions = ref(["2021", "2022", "2023", "2024"]);
+const departmentOptions = ref([]);
+const facultyOptions = ref([]);
+const programOptions = ref([]);
+const academicYearOptions = ref([]);
 
 const topics = ref([
-  { name: "Course CLO Assessment Table" },
-  { name: "Course Link Outcome Table" },
+  { name: "Course CLO Assessment" },
+  { name: "Course Link Outcome " },
   { name: "Course Outcome Success Rate" },
 ]);
 
-const downloadExel = (topic) => {
+const downloadExel = async (topic) => {
   console.log("Downloading Exel for topic: ", topic);
+  if (topic === "Course CLO Assessment") {
+    topic = 0;
+  } else if (topic === "Course Link Outcome") {
+    topic = 1;
+  } else if (topic === "Course Outcome Success Rate") {
+    topic = 2;
+  }
 
-  const fileName = topic.toLowerCase().replace(/ /g, '_') + '.xlsx';
-  const filePath = `/store/exel/${fileName}`;
+  if (
+    !selectedFacultyOption.value ||
+    !selectedDepartmentOption.value ||
+    !selectedProgramOption.value ||
+    !selectedStartAcademicYear.value ||
+    !selectedEndAcademicYear.value
+  ) {
+    statusVisible.value = true;
+    status.value = "error";
+    message.value = "Please select all fields!";
+    path.value = "";
+    return;
+  }
 
-  console.log(`Checking file at: ${filePath}`);
-
-  fetch(filePath, { method: 'HEAD' })
-    .then(response => {
-      if (response.ok) {
-        console.log(`File found: ${filePath}`);
-        const link = document.createElement("a");
-        link.href = filePath;
-        link.download = `${topic}.xlsx`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      } else {
-        console.error(`File not found: ${filePath}`);
-        status.value = "error";
-        message.value = `File not found: ${filePath}`;
-        path.value = filePath;
-        statusVisible.value = true;
-      }
-    })
-    .catch(error => {
-      console.error(`Error fetching file: ${filePath}`, error);
-      status.value = "error";
-      message.value = `Error fetching file: ${filePath}`;
-      path.value = filePath;
-      statusVisible.value = true;
-    });
+  await fetchEvaluation(
+    selectedProgramOption.value,
+    selectedStartAcademicYear.value,
+    selectedEndAcademicYear.value,
+    topic
+  );
 };
+
+const getDepartments = (faculty) => {
+  departmentOptions.value = faculty.departments || [];
+};
+
+const getPrograms = (department) => {
+  programOptions.value = department.programmes || [];
+};
+
+onMounted(async () => {
+  await fetchFaculties(facultyOptions);
+  await fetchSerms(academicYearOptions);
+  console.log("Faculties: ", facultyOptions.value);
+});
 </script>
 
 <style lang="scss" scoped>
