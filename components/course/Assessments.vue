@@ -3,23 +3,6 @@
     <div class="flex flex-row justify-between items-center gap-4">
       <div class="flex flex-row gap-4">
         <div
-          class="px-4 py-3 bg-white border border-grey-secondary rounded-xl flex flex-row gap-4 items-center"
-        >
-          <input
-            type="text"
-            v-model="searchQuery"
-            @keyup.enter="getStudents(searchQuery)"
-            class="bg-transparent border-none focus:ring-0 outline-none text-base w-48"
-            placeholder="Search..."
-          />
-          <button
-            class="flex items-center justify-center bg-white rounded-xl"
-            @click="getStudents(searchQuery)"
-          >
-            <Search class="w-6 h-6" />
-          </button>
-        </div>
-        <div
           class="flex flex-col gap-1 items-center py-2 px-4 rounded-xl bg-black-primary"
         >
           <div class="text-sm font-semibold text-start w-full">
@@ -364,7 +347,7 @@
                       class="col-span-2 text-sm text-black-primary flex items-center justify-end flex-row gap-2"
                     >
                       <button
-                        @click="editScore(score.id, 55)"
+                        @click="editScore(score)"
                         class="flex items-center justify-center rounded-xl p-2 border bg-white hover:bg-black-primary hover:text-white"
                       >
                         <Edit class="w-5 h-5" />
@@ -411,7 +394,7 @@
     :courseId="props.courseId"
     :name="assesmentsName"
   />
-  <AddStudentToAssessment
+  <AddStudentAssessmentScore
     v-if="isAddStudentShow"
     @updated="updateAddScore"
     @close="isAddStudentShow = false"
@@ -420,6 +403,16 @@
     :id="assesmentsID"
     :name="assesmentsName"
     :courseId="props.courseId"
+  />
+  <EditStudentAssignmentScore
+    v-if="isEditStudentShow"
+    @updated="updateEditScore"
+    @close="isEditStudentShow = false"
+    :groupName="assesmentsGroupName"
+    :id="assesmentsID"
+    :name="assesmentsName"
+    :courseId="props.courseId"
+    :score="scoreSelected"
   />
 </template>
 
@@ -435,7 +428,6 @@ import {
   CategoryScale,
   LinearScale,
 } from "chart.js";
-import Search from "@/components/icons/Search.vue";
 import AddButton from "@/components/button/AddButton.vue";
 import TemplateButton from "@/components/button/TemplateButton.vue";
 import Import from "@/components/button/ImportButton.vue";
@@ -444,11 +436,12 @@ import NotInclude from "@/components/icons/NotInclude.vue";
 import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
 import AddCLO from "@/components/popups/AddCLOAssessment.vue";
-import AddStudentToAssessment from "@/components/popups/AddStudentToAssessment.vue";
 import AddAssesments from "@/components/popups/AddAssesments.vue";
 import SmallEditButton from "@/components/button/SmallEditButton.vue";
 import SmallSaveButton from "@/components/button/SmallSaveButton.vue";
 import { BaseURL, fetchAssignments, fetchAssignmentScores } from "~/api/api";
+import AddStudentAssessmentScore from "~/components/popups/AddStudentAssessmentScore.vue";
+import EditStudentAssignmentScore from "../popups/EditStudentAssignmentScore.vue";
 
 const props = defineProps({
   courseId: {
@@ -600,12 +593,14 @@ const removeCLO = (code) => {
 };
 
 const isAddAssesmentsShow = ref(false);
+const isEditStudentShow = ref(false);
 const isAddCLOShow = ref(false);
 const isAddStudentShow = ref(false);
 const assesmentsGroupID = ref("");
 const assesmentsGroupName = ref("");
 const assesmentsID = ref("");
 const assesmentsName = ref("");
+const scoreSelected = ref({});
 
 const addAssesments = () => {
   const active = getActiveAssessment();
@@ -636,7 +631,10 @@ const addStudentToAssessment = () => {
 
 onMounted(async () => {
   await fetchAssignments(assessments, props.courseId);
-  setActiveAssessment(assessments.value[0]);
+  console.log(assessments.value);
+  setActiveAssessment(
+    assessments.value.find((a) => a.assignment_group_id === route.query.groupId)
+  );
 
   const active = getActiveAssessment();
   chartData.value = {
@@ -708,6 +706,12 @@ const updateAddScore = async (score) => {
   }
 };
 
+const updateEditScore = async (score) => {
+  scores.value = scores.value.map((s) =>
+    s.id === score.id ? { ...s, score: score.score } : s
+  );
+};
+
 const addScore = async (score = 0.0, student_id) => {
   try {
     const response = await fetch(`${BaseURL}scores`, {
@@ -735,26 +739,14 @@ const addScore = async (score = 0.0, student_id) => {
   }
 };
 
-const editScore = async (scoreId, score = 0.0) => {
-  try {
-    const response = await fetch(`${BaseURL}scores/${scoreId}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        score: score,
-      }),
-      credentials: "include",
-    });
-    if (response.ok) {
-      scores.value = scores.value.map((s) =>
-        s.id === scoreId ? { ...s, score: score } : s
-      );
-    }
-  } catch (error) {
-    console.error(error);
-  }
+const editScore = async (score) => {
+  const active = getActiveAssessment();
+  assesmentsGroupID.value = groupID;
+  assesmentsGroupName.value = groupName;
+  assesmentsID.value = active.id;
+  assesmentsName.value = active.name;
+  scoreSelected.value = score;
+  isEditStudentShow.value = true;
 };
 
 const deleteScore = async (scoreId) => {

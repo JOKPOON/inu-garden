@@ -183,6 +183,31 @@ const fetchAssignments = async (assessments, course_id = "") => {
   }
 };
 
+const fetchAssignmentGroup = async (
+  assessments_group,
+  withAssignments = false,
+  groupId = "",
+  course_id = ""
+) => {
+  try {
+    const response = await fetch(
+      `${BaseURL}courses/${course_id}/assignment-groups?withAssignments=${withAssignments}&groupId=${groupId}`,
+      {
+        credentials: "include",
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!response.ok) throw new Error("Failed to fetch assignments");
+    const res = await response.json();
+    assessments_group.value = res.data;
+  } catch (error) {
+    console.error("Error fetching assignments:", error);
+  }
+};
+
 const fetchAssignmentScores = async (scores, clos, assignment_id) => {
   try {
     const response = await fetch(
@@ -468,11 +493,11 @@ const fetchEvaluation = async (
     let url = ""; // Declare once with let
 
     if (topic === 0) {
-      url = `${BaseURL}programmes/${programme_id}/clo_assessment?fromSerm=${from}&toSerm=${to}`;
+      url = `${BaseURL}programmes/${programme_id}/clo_assessment?from=${from}&to=${to}`;
     } else if (topic === 1) {
-      url = `${BaseURL}programmes/${programme_id}/liked_outcomes?fromSerm=${from}&toSerm=${to}`;
+      url = `${BaseURL}programmes/${programme_id}/liked_outcomes?from=${from}&to=${to}`;
     } else if (topic === 2) {
-      url = `${BaseURL}programmes/${programme_id}/outcomes_success_rate?fromSerm=${from}&toSerm=${to}`;
+      url = `${BaseURL}programmes/${programme_id}/outcomes_success_rate?from=${from}&to=${to}`;
     } else {
       throw new Error("Invalid topic");
     }
@@ -520,6 +545,7 @@ export {
   fetchPrograms,
   fetchSerms,
   fetchStudents,
+  fetchAssignmentGroup,
   fetchAssignments,
   fetchAssignmentScores,
   fetchScores,

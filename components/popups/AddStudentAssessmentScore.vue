@@ -36,6 +36,12 @@
                 @keyup.enter="handleSearch"
               />
             </div>
+            <button
+              @click="handleSearch"
+              class="py-2 font-medium border border-grey-secondary text-black-primary rounded-xl w-full bg-yellow-primary hover:bg-black-primary hover:text-white"
+            >
+              Search
+            </button>
             <div
               v-if="students"
               class="flex flex-col items-start w-full gap-2 max-h-[150px] overflow-y-auto"
@@ -46,7 +52,8 @@
                 class="bg-white border border-grey-secondary rounded-xl text-base p-3 hover:cursor-pointer w-full"
                 @click="handleSelectStudent(student)"
               >
-                {{ student.student_id }}
+                {{ student.student_id }} - {{ student.first_name_en }}
+                {{ student.last_name_en }}
               </div>
             </div>
           </div>
@@ -124,6 +131,7 @@ const studentSelected = ref({
 
 const handleSearch = () => {
   fetchEnrollments(students, props.courseId, studentSelected.value.student_id);
+  console.log(students.value);
 };
 
 const handleSelectStudent = (student) => {
