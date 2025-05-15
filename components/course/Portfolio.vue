@@ -15,7 +15,7 @@
         {{ menu }}
       </button>
     </div>
-    <div class="col-span-4 py-4">
+    <div v-if="!loading" class="col-span-4 py-4">
       <component :is="getActiveComponent" />
     </div>
   </div>
@@ -28,6 +28,10 @@ import Implementation from "@/components/course/portfolio/Implementation.vue";
 import EducationalOutcomes from "@/components/course/portfolio/EducationalOutcomes.vue";
 import ContinuousDevelopment from "@/components/course/portfolio/ContinuousDevelopment.vue";
 import Report from "@/components/course/portfolio/Report.vue";
+import { usePortfolioStore } from "~/store/usePortfolioStore";
+import { fetchCourse } from "~/api/api";
+const store = usePortfolioStore();
+const router = useRouter();
 
 const menus = [
   "Details",
@@ -47,6 +51,14 @@ const componentsMap = {
 };
 
 const getActiveComponent = computed(() => componentsMap[activeMenu.value]);
+const loading = ref(true);
+
+onMounted(async () => {
+  const course = ref(null);
+  await fetchCourse(course, router.currentRoute.value.params.id);
+  store.setDetails(course.value);
+  loading.value = false;
+});
 </script>
 
 <style lang="scss" scoped></style>

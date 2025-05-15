@@ -8,11 +8,11 @@
     <div class="grid grid-cols-2 gap-4">
       <div class="flex">
         <span class="font-semibold w-40">Course Code:</span>
-        <span>{{ courseDetails.courseCode }}</span>
+        <span>{{ courseDetails.code }}</span>
       </div>
       <div class="flex">
         <span class="font-semibold w-40">Course Name:</span>
-        <span>{{ courseDetails.courseName }}</span>
+        <span>{{ courseDetails.name }}</span>
       </div>
       <div class="flex">
         <span class="font-semibold w-40">Credit:</span>
@@ -20,32 +20,37 @@
       </div>
       <div class="flex">
         <span class="font-semibold w-40">Number of Students:</span>
-        <span>{{ courseDetails.numberOfStudents }}</span>
+        <span>{{
+          courseDetails.numberOfStudents ? courseDetails.numberOfStudents : "-"
+        }}</span>
       </div>
       <div class="flex">
         <span class="font-semibold w-40">Faculty:</span>
-        <span>{{ courseDetails.faculty }}</span>
+        <span>{{ courseDetails.programme.department.faculty.name_th }}</span>
       </div>
       <div class="flex">
         <span class="font-semibold w-40">Department:</span>
-        <span>{{ courseDetails.department }}</span>
+        <span>{{ courseDetails.programme.department.name_th }}</span>
       </div>
       <div class="flex">
         <span class="font-semibold w-40">Program:</span>
-        <span>{{ courseDetails.program }}</span>
+        <span>{{ courseDetails.programme.name_th }}</span>
       </div>
       <div class="flex">
         <span class="font-semibold w-40">Education Level:</span>
-        <span>{{ courseDetails.educationLevel }}</span>
+        <span>{{ courseDetails.programme.degree_th }}</span>
       </div>
       <div class="flex">
         <span class="font-semibold w-40">Lecturer:</span>
-        <span v-if="Array.isArray(courseDetails.lecturer)">
+        <span v-if="Array.isArray(courseDetails.lecturers)">
           <span
-            v-for="(lecturer, index) in courseDetails.lecturer"
+            v-for="(lecturer, index) in courseDetails.lecturers"
             :key="index"
           >
-            {{ lecturer }}<br />
+            {{ lecturer.title_th_short }}
+            {{ lecturer.first_name_th }}
+            {{ lecturer.last_name_th }}
+            <br />
           </span>
         </span>
         <span v-else>{{ courseDetails.lecturer }}</span>
@@ -55,17 +60,11 @@
 </template>
 
 <script setup>
-const courseDetails = {
-  courseName: "Introduction to Programming",
-  courseCode: "CS101",
-  credit: 3,
-  lecturer: ["Dr. John Doe", "Dr. Jane Smith"],
-  numberOfStudents: 120,
-  faculty: "Faculty of Computer Science",
-  department: "Computer Science",
-  program: "Bachelor of Computer Science",
-  educationLevel: "Undergraduate",
-};
+import { usePortfolioStore } from "~/store/usePortfolioStore";
+const store = usePortfolioStore();
+
+console.log(store.details);
+const courseDetails = store.details;
 </script>
 
 <style lang="scss" scoped></style>

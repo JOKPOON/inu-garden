@@ -57,7 +57,7 @@
       </div>
     </div>
     <div
-      v-if="activeMenu === 'Score & Grade'"
+      v-if="activeMenu === 'Score & Grade' && result"
       class="max-h-[calc(100vh-475px)] scrollbar-set overflow-y-scroll"
     >
       <div class="grid grid-cols-2 gap-4">
@@ -145,7 +145,9 @@ import PLO from "@/components/course/portfolio/PLO.vue";
 import PO from "@/components/course/portfolio/PO.vue";
 import SO from "@/components/course/portfolio/SO.vue";
 import PDF from "@/components/images/PDF.png";
+import { fetchCourseResult } from "~/api/api";
 
+const router = useRouter();
 const menus = ["Score & Grade", "Outcomes"];
 const activeMenu = ref("Score & Grade");
 
@@ -154,8 +156,7 @@ const activeMenuOutcomes = ref("CLO");
 
 const buttons = ["Overview", "Grade Overview"];
 const activeButton = ref(buttons[0]);
-const id = ref(null);
-const router = useRouter();
+const id = ref(router.currentRoute.value.params.id);
 
 const setActiveButton = (button) => {
   activeButton.value = button;
@@ -190,105 +191,10 @@ const changeKeyToLabel = (key) => {
   }
 };
 
-const result = ref({
-  student_amount: 0,
-  gpa: 0,
-  grade_frequencies: [
-    {
-      name: "A",
-      grade_score: 90,
-      frequency: 0,
-    },
-    {
-      name: "BP",
-      grade_score: 85,
-      frequency: 0,
-    },
-    {
-      name: "B",
-      grade_score: 80,
-      frequency: 0,
-    },
-    {
-      name: "CP",
-      grade_score: 75,
-      frequency: 0,
-    },
-    {
-      name: "C",
-      grade_score: 70,
-      frequency: 0,
-    },
-    {
-      name: "DP",
-      grade_score: 65,
-      frequency: 0,
-    },
-    {
-      name: "D",
-      grade_score: 60,
-      frequency: 0,
-    },
-    {
-      name: "F",
-      grade_score: 0,
-      frequency: 0,
-    },
-  ],
-  score_frequencies: [
-    {
-      score: "0-50",
-      frequency: 0,
-    },
-    {
-      score: "51-55",
-      frequency: 0,
-    },
-    {
-      score: "56-60",
-      frequency: 0,
-    },
-    {
-      score: "61-65",
-      frequency: 0,
-    },
-    {
-      score: "66-70",
-      frequency: 0,
-    },
-    {
-      score: "71-75",
-      frequency: 0,
-    },
-    {
-      score: "76-80",
-      frequency: 0,
-    },
-    {
-      score: "81-85",
-      frequency: 0,
-    },
-    {
-      score: "86-90",
-      frequency: 0,
-    },
-    {
-      score: "91-95",
-      frequency: 0,
-    },
-    {
-      score: "96-100",
-      frequency: 0,
-    },
-  ],
-  statistics: {
-    min: 0,
-    max: 0,
-    mean: 0,
-    median: 0,
-    mode: 0,
-    sd: 0,
-  },
+const result = ref(null);
+
+onMounted(async () => {
+  await fetchCourseResult(result, id.value);
 });
 </script>
 
