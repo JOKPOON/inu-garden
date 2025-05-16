@@ -33,7 +33,7 @@
             v-if="!editingIndex.includes(index)"
             class="flex items-center gap-2 flex-row justify-between w-full"
           >
-            <div class="w-full">{{ plan }}</div>
+            <div class="w-full">4.1.{{ index + 1 }} {{ plan }}</div>
             <div class="flex items-center gap-2 px-2">
               <button
                 class="flex items-center justify-center bg-white rounded-xl p-2 border border-grey-secondary hover:bg-black-primary text-black-primary hover:text-white"
@@ -109,7 +109,7 @@
             v-if="!editingIndex.includes(index)"
             class="flex items-center gap-2 flex-row justify-between w-full"
           >
-            <div class="w-full">{{ doCheck }}</div>
+            <div class="w-full">4.2.{{ index + 1 }} {{ doCheck }}</div>
             <div class="flex items-center gap-2 px-2">
               <button
                 class="flex items-center justify-center bg-white rounded-xl p-2 border border-grey-secondary hover:bg-black-primary text-black-primary hover:text-white"
@@ -185,7 +185,7 @@
             v-if="!editingIndex.includes(index)"
             class="flex items-center gap-2 flex-row justify-between w-full"
           >
-            <div class="w-full">{{ act }}</div>
+            <div class="w-full">4.3.{{ index + 1 }} {{ act }}</div>
             <div class="flex items-center gap-2 px-2">
               <button
                 class="flex items-center justify-center bg-white rounded-xl p-2 border border-grey-secondary hover:bg-black-primary text-black-primary hover:text-white"
@@ -260,13 +260,15 @@ import Edit from "@/components/icons/Edit.vue";
 import include from "@/components/icons/Include.vue";
 import RecivedFeedbacks from "@/components/course/RecivedFeedbacks.vue";
 import SmallAddButton from "@/components/button/SmallAddButton.vue";
+import { usePortfolioStore } from "~/store/usePortfolioStore";
+const store = usePortfolioStore();
 
 const menus = ["Plan", "Do & Check", "Act", "Feedback"];
 const activeMenu = ref("Plan");
 
-const Plans = ref(["Plan 1", "Plan 2", "Plan 3"]);
-const DoChecks = ref(["Do & Check 1", "Do & Check 2"]);
-const Acts = ref(["Act 1", "Act 2"]);
+const Plans = ref([]);
+const DoChecks = ref([]);
+const Acts = ref([]);
 
 const newPlan = ref("");
 const newDoCheck = ref("");
@@ -288,6 +290,9 @@ const addPlan = () => {
     newPlan.value = "";
     showAddInput.value = false;
   }
+  if (Plans.value.length > 0) {
+    store.setPlans(Plans.value);
+  }
 };
 
 const addDoCheck = () => {
@@ -296,6 +301,9 @@ const addDoCheck = () => {
     newDoCheck.value = "";
     showAddInput.value = false;
   }
+  if (DoChecks.value.length > 0) {
+    store.setDoAndChecks(DoChecks.value);
+  }
 };
 
 const addAct = () => {
@@ -303,6 +311,9 @@ const addAct = () => {
     Acts.value.push(newAct.value.trim());
     newAct.value = "";
     showAddInput.value = false;
+  }
+  if (Acts.value.length > 0) {
+    store.setActs(Acts.value);
   }
 };
 
@@ -317,6 +328,12 @@ const deleteDoCheck = (index) => {
 const deleteAct = (index) => {
   Acts.value.splice(index, 1);
 };
+
+onMounted(() => {
+  Plans.value = store.continuousDevelopment.plans || [];
+  DoChecks.value = store.continuousDevelopment.do_and_checks || [];
+  Acts.value = store.continuousDevelopment.acts || [];
+});
 </script>
 
 <style lang="scss" scoped>

@@ -10,7 +10,7 @@
         v-for="(menu, index) in menus"
         :key="index"
         @click="activeMenu = menu"
-        class="text-left px-4 py-2 rounded-lg border border-grey-secondary "
+        class="text-left px-4 py-2 rounded-lg border border-grey-secondary"
         :class="{ 'bg-black-primary text-white': activeMenu === menu }"
       >
         {{ menu }}
@@ -18,7 +18,10 @@
     </div>
     <div>
       <!-- Methods Section -->
-      <div v-if="activeMenu === 'Methods'" class="max-h-[calc(100vh-470px)] scrollbar-set overflow-y-scroll">
+      <div
+        v-if="activeMenu === 'Methods'"
+        class="max-h-[calc(100vh-470px)] scrollbar-set overflow-y-scroll"
+      >
         <div class="font-semibold mb-2">2.1 Methods</div>
         <ul class="list-disc pl-6 w-full">
           <li
@@ -30,7 +33,7 @@
               v-if="!editingIndex.includes(index)"
               class="flex items-center gap-2 flex-row justify-between w-full"
             >
-              <div class="w-full">{{ method }}</div>
+              <div class="w-full">2.1.{{ index + 1 }} {{ method }}</div>
               <div class="flex items-center gap-2 px-2">
                 <button
                   class="flex items-center justify-center bg-white rounded-xl p-2 border border-grey-secondary hover:bg-black-primary text-black-primary hover:text-white"
@@ -91,7 +94,10 @@
       </div>
 
       <!-- Online Media Section -->
-      <div v-if="activeMenu === 'Online Media'" class="max-h-[calc(100vh-470px)] scrollbar-set overflow-y-scroll">
+      <div
+        v-if="activeMenu === 'Online Media'"
+        class="max-h-[calc(100vh-470px)] scrollbar-set overflow-y-scroll"
+      >
         <div class="font-semibold mb-2">2.2 Online Media</div>
         <ul class="list-disc pl-6 w-full">
           <li
@@ -103,7 +109,7 @@
               v-if="!editingIndex.includes(index)"
               class="flex items-center gap-2 flex-row justify-between w-full"
             >
-              <div class="w-full">{{ media }}</div>
+              <div class="w-full">2.2.{{ index + 1 }} {{ media }}</div>
               <div class="flex items-center gap-2 px-2">
                 <button
                   class="flex items-center justify-center bg-white rounded-xl p-2 border border-grey-secondary hover:bg-black-primary text-black-primary hover:text-white"
@@ -164,7 +170,10 @@
       </div>
 
       <!-- Teaching Objective Section -->
-      <div v-if="activeMenu === 'Teaching Objective'" class="max-h-[calc(100vh-470px)] scrollbar-set overflow-y-scroll">
+      <div
+        v-if="activeMenu === 'Teaching Objective'"
+        class="max-h-[calc(100vh-470px)] scrollbar-set overflow-y-scroll"
+      >
         <div class="font-semibold mb-2">2.3 Teaching Objective</div>
         <ul class="list-disc pl-6 w-full">
           <li
@@ -176,7 +185,7 @@
               v-if="!editingIndex.includes(index)"
               class="flex items-center gap-2 flex-row justify-between w-full"
             >
-              <div class="w-full">{{ objective }}</div>
+              <div class="w-full">2.3.{{ index + 1 }} {{ objective }}</div>
               <div class="flex items-center gap-2 px-2">
                 <button
                   class="flex items-center justify-center bg-white rounded-xl p-2 border border-grey-secondary hover:bg-black-primary text-black-primary hover:text-white"
@@ -245,13 +254,15 @@ import Delete from "@/components/icons/Delete.vue";
 import Edit from "@/components/icons/Edit.vue";
 import include from "@/components/icons/Include.vue";
 import SmallAddButton from "@/components/button/SmallAddButton.vue";
+import { usePortfolioStore } from "~/store/usePortfolioStore";
+const store = usePortfolioStore();
 
 const menus = ["Methods", "Online Media", "Teaching Objective"];
 const activeMenu = ref("Methods");
 
-const methods = ref(["Method 1", "Method 2", "Method 3"]);
-const onlineMedia = ref(["Media 1", "Media 2", "Media 3"]);
-const teachingObjectives = ref(["Objective 1", "Objective 2", "Objective 3"]);
+const methods = ref([]);
+const onlineMedia = ref([]);
+const teachingObjectives = ref([]);
 
 const newMethod = ref("");
 const newMedia = ref("");
@@ -266,6 +277,7 @@ const addMethod = () => {
     newMethod.value = "";
     showAddInput.value = false;
   }
+  store.setMethods(methods.value);
 };
 
 const addMedia = () => {
@@ -274,6 +286,7 @@ const addMedia = () => {
     newMedia.value = "";
     showAddInput.value = false;
   }
+  store.setOnlineMedia(onlineMedia.value);
 };
 
 const addObjective = () => {
@@ -281,6 +294,7 @@ const addObjective = () => {
     teachingObjectives.value.push(newObjective.value.trim());
     newObjective.value = "";
     showAddInput.value = false;
+    store.setTeachingObjectives(teachingObjectives.value);
   }
 };
 
@@ -308,6 +322,13 @@ const deleteMedia = (index) => {
 const deleteObjective = (index) => {
   teachingObjectives.value.splice(index, 1);
 };
+
+onMounted(() => {
+  console.log(store.implementationData);
+  methods.value = store.implementationData.methods || [];
+  onlineMedia.value = store.implementationData.online_media || [];
+  teachingObjectives.value = store.implementationData.teaching_objectives || [];
+});
 </script>
 
 <style lang="scss" scoped>

@@ -57,6 +57,13 @@ onMounted(async () => {
   const course = ref(null);
   await fetchCourse(course, router.currentRoute.value.params.id);
   store.setDetails(course.value);
+  store.setImplementationData(course.value.portfolio_data.implementation);
+  store.setEducationalOutcomes(
+    course.value.portfolio_data.educational_outcomes
+  );
+  store.setContinuousDevelopment(
+    course.value.portfolio_data.continuous_development
+  );
   loading.value = false;
 });
 </script>
