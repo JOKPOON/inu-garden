@@ -49,7 +49,7 @@ const downloadDocx = () => {
       : "",
     implementation: store.implementationData,
     education_outcomes: {
-      grade_distribution: store.educationalOutcomes,
+      grade_distribution: store.educationalOutcomes.grade_distribution,
     },
     continuous_development: store.continuousDevelopment,
   });
