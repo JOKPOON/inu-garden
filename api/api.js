@@ -537,6 +537,27 @@ const fetchEvaluation = async (
   }
 };
 
+const fetchCoursePortfolioOutcome = async (outcomes, courseId = "") => {
+  try {
+    const response = await fetch(
+      `${BaseURL}courses/${courseId}/portfolio/outcomes`,
+      {
+        credentials: "include",
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!response.ok)
+      throw new Error("Failed to fetch course portfolio outcomes");
+    const res = await response.json();
+    outcomes.value = res.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export {
   BaseURL,
   fetchMe,
@@ -564,4 +585,5 @@ export {
   fetchSOs,
   fetchStudentsPassingCLOs,
   fetchEvaluation,
+  fetchCoursePortfolioOutcome,
 };

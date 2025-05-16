@@ -28,7 +28,7 @@ import Implementation from "@/components/course/portfolio/Implementation.vue";
 import EducationalOutcomes from "@/components/course/portfolio/EducationalOutcomes.vue";
 import ContinuousDevelopment from "@/components/course/portfolio/ContinuousDevelopment.vue";
 import Report from "@/components/course/portfolio/Report.vue";
-import { fetchCourse } from "~/api/api";
+import { fetchCourse, fetchCoursePortfolioOutcome } from "~/api/api";
 import {
   fetchReceivedFeedbacks,
   fetchSentFeedbacks,
@@ -61,18 +61,27 @@ const receivedFeedbacks = ref([]);
 const sentFeedbacks = ref([]);
 const feedbacks = ref([]);
 const result = ref(null);
+const outcomes = ref([]);
 onMounted(async () => {
   const course = ref(null);
   await fetchCourse(course, router.currentRoute.value.params.id);
   await fetchCourseResult(result, course.value.id);
+  await fetchReceivedFeedbacks(receivedFeedbacks, course.value.id);
+  await fetchSentFeedbacks(sentFeedbacks, course.value.id);
+  await fetchCoursePortfolioOutcome(outcomes, course.value.id);
+
   store.setDetails(course.value);
   store.setImplementationData(course.value.portfolio_data.implementation);
   store.setContinuousDevelopment(
     course.value.portfolio_data.continuous_development
   );
-  store.setEducationalOutcomes(result.value);
-  await fetchReceivedFeedbacks(receivedFeedbacks, store.details.id);
-  await fetchSentFeedbacks(sentFeedbacks, store.details.id);
+  store.setEducationalOutcomes(
+    course.value.portfolio_data.educational_outcomes
+  );
+
+  store.setGradeDistribution(result.value);
+  store.setOutcomes(outcomes.value);
+
   feedbacks.value = [...receivedFeedbacks.value, ...sentFeedbacks.value];
   store.setReceivedFeedbacks(
     feedbacks.value

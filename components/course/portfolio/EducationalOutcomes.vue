@@ -103,25 +103,25 @@
       v-else-if="activeMenu === 'Outcomes' && activeMenuOutcomes === 'CLO'"
       class="max-h-[calc(100vh-475px)] scrollbar-set overflow-y-scroll"
     >
-      <CLO />
+      <CLO :clos="outcomes.clos" />
     </div>
     <div
       v-else-if="activeMenu === 'Outcomes' && activeMenuOutcomes === 'PLO'"
       class="max-h-[calc(100vh-475px)] scrollbar-set overflow-y-scroll"
     >
-      <PLO />
+      <PLO :plos="outcomes.plos" />
     </div>
     <div
       v-else-if="activeMenu === 'Outcomes' && activeMenuOutcomes === 'PO'"
       class="max-h-[calc(100vh-475px)] scrollbar-set overflow-y-scroll"
     >
-      <PO />
+      <PO :pos="outcomes.pos" />
     </div>
     <div
       v-else-if="activeMenu === 'Outcomes' && activeMenuOutcomes === 'SO'"
       class="max-h-[calc(100vh-475px)] scrollbar-set overflow-y-scroll"
     >
-      <SO />
+      <SO :sos="outcomes.sos" />
     </div>
   </div>
 
@@ -146,6 +146,8 @@ import PO from "@/components/course/portfolio/PO.vue";
 import SO from "@/components/course/portfolio/SO.vue";
 import PDF from "@/components/images/PDF.png";
 import { fetchCourseResult } from "~/api/api";
+import { usePortfolioStore } from "~/store/usePortfolioStore";
+const store = usePortfolioStore();
 
 const router = useRouter();
 const menus = ["Score & Grade", "Outcomes"];
@@ -157,6 +159,8 @@ const activeMenuOutcomes = ref("CLO");
 const buttons = ["Overview", "Grade Overview"];
 const activeButton = ref(buttons[0]);
 const id = ref(router.currentRoute.value.params.id);
+
+const outcomes = ref(store.educationalOutcomes.outcomes);
 
 const setActiveButton = (button) => {
   activeButton.value = button;

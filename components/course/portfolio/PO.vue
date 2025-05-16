@@ -2,147 +2,127 @@
   <div
     class="flex flex-col gap-4 w-full h-full rounded-xl border border-grey-secondary p-4 bg-white"
   >
-    <div class="font-semibold w-full pb-2 border-b border-grey-secondary">
-      List of POs
+    <!-- List of PLOs -->
+    <!-- <div class="font-semibold w-full pb-2 border-b border-grey-secondary">
+      List of PLOs
     </div>
     <ul class="space-y-2 pb-4 border-b border-grey-secondary">
-      <li v-for="po in pos" :key="po.id" class="flex flex-col">
+      <li v-for="plo in plos" :key="`plo-${plo.id}`" class="flex flex-col">
         <div class="text-black-primary">
-          <span class="font-semibold text-black-primary">{{ po.po }} </span> :
-          {{ po.desc }}
+          <span class="font-semibold text-black-primary">{{ plo.plo }}</span> :
+          {{ plo.desc }}
         </div>
-        <div class="text-sm text-grey-primary">
-          {{ po.desc_th }}
-        </div>
+        <div class="text-sm text-grey-primary">{{ plo.desc_th }}</div>
         <div class="flex flex-row gap-4 mt-2">
           <div class="font-semibold text-grey-primary">Sub</div>
           <ul class="space-y-2">
             <li
-              v-for="sub in po.sub"
-              :key="sub.sub_po"
+              v-for="sub in plo.sub"
+              :key="`sub-${sub.sub_plo}`"
               class="flex flex-col"
             >
               <div class="text-black-primary">
-                <span class="font-semibold text-black-primary">{{ sub.sub_po }}</span>
+                <span class="font-semibold text-black-primary">{{
+                  sub.sub_plo
+                }}</span>
                 : {{ sub.desc }}
               </div>
-              <div class="text-sm text-grey-primary">
-                {{ sub.desc_th }}
-              </div>
+              <div class="text-sm text-grey-primary">{{ sub.desc_th }}</div>
             </li>
           </ul>
         </div>
       </li>
-    </ul>
+    </ul> -->
 
+    <!-- Details of CLOs and PLOs -->
     <div
       class="flex flex-col gap-4 w-full h-full rounded-xl border border-grey-secondary p-4 bg-white"
     >
       <div
         class="font-semibold w-full text-center pb-2 border-b border-grey-secondary"
       >
-        Details of CLOs and POs
+        Details of CLOs and PLOs
       </div>
-      <div class="grid grid-cols-3 gap-4 pb-2 border-b border-grey-secondary">
+
+      <div class="grid grid-cols-6 gap-4 pb-2 border-b border-grey-secondary">
         <div
-          class="w-full text-center font-semibold border-r border-grey-tertiary"
+          class="col-span-2 text-center font-semibold border-r border-grey-tertiary"
         >
           PO
         </div>
         <div
-          class="w-full text-center font-semibold border-r border-grey-tertiary"
+          class="col-span-2 text-center font-semibold border-r border-grey-tertiary"
         >
           Involved CLO
         </div>
-        <div class="w-full text-center font-semibold">Involved Assessment</div>
+        <div class="col-span-2 text-center font-semibold">
+          Involved Assessment
+        </div>
       </div>
+
       <div
-        v-for="po in pos"
-        :key="po.id"
-        class="grid grid-cols-3 gap-4 pb-4 border-b border-grey-secondary"
+        v-for="po in structuredPos"
+        :key="`sub-plo-${po.sub_plo}`"
+        class="grid grid-cols-6 gap-4 pb-4 border-grey-secondary"
       >
-        <!-- PO Column -->
-        <div
-          v-for="detail in po.details"
-          :key="detail.id"
-          class="space-y-3 border-r border-grey-tertiary pr-3"
-        >
-          <div v-for="poDetail in detail.po || []" :key="poDetail.id">
-            <div class="font-semibold">{{ poDetail.name }}</div>
-            <div class="text-grey-primary">
-              Passing Rate :
-              <span
-                :class="{
-                  'text-green-500': poDetail.expect > poDetail.define,
-                  'text-red-500': poDetail.expect <= poDetail.define,
-                  'font-semibold': true,
-                }"
-              >
-                {{ poDetail.expect }} %
-              </span>
-            </div>
-            <div class="text-grey-primary">
-              Expected Rate :
-              <span class="font-semibold text-black-primary">
-                {{ poDetail.define }} %
-              </span>
-            </div>
+        <div class="col-span-2 border-r border-grey-tertiary pr-3">
+          <div class="font-semibold">{{ po.plo }}</div>
+          <div class="text-grey-primary">
+            Passing Rate :
+            <span :class="getRateClass(po.expect, po.define)">
+              {{ po.expect.toFixed(2) }} %
+            </span>
+          </div>
+          <div class="text-grey-primary">
+            Expected Rate :
+            <span class="font-semibold text-black-primary">
+              {{ po.define.toFixed(2) }} %
+            </span>
           </div>
         </div>
-
-        <!-- CLO Column -->
-        <div
-          v-for="detail in po.details"
-          :key="detail.id"
-          class="space-y-3 border-r border-grey-tertiary pr-3"
-        >
-          <div v-for="involved in detail.involved_clo" :key="involved.id">
-            <div class="font-semibold">{{ involved.name }}</div>
-            <div class="text-grey-primary">
-              Passing Rate :
-              <span
-                :class="{
-                  'text-green-500': involved.expect > involved.define,
-                  'text-red-500': involved.expect <= involved.define,
-                  'font-semibold': true,
-                }"
-              >
-                {{ involved.expect }} %
-              </span>
-            </div>
-            <div class="text-grey-primary">
-              Expected Rate :
-              <span class="font-semibold text-black-primary">
-                {{ involved.define }} %
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Assessment Column -->
-        <div v-for="detail in po.details" :key="detail.id" class="space-y-3">
+        <div class="col-span-4 space-y-3 border-r border-grey-tertiary pr-3">
           <div
-            v-for="assessment in detail.involved_assessment"
-            :key="assessment.id"
+            v-for="clo in po.CLOPassingRate"
+            :key="`clo-${clo.id}`"
+            class="grid grid-cols-4 gap-4 pb-4 border-grey-secondary"
           >
-            <div class="font-semibold">{{ assessment.name }}</div>
-            <div class="text-grey-primary">
-              Passing Rate :
-              <span
-                :class="{
-                  'text-green-500': assessment.expect > assessment.define,
-                  'text-red-500': assessment.expect <= assessment.define,
-                  'font-semibold': true,
-                }"
-              >
-                {{ assessment.expect }} %
-              </span>
+            <div class="col-span-2 border-r">
+              <div class="font-semibold">{{ clo.name }}</div>
+              <div class="text-grey-primary">
+                Passing Rate :
+                <span :class="getRateClass(clo.expect, clo.define)">
+                  {{ clo.expect.toFixed(2) }} %
+                </span>
+              </div>
+              <div class="text-grey-primary">
+                Expected Rate :
+                <span class="font-semibold text-black-primary">
+                  {{ clo.define.toFixed(2) }} %
+                </span>
+              </div>
             </div>
-            <div class="text-grey-primary">
-              Expected Rate :
-              <span class="font-semibold text-black-primary">
-                {{ assessment.define }} %
-              </span>
+            <div class="col-span-2">
+              <div
+                v-for="assessment in clo.involved_assessment"
+                :key="`assessment-${assessment.id}`"
+                class="mb-2"
+              >
+                <div class="font-semibold">{{ assessment.name }}</div>
+                <div class="text-grey-primary">
+                  Passing Rate :
+                  <span
+                    :class="getRateClass(assessment.expect, assessment.define)"
+                  >
+                    {{ assessment.expect.toFixed(2) }} %
+                  </span>
+                </div>
+                <div class="text-grey-primary">
+                  Expected Rate :
+                  <span class="font-semibold text-black-primary">
+                    {{ assessment.define.toFixed(2) }} %
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -152,134 +132,49 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+const props = defineProps({
+  pos: {
+    type: Object,
+    required: true,
+  },
+});
 
-const pos = ref([
-  {
-    id: 1,
-    po: "PO 1",
-    desc: "Understand the basic concepts of programming.",
-    desc_th: "เข้าใจแนวคิดพื้นฐานของการเขียนโปรแกรม",
-    sub: [
-      {
-        sub_po: "PO 1.1",
-        desc: "Understand the basic concepts of programming.",
-        desc_th: "เข้าใจแนวคิดพื้นฐานของการเขียนโปรแกรม",
-      },
-      {
-        sub_po: "PO 1.2",
-        desc: "Understand the basic concepts of programming.",
-        desc_th: "เข้าใจแนวคิดพื้นฐานของการเขียนโปรแกรม",
-      },
-    ],
-    details: [
-      {
-        id: 1,
-        po: [
-          {
-            id: 1,
-            name: "PO 1",
-            expect: "51",
-            define: "80",
-          },
-          {
-            id: 2,
-            name: "PO 2",
-            expect: "51",
-            define: "80",
-          },
-        ],
-        involved_clo: [
-          {
-            id: 1,
-            name: "CLO 1.1",
-            expect: "51",
-            define: "80",
-          },
-          {
-            id: 2,
-            name: "CLO 1.2",
-            expect: "51",
-            define: "80",
-          },
-        ],
-        involved_assessment: [
-          {
-            id: 1,
-            name: "Jump smash",
-            expect: "51",
-            define: "80",
-          },
-          {
-            id: 2,
-            name: "Jump smash",
-            expect: "51",
-            define: "80",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: 2,
-    po: "PO 2",
-    desc: "Apply programming concepts to solve problems.",
-    desc_th: "ประยุกต์ใช้แนวคิดการเขียนโปรแกรมในการแก้ปัญหา",
-    sub: [
-      {
-        sub_po: "PO 2.1",
-        desc: "Understand the basic concepts of programming.",
-        desc_th: "เข้าใจแนวคิดพื้นฐานของการเขียนโปรแกรม",
-      },
-      {
-        sub_po: "PO 2.2",
-        desc: "Understand the basic concepts of programming.",
-        desc_th: "เข้าใจแนวคิดพื้นฐานของการเขียนโปรแกรม",
-      },
-    ],
-    details: [
-      {
-        id: 1,
-        po: [
-          {
-            id: 1,
-            name: "PO 3",
-            expect: "51",
-            define: "80",
-          },
-        ],
-        involved_clo: [
-          {
-            id: 1,
-            name: "CLO 2.1",
-            expect: "51",
-            define: "80",
-          },
-          {
-            id: 2,
-            name: "CLO 2.2",
-            expect: "51",
-            define: "80",
-          },
-        ],
-        involved_assessment: [
-          {
-            id: 1,
-            name: "Jump smash",
-            expect: "51",
-            define: "80",
-          },
-          {
-            id: 2,
-            name: "Jump smash",
-            expect: "51",
-            define: "80",
-          },
-        ],
-      },
-    ],
-  },
-]);
+const structuredPos = computed(() => {
+  return Object.values(props.pos).reduce((acc, po) => {
+    const formattedCLOs = Object.values(po.CLOPassingRate).map((clo) => ({
+      id: clo.CLOID,
+      name: clo.CLOCode,
+      expect: clo.PassedPercentage,
+      define: clo.ExpectedPassingAssignmentPercentage,
+      involved_assessment: Object.values(clo.Assignments).map((assess) => ({
+        id: assess.AssignmentID,
+        name: assess.AssignmentName,
+        expect: assess.PassedPercentage,
+        define: assess.ExpectedPassingAssignmentPercentage,
+      })),
+    }));
+
+    acc.push({
+      id: po.POID,
+      plo: po.POCode,
+      expect: po.PassedPercentage,
+      define: po.ExpectedPassingCloPercentage,
+      CLOPassingRate: formattedCLOs,
+    });
+
+    return acc;
+  }, []);
+});
+
+const getRateClass = (expect, define) => {
+  if (expect >= define) {
+    return "text-green-500 font-semibold";
+  } else if (expect < define && expect >= define * 0.8) {
+    return "text-yellow-500 font-semibold";
+  } else {
+    return "text-red-500 font-semibold";
+  }
+};
 </script>
 
 <style lang="scss" scoped></style>

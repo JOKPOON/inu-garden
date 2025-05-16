@@ -23,12 +23,25 @@ export const usePortfolioStore = defineStore("portfolio", () => {
   }
   function setEducationalOutcomes(data) {
     educationalOutcomes.value = { ...educationalOutcomes.value, ...data };
-    console.log("educational outcomes", educationalOutcomes.value);
-    update();
   }
   function setContinuousDevelopment(data) {
     continuousDevelopment.value = { ...continuousDevelopment.value, ...data };
   }
+
+  function setGradeDistribution(data) {
+    educationalOutcomes.value.grade_distribution = {
+      ...educationalOutcomes.value.grade_distribution,
+      ...data,
+    };
+  }
+
+  function setOutcomes(data) {
+    educationalOutcomes.value.outcomes = {
+      ...educationalOutcomes.value.outcomes,
+      ...data,
+    };
+  }
+
   function setReportData(data) {
     reportData.value = { ...reportData.value, ...data };
   }
@@ -80,7 +93,8 @@ export const usePortfolioStore = defineStore("portfolio", () => {
           },
           body: JSON.stringify({
             education_outcomes: {
-              grade_distribution: educationalOutcomes.value,
+              grade_distribution: educationalOutcomes.value.grade_distribution,
+              outcomes: educationalOutcomes.value.outcomes,
             },
             continuous_development: {
               plans: continuousDevelopment.value.plans,
@@ -123,5 +137,7 @@ export const usePortfolioStore = defineStore("portfolio", () => {
     setActs,
     setSentFeedbacks: setUpstreamFeedbacks,
     setReceivedFeedbacks: setDownstreamFeedbacks,
+    setGradeDistribution,
+    setOutcomes,
   };
 });
