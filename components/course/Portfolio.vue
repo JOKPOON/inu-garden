@@ -28,8 +28,13 @@ import Implementation from "@/components/course/portfolio/Implementation.vue";
 import EducationalOutcomes from "@/components/course/portfolio/EducationalOutcomes.vue";
 import ContinuousDevelopment from "@/components/course/portfolio/ContinuousDevelopment.vue";
 import Report from "@/components/course/portfolio/Report.vue";
-import { usePortfolioStore } from "~/store/usePortfolioStore";
 import { fetchCourse } from "~/api/api";
+import {
+  fetchReceivedFeedbacks,
+  fetchSentFeedbacks,
+  fetchCourseResult,
+} from "~/api/api";
+import { usePortfolioStore } from "~/store/usePortfolioStore";
 const store = usePortfolioStore();
 const router = useRouter();
 
@@ -52,18 +57,46 @@ const componentsMap = {
 
 const getActiveComponent = computed(() => componentsMap[activeMenu.value]);
 const loading = ref(true);
-
+const receivedFeedbacks = ref([]);
+const sentFeedbacks = ref([]);
+const feedbacks = ref([]);
+const result = ref(null);
 onMounted(async () => {
   const course = ref(null);
   await fetchCourse(course, router.currentRoute.value.params.id);
+  await fetchCourseResult(result, course.value.id);
   store.setDetails(course.value);
   store.setImplementationData(course.value.portfolio_data.implementation);
-  store.setEducationalOutcomes(
-    course.value.portfolio_data.educational_outcomes
-  );
   store.setContinuousDevelopment(
     course.value.portfolio_data.continuous_development
   );
+  store.setEducationalOutcomes(result.value);
+  await fetchReceivedFeedbacks(receivedFeedbacks, store.details.id);
+  await fetchSentFeedbacks(sentFeedbacks, store.details.id);
+  feedbacks.value = [...receivedFeedbacks.value, ...sentFeedbacks.value];
+  store.setReceivedFeedbacks(
+    feedbacks.value
+      .filter((feedback) => feedback.stream_type === "DOWNSTREAM")
+      .map((feedback) => ({
+        course_code: feedback.target_course?.code || "",
+        course_name: feedback.target_course?.name || "",
+        comment: feedback.comment || "",
+        sender:
+          `${feedback.user?.title_en_short || ""} ${feedback.user?.first_name_en || ""} ${feedback.user?.last_name_en || ""}`.trim(),
+      }))
+  );
+  store.setSentFeedbacks(
+    feedbacks.value
+      .filter((feedback) => feedback.stream_type === "UPSTREAM")
+      .map((feedback) => ({
+        course_code: feedback.from_course?.code || "",
+        course_name: feedback.from_course?.name || "",
+        comment: feedback.comment || "",
+        sender:
+          `${feedback.user?.title_en_short || ""} ${feedback.user?.first_name_en || ""} ${feedback.user?.last_name_en || ""}`.trim(),
+      }))
+  );
+
   loading.value = false;
 });
 </script>

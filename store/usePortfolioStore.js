@@ -23,6 +23,8 @@ export const usePortfolioStore = defineStore("portfolio", () => {
   }
   function setEducationalOutcomes(data) {
     educationalOutcomes.value = { ...educationalOutcomes.value, ...data };
+    console.log("educational outcomes", educationalOutcomes.value);
+    update();
   }
   function setContinuousDevelopment(data) {
     continuousDevelopment.value = { ...continuousDevelopment.value, ...data };
@@ -56,6 +58,14 @@ export const usePortfolioStore = defineStore("portfolio", () => {
     continuousDevelopment.value.acts = data;
     update();
   }
+  function setUpstreamFeedbacks(data) {
+    continuousDevelopment.value.feedbacks.upstream_subjects = data;
+    update();
+  }
+  function setDownstreamFeedbacks(data) {
+    continuousDevelopment.value.feedbacks.downstream_subjects = data;
+    update();
+  }
 
   async function update() {
     try {
@@ -69,10 +79,14 @@ export const usePortfolioStore = defineStore("portfolio", () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            education_outcomes: {
+              grade_distribution: educationalOutcomes.value,
+            },
             continuous_development: {
               plans: continuousDevelopment.value.plans,
               do_and_checks: continuousDevelopment.value.do_and_checks,
               acts: continuousDevelopment.value.acts,
+              feedbacks: continuousDevelopment.value.feedbacks,
             },
             implementation: {
               methods: implementationData.value.methods,
@@ -107,5 +121,7 @@ export const usePortfolioStore = defineStore("portfolio", () => {
     setPlans,
     setDoAndChecks,
     setActs,
+    setSentFeedbacks: setUpstreamFeedbacks,
+    setReceivedFeedbacks: setDownstreamFeedbacks,
   };
 });

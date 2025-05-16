@@ -162,6 +162,8 @@ import ArrowDown from "@/components/icons/ArrowDown.vue";
 import { useI18n } from "vue-i18n";
 import { fetchReceivedFeedbacks } from "~/api/api";
 import { useRouter } from "vue-router";
+import { usePortfolioStore } from "~/store/usePortfolioStore";
+const store = usePortfolioStore();
 
 const router = useRouter();
 

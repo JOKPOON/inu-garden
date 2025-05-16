@@ -261,6 +261,7 @@ import include from "@/components/icons/Include.vue";
 import RecivedFeedbacks from "@/components/course/RecivedFeedbacks.vue";
 import SmallAddButton from "@/components/button/SmallAddButton.vue";
 import { usePortfolioStore } from "~/store/usePortfolioStore";
+
 const store = usePortfolioStore();
 
 const menus = ["Plan", "Do & Check", "Act", "Feedback"];
@@ -329,7 +330,7 @@ const deleteAct = (index) => {
   Acts.value.splice(index, 1);
 };
 
-onMounted(() => {
+onMounted(async () => {
   Plans.value = store.continuousDevelopment.plans || [];
   DoChecks.value = store.continuousDevelopment.do_and_checks || [];
   Acts.value = store.continuousDevelopment.acts || [];

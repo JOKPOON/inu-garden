@@ -18,12 +18,12 @@
         <span class="font-semibold w-40">Credit:</span>
         <span>{{ courseDetails.credit }}</span>
       </div>
-      <div class="flex">
+      <!-- <div class="flex">
         <span class="font-semibold w-40">Number of Students:</span>
         <span>{{
           courseDetails.numberOfStudents ? courseDetails.numberOfStudents : "-"
         }}</span>
-      </div>
+      </div> -->
       <div class="flex">
         <span class="font-semibold w-40">Faculty:</span>
         <span>{{ courseDetails.programme.department.faculty.name_th }}</span>
@@ -37,7 +37,7 @@
         <span>{{ courseDetails.programme.name_th }}</span>
       </div>
       <div class="flex">
-        <span class="font-semibold w-40">Education Level:</span>
+        <span class="font-semibold w-40"> Degree:</span>
         <span>{{ courseDetails.programme.degree_th }}</span>
       </div>
       <div class="flex">
