@@ -20,17 +20,6 @@
         <div class="mt-4 text-center flex gap-4 flex-col text-sm">
           <div class="flex flex-col items-start w-full gap-2">
             <label class="font-semibold text-black-primary"
-              >Department Name (EN)</label
-            >
-            <input
-              v-model="type.name"
-              type="text"
-              placeholder="Name (EN)"
-              class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
-            />
-          </div>
-          <div class="flex flex-col items-start w-full gap-2">
-            <label class="font-semibold text-black-primary"
               >Department Name (TH)</label
             >
             <input
@@ -40,12 +29,23 @@
               class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
             />
           </div>
+          <div class="flex flex-col items-start w-full gap-2">
+            <label class="font-semibold text-black-primary"
+              >Department Name (EN)</label
+            >
+            <input
+              v-model="type.name_en"
+              type="text"
+              placeholder="Name (EN)"
+              class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
+            />
+          </div>
         </div>
         <div
           class="flex flex-row items-center justify-center gap-2 w-full mt-4 border border-grey-secondary rounded-xl"
         >
           <button
-            @click="addProgram"
+            @click="addDepartment"
             class="py-2 font-medium border border-grey-secondary text-black-primary rounded-xl w-full bg-yellow-primary hover:bg-black-primary hover:text-white"
           >
             Add
@@ -65,13 +65,9 @@
 <script setup>
 import { ref } from "vue";
 import { defineProps, defineEmits } from "vue";
+import { BaseURL } from "~/api/api";
 
-const emit = defineEmits(["close"]);
-
-const type = ref({
-  name_th: "",
-  name: "",
-});
+const emit = defineEmits(["close", "updated"]);
 
 const props = defineProps({
   program: {
@@ -80,7 +76,32 @@ const props = defineProps({
   },
 });
 
-const addProgram = () => {
+const type = ref({
+  name_th: "",
+  name_en: "",
+  faculty_id: props.program,
+});
+
+const addDepartment = async () => {
+  try {
+    const response = await fetch(`${BaseURL}departments`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(type.value),
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to add faculty");
+    }
+    const data = await response.json();
+    console.log("Departments added successfully:", data);
+    emit("updated", data);
+  } catch (error) {
+    console.error(error);
+  }
   emit("close");
 };
 </script>

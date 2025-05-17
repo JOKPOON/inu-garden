@@ -13,7 +13,7 @@
             Add Assessment
           </div>
           <div class="text-sm text-grey-primary mt-1">
-            Add Assessment Group for
+            Add Assessment for
             <span class="font-semibold text-black-primary">{{ name }}</span>
           </div>
         </div>
@@ -22,10 +22,10 @@
         >
           <div class="flex flex-col items-start w-full gap-2">
             <label class="font-semibold text-black-primary"
-              >Assessment Group Name</label
+              >Assessment Name</label
             >
             <input
-              v-model="assessmentsGroup.name"
+              v-model="assessment.name"
               type="text"
               placeholder="Assessment Group Name"
               class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
@@ -34,7 +34,7 @@
           <div class="flex flex-col items-start w-full gap-2">
             <label class="font-semibold text-black-primary">Description</label>
             <textarea
-              v-model="assessmentsGroup.desc_en"
+              v-model="assessment.desc_en"
               placeholder="Description"
               class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
             ></textarea>
@@ -45,7 +45,7 @@
                 >Weighted (%)</label
               >
               <input
-                v-model="assessmentsGroup.weight"
+                v-model="assessment.weight"
                 type="number"
                 placeholder="Max Weighted Score"
                 class="px-4 py-2 border border-grey-secondary rounded-xl outline-none"
@@ -60,15 +60,13 @@
                   class="flex flex-row items-center w-full gap-2 p-2 border border-grey-secondary rounded-xl"
                 >
                   <input
-                    v-model="assessmentsGroup.includeCLO"
+                    v-model="assessment.includeCLO"
                     type="checkbox"
                     class="w-4 h-4 rounded-xl"
                   />
                   <label
                     class="font-semibold text-black-primary border-l border-grey-secondary pl-2"
-                    ><span
-                      v-if="assessmentsGroup.includeCLO"
-                      class="text-green-500"
+                    ><span v-if="assessment.includeCLO" class="text-green-500"
                       >Include</span
                     >
                     <span v-else class="text-red-500">Not Include</span>
@@ -80,7 +78,7 @@
           <div class="flex flex-col items-start w-full gap-2">
             <label class="font-semibold text-black-primary">Max Scored</label>
             <input
-              v-model="assessmentsGroup.maxScored"
+              v-model="assessment.maxScored"
               type="number"
               placeholder="Max Scored"
               class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
@@ -91,7 +89,7 @@
               >Expected Passing Student (%)</label
             >
             <input
-              v-model="assessmentsGroup.expectedPassingStudent"
+              v-model="assessment.expectedPassingStudent"
               type="number"
               placeholder="Expected Passing Student (%)"
               class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
@@ -102,7 +100,7 @@
               >Expected Passing Score (%)</label
             >
             <input
-              v-model="assessmentsGroup.expectedPassingScore"
+              v-model="assessment.expectedPassingScore"
               type="number"
               placeholder="Expected Passing Score (%)"
               class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
@@ -136,7 +134,7 @@ import { defineProps, defineEmits } from "vue";
 
 const emit = defineEmits(["close"]);
 
-const assessmentsGroup = ref({
+const assessment = ref({
   name: "",
   desc_en: "",
   weight: 0,

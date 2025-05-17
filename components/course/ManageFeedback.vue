@@ -279,68 +279,8 @@ const onClickSendFeedback = () => {
   showSendFeedbackPopup.value = true;
 };
 
-const sendFeedbacks = ref([
-  {
-    id: "1",
-    stream_type: "UPSTREAM",
-    comment: "This is a sample comment",
-    created_at: "2025-04-05T07:59:50.856Z",
-    user: {
-      title_en_short: "Assoc. Prof.",
-      first_name_en: "Somchai",
-      last_name_en: "Thongdee",
-    },
-    from_course: {
-      code: "CPE101",
-      name: "Introduction to Programming I",
-      semester: {
-        year: 2024,
-        semester_sequence: "1",
-      },
-    },
-  },
-  {
-    id: "2",
-    stream_type: "DOWNSTREAM",
-    comment: "Another feedback comment",
-    created_at: "2025-04-04T10:30:00.000Z",
-    user: {
-      title_en_short: "Dr.",
-      first_name_en: "Jane",
-      last_name_en: "Doe",
-    },
-    from_course: {
-      code: "CPE102",
-      name: "Introduction to Programming II",
-      semester: {
-        year: 2024,
-        semester_sequence: "1",
-      },
-    },
-  },
-]);
-
-const mockOtherFeedbacks = ref([
-  {
-    id: "3",
-    comment: "Mock feedback from another user",
-    created_at: "2025-04-03T12:00:00.000Z",
-    stream_type: "UPSTREAM",
-    user: {
-      title_en_short: "Mr.",
-      first_name_en: "John",
-      last_name_en: "Smith",
-    },
-    from_course: {
-      code: "CPE103",
-      name: "Data Structures",
-      semester: {
-        year: 2024,
-        semester_sequence: "1",
-      },
-    },
-  },
-]);
+const sendFeedbacks = ref([]);
+const mockOtherFeedbacks = ref([]);
 
 const sortedFeedbacks = computed(() => {
   return [...sendFeedbacks.value].sort((a, b) => {

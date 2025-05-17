@@ -39,6 +39,7 @@
           </div>
         </div>
         <div
+          v-if="selectedFacultyDetails"
           class="col-span-4 h-full flex flex-col max-h-[calc(100vh-230px)] overflow-y-scroll scrollbar-set"
         >
           <div
@@ -110,10 +111,7 @@
             </div>
           </div>
           <div class="grid grid-cols-4 h-full w-full">
-            <div
-              v-if="selectedDepartmentDetails"
-              class="col-span-1 h-full border-r flex flex-col"
-            >
+            <div class="col-span-1 h-full border-r flex flex-col">
               <div
                 class="max-h-[calc(100vh-418.5px)] overflow-y-scroll scrollbar-set"
               >
@@ -326,16 +324,22 @@
       </div>
     </div>
   </div>
-  <AddFaculty v-if="showAddFacultyPopup" @close="showAddFacultyPopup = false" />
-  <AddProgram
-    v-if="showAddProgramPopup"
-    :faculty="AddtoFaculty"
-    @close="showAddProgramPopup = false"
+  <AddFaculty
+    v-if="showAddFacultyPopup"
+    @close="showAddFacultyPopup = false"
+    @updated="getFaculties"
   />
   <AddDepartment
     v-if="showAddDepartmentPopup"
-    :program="AddtoProgram"
+    :program="AddtoFaculty"
     @close="showAddDepartmentPopup = false"
+    @updated="getFaculties"
+  />
+  <AddProgram
+    v-if="showAddProgramPopup"
+    :department="AddtoDepartment"
+    @close="showAddProgramPopup = false"
+    @updated="getFaculties"
   />
 </template>
 
@@ -353,8 +357,8 @@ import { fetchFaculties } from "~/api/api";
 
 const router = useRouter();
 
+const AddtoDepartment = ref("");
 const AddtoFaculty = ref("");
-const AddtoProgram = ref("");
 
 const showAddFacultyPopup = ref(false);
 
@@ -364,13 +368,13 @@ const addFaculty = () => {
 
 const showAddProgramPopup = ref(false);
 const addProgram = () => {
-  AddtoFaculty.value = "Computer Engineering";
+  AddtoDepartment.value = selectedDepartment;
   showAddProgramPopup.value = true;
 };
 
 const showAddDepartmentPopup = ref(false);
 const addDepartment = () => {
-  AddtoProgram.value = "Engineering Faculty";
+  AddtoFaculty.value = selectedFaculty;
   showAddDepartmentPopup.value = true;
 };
 
@@ -401,146 +405,11 @@ const saveType = () => {
   editTypeMode.value = false;
 };
 
-const AcadamicManagement = ref([
-  {
-    id: "01JSYTYQWGR0B7FTY048RWA15C",
-    name_th: "วิศวกรรมศาสตร์",
-    name_en: "Engineering",
-    departments: [
-      {
-        id: "01JSYV7A3RK5HC8J05D59N1X6K",
-        name_th: "วิศวกรรมคอมพิวเตอร์",
-        name_en: "Computer Engineering",
-        faculty_id: "01JSYTYQWGR0B7FTY048RWA15C",
-        programmes: [
-          {
-            id: "01JT07KAN3V5YMG1YC7AEH7RKG",
-            name_th: "หลักสูตรปกติ",
-            name_en: "Regular Program",
-            description_th:
-              "วิศวกรรมศาสตร์คือการประยุกต์ใช้หลักการทางวิทยาศาสตร์อย่างสร้างสรรค์เพื่อการออกแบบและพัฒนาโครงสร้าง, เครื่องจักร, เครื่องมือ, หรือกระบวนการผลิต หรืองานเพื่อการใช้ประโยชน์สิ่งเหล่านี้โดดๆหรือประยุกต์เข้าด้วยกัน หรือเพื่อการสร้างหรือใช้งานสิ่งเหล่านั้นด้วยความรู้ความเข้าใจเกี่ยวกับสิ่งที่ใช้งานอย่างหมดจด หรือเพื่อการพยากรณ์พฤติกรรมของสิ่งเหล่านั้นภายใต้สภาวะที่เจาะจง สิ่งที่กล่าวมาทั้งหมดนี้จักต้องคำนึงถึงความมุ่งหมายในการใช้งาน, ความคุ้มค่าในการปฏิบัติการ แลความปลอดภัยต่อชีวิตและทรัพยสินด้วย",
-            description_en:
-              "The discipline of engineering encompasses a broad range of more specialized fields of engineering, each with a more specific emphasis for applications of mathematics and science. See glossary of engineering",
-            degree_th: "วิศวกรรมศาสตรบัณฑิต",
-            degree_en: "Bachelor of Engineering",
-            degree_short_th: "วศ.บ.",
-            degree_short_en: "B.Eng.",
-            year: "2021",
-            academic_year: "",
-            department_id: "01JSYV7A3RK5HC8J05D59N1X6K",
-            structure: {
-              category: [
-                {
-                  sub: null,
-                  name: "ก. หมวดวิชาศึกษาทั่วไป",
-                  credit: 31,
-                },
-                {
-                  sub: [
-                    {
-                      name: "วิชาแกนทางวิศวกรรม",
-                      credit: 30,
-                    },
-                    {
-                      name: "วิชาเฉพาะด้าน",
-                      credit: 51,
-                    },
-                    {
-                      name: "วิชาเลือก",
-                      credit: 12,
-                    },
-                  ],
-                  name: "ข. หมวดวิชาเฉพาะ",
-                  credit: 93,
-                },
-                {
-                  sub: null,
-                  name: "ค. หมวดวิชาเลือกเสรี",
-                  credit: 6,
-                },
-              ],
-              totals_credit: 130,
-            },
-            program_outcomes: null,
-            program_learning_outcomes: null,
-            student_outcomes: null,
-          },
-          {
-            id: "01JT08A4JZ7MBHXHD58TRMGRQP",
-            name_th: "หลักสูตรปกติ 2",
-            name_en: "Regular Program II",
-            description_th:
-              "วิศวกรรมศาสตร์คือการประยุกต์ใช้หลักการทางวิทยาศาสตร์อย่างสร้างสรรค์เพื่อการออกแบบและพัฒนาโครงสร้าง, เครื่องจักร, เครื่องมือ, หรือกระบวนการผลิต หรืองานเพื่อการใช้ประโยชน์สิ่งเหล่านี้โดดๆหรือประยุกต์เข้าด้วยกัน หรือเพื่อการสร้างหรือใช้งานสิ่งเหล่านั้นด้วยความรู้ความเข้าใจเกี่ยวกับสิ่งที่ใช้งานอย่างหมดจด หรือเพื่อการพยากรณ์พฤติกรรมของสิ่งเหล่านั้นภายใต้สภาวะที่เจาะจง สิ่งที่กล่าวมาทั้งหมดนี้จักต้องคำนึงถึงความมุ่งหมายในการใช้งาน, ความคุ้มค่าในการปฏิบัติการ แลความปลอดภัยต่อชีวิตและทรัพยสินด้วย",
-            description_en:
-              "The discipline of engineering encompasses a broad range of more specialized fields of engineering, each with a more specific emphasis for applications of mathematics and science. See glossary of engineering",
-            degree_th: "วิศวกรรมศาสตรบัณฑิต",
-            degree_en: "Bachelor of Engineering",
-            degree_short_th: "วศ.บ.",
-            degree_short_en: "B.Eng.",
-            year: "2021",
-            academic_year: "",
-            department_id: "01JSYV7A3RK5HC8J05D59N1X6K",
-            structure: {
-              category: [
-                {
-                  sub: null,
-                  name: "ก. หมวดวิชาศึกษาทั่วไป",
-                  credit: 31,
-                },
-                {
-                  sub: [
-                    {
-                      name: "วิชาแกนทางวิศวกรรม",
-                      credit: 30,
-                    },
-                    {
-                      name: "วิชาเฉพาะด้าน",
-                      credit: 51,
-                    },
-                    {
-                      name: "วิชาเลือก",
-                      credit: 12,
-                    },
-                  ],
-                  name: "ข. หมวดวิชาเฉพาะ",
-                  credit: 93,
-                },
-                {
-                  sub: null,
-                  name: "ค. หมวดวิชาเลือกเสรี",
-                  credit: 6,
-                },
-              ],
-              totals_credit: 130,
-            },
-            program_outcomes: null,
-            program_learning_outcomes: null,
-            student_outcomes: null,
-          },
-        ],
-      },
-      {
-        id: "01JT089HVNVVBSFEV42CG3N4G1",
-        name_th: "วิศวกรรมคอมพิวเตอร์ 2",
-        name_en: "Computer Engineering II",
-        faculty_id: "01JSYTYQWGR0B7FTY048RWA15C",
-        programmes: [],
-      },
-    ],
-  },
-  {
-    id: "01JT088QZV5E7QPXJ9K00404DK",
-    name_th: "วิศวกรรมศาสตร์ 2",
-    name_en: "Engineering II",
-    departments: [],
-  },
-]);
+const AcadamicManagement = ref([]);
 
-const selectedFaculty = ref(AcadamicManagement.value[0].id);
-const selectedDepartment = ref(AcadamicManagement.value[0].departments[0].id);
-const selectedProgram = ref(
-  AcadamicManagement.value[0].departments[0].programmes[0].id
-);
+const selectedFaculty = ref(null);
+const selectedDepartment = ref(null);
+const selectedProgram = ref(null);
 
 const selectedFacultyDetails = computed(() => {
   return AcadamicManagement.value.find(
@@ -588,9 +457,6 @@ watch(
   { deep: true }
 );
 
-const path = "7casdas547ads45s56a45d6s4ad";
-const name = "Computer Engineering (Regular)";
-
 const manageOutcome = () => {
   router.push({
     path: `/academic-structure/mange-outcome/${selectedProgramDetails.value.id}`,
@@ -598,10 +464,13 @@ const manageOutcome = () => {
   });
 };
 
-const faculties = ref([]);
+const getFaculties = async () => {
+  await fetchFaculties(AcadamicManagement);
+};
 
 onMounted(async () => {
-  await fetchFaculties(faculties);
+  await getFaculties(AcadamicManagement);
+  console.log(AcadamicManagement.value);
 });
 </script>
 

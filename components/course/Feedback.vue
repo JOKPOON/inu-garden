@@ -19,13 +19,12 @@
     </div>
   </div>
 
-    <div v-if="activeButton === 'Received Feedbacks'">
-      <RecivedFeedbacks />
-    </div>
-    <div v-else-if="activeButton === 'Manage Feedback'">
-      <ManageFeedback />
-    </div>
-  
+  <div v-if="activeButton === 'Received Feedbacks'">
+    <RecivedFeedbacks />
+  </div>
+  <div v-else-if="activeButton === 'Manage Feedback'">
+    <ManageFeedback />
+  </div>
 </template>
 
 <script setup>

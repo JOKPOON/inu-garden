@@ -32,9 +32,10 @@
                 <div
                   class="flex items-center justify-between w-full px-4 py-2 border border-grey-secondary rounded-xl text-base"
                 >
-                  <span
-                    >{{ selectedCourse.code }} - {{ selectedCourse.name }}</span
-                  >
+                  <span>
+                    {{ selectedCourse.code }} - {{ selectedCourse.name }} /
+                    {{ selectedCourse.academic_year }}
+                  </span>
                   <button
                     @click="clearSelectedCourse"
                     class="flex items-center justify-center rounded-xl p-2 border hover:bg-red-500 hover:text-white"
@@ -61,7 +62,8 @@
                     @click="selectCourse(course)"
                     class="px-4 py-2 hover:bg-grey-secondary hover:cursor-pointer"
                   >
-                    {{ course.code }} - {{ course.name }}
+                    {{ course.code }} - {{ course.name }} /
+                    {{ course.academic_year }}
                   </li>
                 </ul>
               </div>
@@ -179,19 +181,14 @@ const selectedCourse = ref(null);
 const semester = ref("");
 const courseSearch = ref("");
 
-const courses = ref([
-  { code: "CS101", name: "Introduction to Computer Science" },
-  { code: "MATH201", name: "Calculus II" },
-  { code: "PHY301", name: "Physics for Engineers" },
-  { code: "ENG102", name: "English Composition" },
-]);
+const courses = ref([]);
 
 const filteredCourses = computed(() => {
   if (!courseSearch.value.trim()) {
     return [];
   }
   return courses.value.filter((course) =>
-    `${course.code} - ${course.name}`
+    `${course.code} - ${course.name} / ${course.academic_year}`
       .toLowerCase()
       .includes(courseSearch.value.toLowerCase())
   );
@@ -199,7 +196,7 @@ const filteredCourses = computed(() => {
 
 const selectCourse = (course) => {
   selectedCourse.value = course;
-  courseSearch.value = `${course.code} - ${course.name}`;
+  courseSearch.value = `${course.code} - ${course.name} / ${course.academic_year}`;
 };
 
 const clearSelectedCourse = () => {

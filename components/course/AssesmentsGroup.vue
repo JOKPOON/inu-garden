@@ -64,11 +64,7 @@ const route = useRoute();
 const course_code = route.query.code;
 const course_id = router.currentRoute.value.params.id;
 
-const assessmentGroups = ref([
-  { id: 1, name: "Midterm", maxWeightedScore: 30 },
-  { id: 2, name: "Final", maxWeightedScore: 40 },
-  { id: 3, name: "Assignment", maxWeightedScore: 30 },
-]);
+const assessmentGroups = ref([]);
 
 const showGroup = (groupId, groupName) => {
   router.push({

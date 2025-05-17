@@ -14,7 +14,7 @@
           :key="option.id"
           :value="option"
         >
-          {{ option.name_en }}
+          {{ option.name_th }}
         </option>
       </select>
     </div>
@@ -32,7 +32,7 @@
           :key="option.id"
           :value="option"
         >
-          {{ option.name_en }}
+          {{ option.name_th }}
         </option>
       </select>
     </div>
@@ -49,7 +49,7 @@
           :key="option.id"
           :value="option.id"
         >
-          {{ option.name_en }}
+          {{ option.name_th }}
         </option>
       </select>
     </div>
@@ -206,7 +206,7 @@ const academicYearOptions = ref([]);
 
 const topics = ref([
   { name: "Course CLO Assessment" },
-  { name: "Course Link Outcome " },
+  { name: "Course Link Outcome" },
   { name: "Course Outcome Success Rate" },
 ]);
 

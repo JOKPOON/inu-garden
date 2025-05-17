@@ -294,7 +294,7 @@ const columns = [
 
 const searchQuery = ref("");
 const currentPage = ref(1);
-const itemsPerPage = 2;
+const itemsPerPage = 10;
 const Students = ref([]);
 const totalPages = ref(10);
 

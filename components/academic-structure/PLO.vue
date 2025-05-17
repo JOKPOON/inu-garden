@@ -73,6 +73,7 @@
         </div>
         <div class="col-span-8 h-full flex flex-col">
           <div
+            v-if="selectedPLO"
             class="w-full flex items-center justify-center py-3 border-b border-grey-secondary font-semibold text-grey-primary"
           >
             Detail of {{ selectedPLO.code }}
@@ -95,7 +96,10 @@
                   {{ selectedPLO.description_eng }}
                 </div>
               </div>
-              <div class="w-full flex flex-col gap-2 pt-3">
+              <div
+                v-if="selectedPLO && selectedPLO.sub_program_learning_outcomes"
+                class="w-full flex flex-col gap-2 pt-3"
+              >
                 <div class="font-semibold text-black-primary px-4">Sub PLO</div>
                 <div
                   class="flex flex-row justify-between gap-6 items-center w-full px-4"
@@ -112,11 +116,7 @@
                     </SmallAddButton>
                   </div>
                 </div>
-                <div
-                  v-if="
-                    selectedPLO && selectedPLO.sub_program_learning_outcomes
-                  "
-                >
+                <div>
                   <table
                     class="min-w-full divide-y border-grey-secondary mt-4 border-y"
                   >
@@ -226,7 +226,7 @@
                   </div>
                 </div>
               </div> -->
-              <div class="w-full flex flex-col gap-2 pt-2">
+              <div v-if="selectedPLO" class="w-full flex flex-col gap-2 pt-2">
                 <div
                   class="font-semibold text-grey-primary px-4 w-full text-center border-b border-grey-secondary pb-2"
                 >
@@ -360,7 +360,6 @@ import SmallEditButton from "@/components/button/SmallEditButton.vue";
 import SmallSaveButton from "@/components/button/SmallSaveButton.vue";
 import AddPLO from "@/components/popups/AddPLO.vue";
 import AddSubPLO from "@/components/popups/AddSubPLO.vue";
-import Search from "@/components/icons/Search.vue";
 import Delete from "@/components/icons/Delete.vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
@@ -380,7 +379,6 @@ const addSubPLO = () => {
   showAddSubPLOPopup.value = true;
 };
 
-const searchQuery = ref("");
 const editMode = ref(false);
 const editPLO = () => {
   editMode.value = true;

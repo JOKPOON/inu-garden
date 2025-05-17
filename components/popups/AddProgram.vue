@@ -14,7 +14,9 @@
           </div>
           <div class="text-sm text-grey-primary mt-1">
             Add Program for
-            <span class="font-semibold text-black-primary">{{ faculty }}</span>
+            <span class="font-semibold text-black-primary">{{
+              department
+            }}</span>
           </div>
         </div>
         <div class="mt-4 text-center flex gap-4 flex-col text-sm">
@@ -24,9 +26,9 @@
                 >Program Name (EN)</label
               >
               <input
-                v-model="program.name"
+                v-model="program.name_en"
                 type="text"
-                placeholder="Program Name"
+                placeholder="Program Name  (EN)"
                 class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
               />
             </div>
@@ -42,12 +44,12 @@
           </div>
           <div class="flex flex-col items-start w-full gap-2">
             <label class="font-semibold text-black-primary"
-              >Program Description (ENG)</label
+              >Program Description (EN)</label
             >
             <textarea
-              v-model="program.desc"
+              v-model="program.description_en"
               rows="3"
-              placeholder="Program Description"
+              placeholder="Program Description (EN)"
               class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
             ></textarea>
           </div>
@@ -56,7 +58,7 @@
               >Program Description (TH)</label
             >
             <textarea
-              v-model="program.desc_th"
+              v-model="program.description_th"
               rows="3"
               placeholder="Program Description (TH)"
               class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
@@ -96,25 +98,50 @@
 <script setup>
 import { ref } from "vue";
 import { defineProps, defineEmits } from "vue";
+import { BaseURL } from "~/api/api";
 
-const emit = defineEmits(["close"]);
-
-const program = ref({
-  name_th: "",
-  name: "",
-  desc_th: "",
-  desc: "",
-  year: "",
-});
+const emit = defineEmits(["close", "updated"]);
 
 const props = defineProps({
-  faculty: {
+  department: {
     type: String,
     required: true,
   },
 });
 
-const addProgram = () => {
+const program = ref({
+  name_th: "",
+  name_en: "",
+  degree_th: "วิศวกรรมศาสตรบัณฑิต",
+  degree_en: "Bachelor of Engineering",
+  degree_short_th: "วศ.บ.",
+  degree_short_en: "B.Eng.",
+  description_th: "",
+  description_en: "",
+  year: "",
+  department_id: props.department,
+});
+
+const addProgram = async () => {
+  try {
+    const response = await fetch(`${BaseURL}programmes`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(program.value),
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to add faculty");
+    }
+    const data = await response.json();
+    console.log("programmse", data);
+    emit("updated", data);
+  } catch (error) {
+    console.error(error);
+  }
   emit("close");
 };
 </script>

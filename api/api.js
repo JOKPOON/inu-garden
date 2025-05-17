@@ -491,13 +491,16 @@ const fetchEvaluation = async (
 ) => {
   try {
     let url = ""; // Declare once with let
-
+    let filename = "";
     if (topic === 0) {
       url = `${BaseURL}programmes/${programme_id}/clo_assessment?from=${from}&to=${to}`;
+      filename = "CLO_Assessment.xlsx";
     } else if (topic === 1) {
       url = `${BaseURL}programmes/${programme_id}/liked_outcomes?from=${from}&to=${to}`;
+      filename = "Liked_Outcomes.xlsx";
     } else if (topic === 2) {
       url = `${BaseURL}programmes/${programme_id}/outcomes_success_rate?from=${from}&to=${to}`;
+      filename = "Outcomes_Success_Rate.xlsx";
     } else {
       throw new Error("Invalid topic");
     }
@@ -523,7 +526,7 @@ const fetchEvaluation = async (
     }
 
     const blob = await response.blob();
-    const filename = "evaluation_report.xlsx";
+
     const urlObject = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = urlObject;

@@ -193,46 +193,7 @@ definePageMeta({
 const steamStatus = ref("default");
 const dateTimeStatus = ref("default");
 
-const receivedFeedbacks = ref([
-  {
-    id: "1",
-    stream_type: "UPSTREAM",
-    comment: "This is a sample comment",
-    created_at: "2025-04-05T07:59:50.856Z",
-    user: {
-      title_en_short: "Assoc. Prof.",
-      first_name_en: "Somchai",
-      last_name_en: "Thongdee",
-    },
-    from_course: {
-      code: "CPE101",
-      name: "Introduction to Programming I",
-      semester: {
-        year: 2024,
-        semester_sequence: "1",
-      },
-    },
-  },
-  {
-    id: "2",
-    stream_type: "DOWNSTREAM",
-    comment: "Another feedback comment",
-    created_at: "2025-04-04T10:30:00.000Z",
-    user: {
-      title_en_short: "Dr.",
-      first_name_en: "Jane",
-      last_name_en: "Doe",
-    },
-    from_course: {
-      code: "CPE102",
-      name: "Introduction to Programming II",
-      semester: {
-        year: 2024,
-        semester_sequence: "1",
-      },
-    },
-  },
-]);
+const receivedFeedbacks = ref([]);
 
 const sortedFeedbacks = computed(() => {
   let feedbacks = [...receivedFeedbacks.value];

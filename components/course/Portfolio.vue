@@ -69,8 +69,33 @@ onMounted(async () => {
   await fetchReceivedFeedbacks(receivedFeedbacks, course.value.id);
   await fetchSentFeedbacks(sentFeedbacks, course.value.id);
   await fetchCoursePortfolioOutcome(outcomes, course.value.id);
-
   store.setDetails(course.value);
+  console.log(course.value.portfolio_data.improvements);
+
+  if (!course.value.portfolio_data.implementation) {
+    store.setImplementationData({
+      methods: [],
+      online_media: [],
+      teaching_objectives: [],
+    });
+  }
+
+  if (!course.value.portfolio_data.educational_outcomes) {
+    store.setEducationalOutcomes({
+      grade_distribution: [],
+    });
+  }
+
+  if (!course.value.portfolio_data.continuous_development) {
+    store.setContinuousDevelopment({
+      feedbacks: {
+        upstream_subjects: [],
+        downstream_subjects: [],
+      },
+      improvements: [],
+    });
+  }
+
   store.setImplementationData(course.value.portfolio_data.implementation);
   store.setContinuousDevelopment(
     course.value.portfolio_data.continuous_development

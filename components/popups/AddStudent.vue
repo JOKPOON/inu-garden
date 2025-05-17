@@ -215,6 +215,7 @@ const addStudentAll = async () => {
   console.log(selectedStudents.value);
   selectedStudents.value = [];
   emit("updated");
+  emit("close");
 };
 
 const removeStudent = (id) => {
@@ -276,6 +277,16 @@ watch(selectedYear, () => {
     );
   }
 });
+
+const onEnter = () => {
+  fetchStudents(
+    students,
+    student.value.id || "",
+    selectedProgram.value,
+    selectedDepartment.value,
+    selectedYear.value
+  );
+};
 
 const addStudentEnrollment = async (students) => {
   await fetch(BaseURL + "enrollments", {
