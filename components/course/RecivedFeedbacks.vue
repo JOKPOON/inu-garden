@@ -93,9 +93,9 @@
 
           <p class="text-sm text-grey-primary">
             From:
-            {{ feedback.user.title_en_short }}
-            {{ feedback.user.first_name_en }}
-            {{ feedback.user.last_name_en }}
+            {{ feedback.user.title_th_short }}
+            {{ feedback.user.first_name_th }}
+            {{ feedback.user.last_name_th }}
           </p>
           <p class="text-sm text-grey-primary">
             {{ formatBangkokTime(feedback.created_at) }}
@@ -141,9 +141,9 @@
 
           <p class="text-sm text-grey-primary">
             From:
-            {{ feedback.user.title_en_short }}
-            {{ feedback.user.first_name_en }}
-            {{ feedback.user.last_name_en }}
+            {{ feedback.user.title_th_short }}
+            {{ feedback.user.first_name_th }}
+            {{ feedback.user.last_name_th }}
           </p>
           <p class="text-sm text-grey-primary">
             {{ formatBangkokTime(feedback.created_at) }}

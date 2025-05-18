@@ -108,14 +108,14 @@
                 }}
               </div>
               <p class="text-sm font-semibold">
-                {{ feedback.from_course.code }} -
-                {{ feedback.from_course.name }}
+                {{ feedback.target_course.code }} -
+                {{ feedback.target_course.name }}
               </p>
             </div>
             <div>
               <p class="text-sm text-grey-primary text-end">
-                {{ feedback.from_course.semester.semester_sequence }} /
-                {{ feedback.from_course.semester.year }}
+                {{ feedback.target_course.semester.semester_sequence }} /
+                {{ feedback.target_course.semester.year }}
               </p>
             </div>
           </div>
@@ -129,9 +129,9 @@
             <div>
               <p class="text-sm text-grey-primary">
                 From:
-                {{ feedback.user.title_en_short }}
-                {{ feedback.user.first_name_en }}
-                {{ feedback.user.last_name_en }}
+                {{ feedback.user.title_th_short }}
+                {{ feedback.user.first_name_th }}
+                {{ feedback.user.last_name_th }}
               </p>
               <p class="text-sm text-grey-primary">
                 {{ formatBangkokTime(feedback.created_at) }}
@@ -181,14 +181,14 @@
                 }}
               </div>
               <p class="text-sm font-semibold">
-                {{ feedback.from_course.code }} -
-                {{ feedback.from_course.name }}
+                {{ feedback.target_course.code }} -
+                {{ feedback.target_course.name }}
               </p>
             </div>
             <div>
               <p class="text-sm text-grey-primary text-end">
-                {{ feedback.from_course.semester.semester_sequence }} /
-                {{ feedback.from_course.semester.year }}
+                {{ feedback.target_course.semester.semester_sequence }} /
+                {{ feedback.target_course.semester.year }}
               </p>
             </div>
           </div>
@@ -201,9 +201,9 @@
 
           <p class="text-sm text-grey-primary">
             From:
-            {{ feedback.user.title_en_short }}
-            {{ feedback.user.first_name_en }}
-            {{ feedback.user.last_name_en }}
+            {{ feedback.user.title_th_short }}
+            {{ feedback.user.first_name_th }}
+            {{ feedback.user.last_name_th }}
           </p>
           <p class="text-sm text-grey-primary">
             {{ formatBangkokTime(feedback.created_at) }}
@@ -376,6 +376,7 @@ const deleteFeedback = async (feedbackId) => {
 
 onMounted(async () => {
   await fetchSentFeedbacks(sendFeedbacks, id.value);
+  console.log(sendFeedbacks.value);
   splitFeedbacks();
 });
 </script>

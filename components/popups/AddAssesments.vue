@@ -13,7 +13,7 @@
             Add Assessment
           </div>
           <div class="text-sm text-grey-primary mt-1">
-            Add Assessment for
+            Add Assessment for group
             <span class="font-semibold text-black-primary">{{ name }}</span>
           </div>
         </div>
@@ -27,14 +27,14 @@
             <input
               v-model="assessment.name"
               type="text"
-              placeholder="Assessment Group Name"
+              placeholder="Assessment Name"
               class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
             />
           </div>
           <div class="flex flex-col items-start w-full gap-2">
             <label class="font-semibold text-black-primary">Description</label>
             <textarea
-              v-model="assessment.desc_en"
+              v-model="assessment.description"
               placeholder="Description"
               class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
             ></textarea>
@@ -60,13 +60,15 @@
                   class="flex flex-row items-center w-full gap-2 p-2 border border-grey-secondary rounded-xl"
                 >
                   <input
-                    v-model="assessment.includeCLO"
+                    v-model="assessment.is_included_in_clo"
                     type="checkbox"
                     class="w-4 h-4 rounded-xl"
                   />
                   <label
                     class="font-semibold text-black-primary border-l border-grey-secondary pl-2"
-                    ><span v-if="assessment.includeCLO" class="text-green-500"
+                    ><span
+                      v-if="assessment.is_included_in_clo"
+                      class="text-green-500"
                       >Include</span
                     >
                     <span v-else class="text-red-500">Not Include</span>
@@ -78,7 +80,7 @@
           <div class="flex flex-col items-start w-full gap-2">
             <label class="font-semibold text-black-primary">Max Scored</label>
             <input
-              v-model="assessment.maxScored"
+              v-model="assessment.max_score"
               type="number"
               placeholder="Max Scored"
               class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
@@ -89,7 +91,7 @@
               >Expected Passing Student (%)</label
             >
             <input
-              v-model="assessment.expectedPassingStudent"
+              v-model="assessment.expected_passing_student_percentage"
               type="number"
               placeholder="Expected Passing Student (%)"
               class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
@@ -100,7 +102,7 @@
               >Expected Passing Score (%)</label
             >
             <input
-              v-model="assessment.expectedPassingScore"
+              v-model="assessment.expected_score_percentage"
               type="number"
               placeholder="Expected Passing Score (%)"
               class="w-[28rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
@@ -111,7 +113,7 @@
           class="flex flex-row items-center justify-center gap-2 w-full mt-4 border border-grey-secondary rounded-xl"
         >
           <button
-            @click="addAssignmentsGroup"
+            @click="addAssignment"
             class="py-2 font-medium border border-grey-secondary text-black-primary rounded-xl w-full bg-yellow-primary hover:bg-black-primary hover:text-white"
           >
             Add
@@ -131,16 +133,17 @@
 <script setup>
 import { ref } from "vue";
 import { defineProps, defineEmits } from "vue";
+import { BaseURL } from "~/api/api";
 
-const emit = defineEmits(["close"]);
+const emit = defineEmits(["close", "added_assignment"]);
 
 const assessment = ref({
   name: "",
-  desc_en: "",
+  description: "",
   weight: 0,
-  includeCLO: true,
-  maxScored: 0,
-  expectedPassingStudent: 50,
+  is_included_in_clo: true,
+  max_score: 0,
+  expected_passing_student_percentage: 50,
   expectedPassingScore: 50,
 });
 
@@ -155,7 +158,32 @@ const props = defineProps({
   },
 });
 
-const addAssignmentsGroup = () => {
+const addAssignment = async () => {
+  try {
+    const response = await fetch(`${BaseURL}assignments`, {
+      credentials: "include",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: assessment.value.name,
+        description: assessment.value.description,
+        weight: assessment.value.weight,
+        is_included_in_clo: assessment.value.is_included_in_clo,
+        max_score: assessment.value.max_score,
+        expected_passing_student_percentage:
+          assessment.value.expected_passing_student_percentage,
+        expected_score_percentage: assessment.value.expected_score_percentage,
+        assignment_group_id: props.id,
+      }),
+    });
+    if (!response.ok) throw new Error("Failed to add assignment");
+    emit("added_assignment");
+  } catch (error) {
+    console.error(error);
+  }
+
   emit("close");
 };
 </script>

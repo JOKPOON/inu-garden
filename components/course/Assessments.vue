@@ -381,6 +381,7 @@
   <AddAssesments
     v-if="isAddAssesmentsShow"
     @close="isAddAssesmentsShow = false"
+    @added_assignment="added_assignment"
     :id="assesmentsGroupID"
     :name="assesmentsGroupName"
   />
@@ -738,6 +739,13 @@ const addScore = async (score = 0.0, student_id) => {
   } catch (error) {
     console.error(error);
   }
+};
+
+const added_assignment = async () => {
+  await fetchAssignments(assessments, props.courseId, route.query.groupId);
+  setActiveAssessment(
+    assessments.value.find((a) => a.assignment_group_id === route.query.groupId)
+  );
 };
 
 const editScore = async (score) => {
