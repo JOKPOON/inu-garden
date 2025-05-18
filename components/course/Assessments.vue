@@ -630,7 +630,8 @@ const addStudentToAssessment = () => {
 };
 
 onMounted(async () => {
-  await fetchAssignments(assessments, props.courseId);
+  console.log(route.query.groupId);
+  await fetchAssignments(assessments, props.courseId, route.query.groupId);
   console.log(assessments.value);
   setActiveAssessment(
     assessments.value.find((a) => a.assignment_group_id === route.query.groupId)

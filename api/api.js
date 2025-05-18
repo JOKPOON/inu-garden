@@ -166,18 +166,25 @@ const fetchSerms = async (serms) => {
   }
 };
 
-const fetchAssignments = async (assessments, course_id = "") => {
+const fetchAssignments = async (assessments, course_id = "", groupId = "") => {
   try {
-    const response = await fetch(`${BaseURL}courses/${course_id}/assignments`, {
-      credentials: "include",
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await fetch(
+      `${BaseURL}courses/${course_id}/assignment-groups?withAssignment=true&groupId=${groupId}`,
+      {
+        credentials: "include",
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     if (!response.ok) throw new Error("Failed to fetch assignments");
     const res = await response.json();
-    assessments.value = res.data;
+
+    // Extract and flatten all assignments from the groups
+    const allAssignments = res.data.flatMap((group) => group.assignments || []);
+    console.log("Assignments:", allAssignments);
+    assessments.value = allAssignments;
   } catch (error) {
     console.error("Error fetching assignments:", error);
   }
@@ -191,7 +198,7 @@ const fetchAssignmentGroup = async (
 ) => {
   try {
     const response = await fetch(
-      `${BaseURL}courses/${course_id}/assignment-groups?withAssignments=${withAssignments}&groupId=${groupId}`,
+      `${BaseURL}courses/${course_id}/assignment-groups?withAssignment=${withAssignments}&groupId=${groupId}`,
       {
         credentials: "include",
         method: "GET",
