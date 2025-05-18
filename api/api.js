@@ -11,7 +11,7 @@ export function api() {
   if (stage() === "dev") {
     return "http://localhost:3001/";
   } else {
-    return "https://api.example.com";
+    return "http://10.35.29.114:3001/";
   }
 }
 

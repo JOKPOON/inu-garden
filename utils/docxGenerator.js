@@ -297,6 +297,12 @@ export async function generateDocx(data) {
         },
         insideVertical: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
       },
+      margins: {
+        top: 100,
+        bottom: 100,
+        left: 100,
+        right: 100,
+      },
     })
   );
 
@@ -465,6 +471,12 @@ export async function generateDocx(data) {
           size: 1,
           color: "000000",
         },
+      },
+      margins: {
+        top: 100,
+        bottom: 100,
+        left: 100,
+        right: 100,
       },
     })
   );

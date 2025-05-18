@@ -35,6 +35,7 @@ const downloadDocx = () => {
   }
   generateDocx({
     course_name: store.details.code + " " + store.details.name,
+    // pos: store.details.pos,
     lecturers: store.details.lecturers
       ? store.details.lecturers
           .map(
