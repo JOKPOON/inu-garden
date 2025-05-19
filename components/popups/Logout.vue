@@ -29,7 +29,7 @@
 
 <script setup>
 import { useRouter } from "vue-router";
-import BaseURL from "@/config/api";
+import { BaseURL } from "~/api/api";
 
 const router = useRouter();
 const emit = defineEmits(["close"]);

@@ -110,7 +110,7 @@ import EmailLogin from "@/components/icons/EmailLogin.vue";
 import PasswordLogin from "@/components/icons/PasswordLogin.vue";
 import LoginButton from "@/components/button/LoginButton.vue";
 import HttpClient from "@/api/http.js";
-import BaseURL from "@/config/api.js";
+import { BaseURL } from "~/api/api";
 import StatusPopup from "@/components/popups/StatusPopup.vue";
 const { t } = useI18n();
 
