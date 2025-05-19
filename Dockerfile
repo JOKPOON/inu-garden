@@ -5,7 +5,8 @@ WORKDIR /app
 COPY .output ./.output
 COPY package.json bun.lockb ./
 
-RUN bun install --production
+# No --production here
+RUN bun install
 
 EXPOSE 3000
 
