@@ -1,4 +1,4 @@
-const BaseURL = "http://inu_server:3001/"; // Replace with your actual base URL
+const BaseURL = "http://10.35.29.114:3001/"; // Replace with your actual base URL
 
 const fetchMe = async (userStore, router, loading) => {
   try {

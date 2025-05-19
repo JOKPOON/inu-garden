@@ -2,13 +2,15 @@
 FROM oven/bun:1 AS base
 WORKDIR /app
 
-# Copy package manager files early to install dependencies
+# Copy only the package manager files initially to leverage caching
 COPY bun.lockb package.json ./
 
-# Install all dependencies (including dev)
+# Install all dependencies (including dev) - only runs when dependencies change
 RUN bun install --frozen-lockfile
 
-# Copy the entire project (except ignored files)
+# ---------------------------------------
+# Only copy necessary files for the build
+# ---------------------------------------
 COPY . .
 
 # Build the Nuxt app
@@ -20,16 +22,17 @@ RUN bun run build
 FROM oven/bun:1 AS release
 WORKDIR /app
 
-# Only copy necessary files from build stage
+# Only copy the output from the build stage, avoid unnecessary files
 COPY --from=base /app/.output .output
 COPY --from=base /app/node_modules ./node_modules
-COPY --from=base /app/package.json ./
+COPY --from=base /app/package.json ./  
 
-# Expose default Nuxt port
+# Expose the Nuxt app port
 EXPOSE 3000
 
-# Set development environment variable
-ENV NODE_ENV=development
+# Set the environment variable (default to 'development' if not passed)
+ARG NODE_ENV=development
+ENV NODE_ENV=${NODE_ENV}
 
 # Use Bun to run the Nuxt server
 CMD ["bun", "x", "nuxt", "start"]
