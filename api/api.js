@@ -1,19 +1,4 @@
-const BaseURL = api();
-
-export function stage() {
-  if (typeof window !== "undefined" && window.location) {
-    return window.location.hostname === "localhost" ? "dev" : "prod";
-  }
-  return "prod";
-}
-
-export function api() {
-  if (stage() === "dev") {
-    return "http://localhost:3001/";
-  } else {
-    return "http://inu_server:3001/";
-  }
-}
+const BaseURL = "http://inu_server:3001/"; // Replace with your actual base URL
 
 const fetchMe = async (userStore, router, loading) => {
   try {
