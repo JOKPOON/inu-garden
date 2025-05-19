@@ -3,6 +3,7 @@ name: Build and Push Inu Garden to GHCR
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -34,8 +35,8 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t ghcr.io/${{ github.repository_owner }}/inu-garden:latest .
+        docker build -t ghcr.io/jokpoon/inu-garden:latest .
 
     - name: Push Docker image
       run: |
-        docker push ghcr.io/${{ github.repository_owner }}/inu-garden:latest
+        docker push ghcr.io/jokpoon/inu-garden:latest
