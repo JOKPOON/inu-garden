@@ -28,8 +28,8 @@ COPY --from=base /app/package.json ./
 # Expose default Nuxt port
 EXPOSE 3000
 
-# Set production env
-ENV NODE_ENV=production
+# Set development environment variable
+ENV NODE_ENV=development
 
 # Use Bun to run the Nuxt server
 CMD ["bun", "x", "nuxt", "start"]
