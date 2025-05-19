@@ -304,7 +304,7 @@
 
 <script setup>
 import Delete from "@/components/icons/Delete.vue";
-import BaseURL from "@/config/api";
+import { BaseURL } from "@/api/api";
 import { useRouter } from "vue-router";
 import {
   fetchCourse,

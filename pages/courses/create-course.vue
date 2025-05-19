@@ -339,7 +339,7 @@ import Import from "@/components/button/ImportButton.vue";
 import History from "@/components/button/HistoryButton.vue";
 import Delete from "@/components/icons/Delete.vue";
 import CourseHistory from "@/components/popups/CourseHistory.vue";
-import BaseURL from "@/config/api";
+import { BaseURL } from "@/api/api";
 import StatusPopup from "@/components/popups/StatusPopup.vue";
 import { useRouter } from "vue-router";
 import { fetchInstructors, fetchPrograms, fetchSerms } from "~/api/api";

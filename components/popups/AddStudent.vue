@@ -165,7 +165,7 @@
 import { ref, computed } from "vue";
 import { defineProps, defineEmits } from "vue";
 import Delete from "@/components/icons/Delete.vue";
-import BaseURL from "@/config/api";
+import { BaseURL } from "@/api/api";
 import { fetchDepartments, fetchPrograms, fetchStudents } from "~/api/api";
 
 const emit = defineEmits(["close", "addStudent"]);

@@ -671,7 +671,7 @@ import Lecturer from "@/components/icons/Lecturer.vue";
 import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
 import Search from "@/components/icons/Search.vue";
-import BaseURL from "@/config/api";
+import { BaseURL } from "@/api/api";
 import { useRouter } from "vue-router";
 import {
   fetchInstructor,

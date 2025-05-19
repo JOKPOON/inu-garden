@@ -320,7 +320,7 @@
 
 <script setup>
 import Delete from "@/components/icons/Delete.vue";
-import BaseURL from "@/config/api";
+import { BaseURL } from "@/api/api";
 import { fetchSerms, fetchPrograms, fetchInstructors } from "@/api/api";
 
 const { t } = useI18n();

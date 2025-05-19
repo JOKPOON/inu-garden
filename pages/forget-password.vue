@@ -205,7 +205,7 @@ import BannerLogin from "@/components/images/BannerLogin.jpg";
 import EmailLogin from "@/components/icons/EmailLogin.vue";
 import PasswordLogin from "@/components/icons/PasswordLogin.vue";
 import LoginButton from "@/components/button/LoginButton.vue";
-import BaseURL from "@/config/api";
+import { BaseURL } from "@/api/api";
 import ArrowRight from "@/components/icons/ArrowRight.vue";
 
 const { t } = useI18n();

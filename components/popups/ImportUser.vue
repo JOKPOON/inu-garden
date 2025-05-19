@@ -420,7 +420,7 @@ import ImportAllButton from "@/components/button/ImportAllButton.vue";
 import ArrowRight from "@/components/icons/ArrowRight.vue";
 import Delete from "@/components/icons/Delete.vue";
 import Import from "@/components/icons/Import.vue";
-import BaseURL from "@/config/api";
+import { BaseURL } from "@/api/api";
 import * as XLSX from "xlsx";
 
 const emit = defineEmits(["close"]);

@@ -218,7 +218,7 @@ import Import from "@/components/button/ImportButton.vue";
 import Search from "@/components/icons/Search.vue";
 import ShowUser from "@/components/icons/ShowUser.vue";
 import ArrowRight from "@/components/icons/ArrowRight.vue";
-import BaseURL from "@/config/api";
+import { BaseURL } from "@/api/api";
 import Edit from "@/components/icons/Edit.vue";
 import Delete from "@/components/icons/Delete.vue";
 import BannerLogin from "@/components/images/BannerLogin.jpg";
