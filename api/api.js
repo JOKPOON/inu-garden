@@ -11,7 +11,7 @@ export function api() {
   if (stage() === "dev") {
     return "http://localhost:3001/";
   } else {
-    return "http://localhost:3001/";
+    return "http://inu_server:3001/";
   }
 }
 
