@@ -84,17 +84,10 @@
       </div>
     </div>
   </teleport>
-  <CreateCourseModal
-    v-if="file"
-    :file="file"
-    @close="$emit('close')"
-    @imported="$emit('imported')"
-  />
 </template>
 
 <script setup>
 import { ref } from "vue";
-import CreateCourseModal from "@/components/popups/CreateCourseModal.vue";
 const emit = defineEmits(["close", "imported"]);
 const file = ref(null);
 const isDragging = ref(false);

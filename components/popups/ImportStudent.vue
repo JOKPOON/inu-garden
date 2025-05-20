@@ -9,12 +9,12 @@
       >
         <div class="flex flex-col w-full pb-4 border-b border-grey-secondary">
           <h2 class="text-2xl font-bold text-black-primary text-left">
-            Import Student Enrollments
+            Import Students
           </h2>
           <p class="text-sm text-grey-primary mt-1">
             Upload a file to
             <span class="font-semibold text-black-primary">
-            Import Student Enrollments
+            Import Students
             </span>
           </p>
         </div>

@@ -53,7 +53,7 @@
           >
         </AddUserButton>
         <TemplateButton
-          @click="exportStudent"
+          @click="clickTemplate"
           class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
           aria-label="Export Template"
         >
@@ -62,7 +62,7 @@
           >
         </TemplateButton>
         <Import
-          @click="onClickImportStudent"
+          @click="importFile"
           class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
           aria-label="Import Students"
         >
@@ -245,6 +245,10 @@
     @close="showDeleteStudentPopup = false"
     :Student="selectedStudent"
   />
+  <ImportStudent
+    v-if="showImportPopup"
+    @close="showImportPopup = false"
+  />
 </template>
 
 <script setup>
@@ -262,6 +266,7 @@ import AddStudent from "@/components/popups/AddStudentsPage.vue";
 import ShowStudentDetails from "@/components/popups/ShowStudentDetails.vue";
 import EditStudentPage from "@/components/popups/EditStudentPage.vue";
 import DeleteStudentPage from "@/components/popups/DeleteStudentPage.vue";
+import ImportStudent from "@/components/popups/ImportStudent.vue";
 import { fetchStudents } from "~/api/api";
 
 const { t } = useI18n();
@@ -282,6 +287,18 @@ useHead({
 definePageMeta({
   layout: "landing",
 });
+
+const clickTemplate = () => {
+  window.open(
+    "https://cdn.discordapp.com/attachments/1266636608971477085/1374297978688372776/instant_course_import_template.xlsx?ex=682d8a3b&is=682c38bb&hm=c81aded386a525d836106b3c7ba1b527f4bbf443e56aaa82f227bc3871cdbdf7&",
+    "_blank"
+  );
+};
+
+const showImportPopup = ref(false);
+const importFile = () => {
+  showImportPopup.value = true;
+};
 
 const columns = [
   { key: "studentId", label: "Student ID" },
