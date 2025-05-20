@@ -40,7 +40,7 @@
       </div>
       <div class="flex flex-row gap-4">
         <TemplateButton
-          @click="exportStudent"
+          @click="clickTemplate"
           class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
         >
           <span class="text-black-primary font-semibold text-base"
@@ -199,6 +199,11 @@
     @close="isDeleteStudentVisible = false"
     @updated="reloadStudentList"
   />
+  <ImportEnrollments
+    v-if="isImportEnrollmentsVisible"
+    @close="isImportEnrollmentsVisible = false"
+    @updated="reloadStudentList"
+  />
 </template>
 
 <script setup>
@@ -218,6 +223,7 @@ import { fetchEnrollments } from "@/api/api";
 import StudentEnroll from "@/components/popups/StudentEnroll.vue";
 import EditStudentEnroll from "@/components/popups/EditStudentEnroll.vue";
 import DeleteStudent from "@/components/popups/DeleteStudent.vue";
+import ImportEnrollments from "@/components/popups/ImportEnrollments.vue";
 import { defineProps, watch } from "vue";
 
 const props = defineProps({
@@ -238,6 +244,13 @@ const courseID = ref("");
 const courseName = ref("");
 const studentName = ref("");
 const studentStatus = ref("");
+
+const clickTemplate = () => {
+  window.open(
+    "https://cdn.discordapp.com/attachments/1266636608971477085/1374297978688372776/instant_course_import_template.xlsx?ex=682d8a3b&is=682c38bb&hm=c81aded386a525d836106b3c7ba1b527f4bbf443e56aaa82f227bc3871cdbdf7&",
+    "_blank"
+  );
+};
 
 const studentDetails = (id) => {
   studentID.value = id;
@@ -295,7 +308,10 @@ const onClickAddStudent = () => {};
 
 const exportStudent = () => {};
 
-const onClickImportStudent = () => {};
+const isImportEnrollmentsVisible = ref(false);
+const onClickImportStudent = () => {
+  isImportEnrollmentsVisible.value = true;
+};
 
 const onClickExportStudent = () => {};
 

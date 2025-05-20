@@ -324,7 +324,7 @@
   </div>
 
   <CourseHistory v-if="isPopupVisible" @close="isPopupVisible = false" />
-  <ImportCorse 
+  <ImportCourse 
     v-if="isImportPopupVisible"
     @close="isImportPopupVisible = false"
   />
@@ -344,7 +344,7 @@ import Import from "@/components/button/ImportButton.vue";
 import History from "@/components/button/HistoryButton.vue";
 import Delete from "@/components/icons/Delete.vue";
 import CourseHistory from "@/components/popups/CourseHistory.vue";
-import ImportCorse from "@/components/popups/ImportCorse.vue";
+import ImportCourse from "~/components/popups/ImportCourse.vue";
 import { BaseURL } from "@/api/api";
 import StatusPopup from "@/components/popups/StatusPopup.vue";
 import { useRouter } from "vue-router";
