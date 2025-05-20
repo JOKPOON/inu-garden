@@ -40,7 +40,7 @@
       </div>
       <div class="flex flex-row gap-4">
         <TemplateButton
-          @click="exportStudent"
+          @click="clickTemplate"
           class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
         >
           <span class="text-black-primary font-semibold text-base"
@@ -199,10 +199,16 @@
     @close="isDeleteStudentVisible = false"
     @updated="reloadStudentList"
   />
+  <ImportEnrollments
+    v-if="isImportEnrollmentsVisible"
+    @close="isImportEnrollmentsVisible = false"
+    @updated="reloadStudentList"
+  />
 </template>
 
 <script setup>
 import { ref, computed } from "vue";
+import { onMounted } from "vue";
 import TemplateButton from "@/components/button/TemplateButton.vue";
 import Import from "@/components/button/ImportButton.vue";
 import Export from "@/components/button/ExportButton.vue";
@@ -217,6 +223,7 @@ import { fetchEnrollments } from "@/api/api";
 import StudentEnroll from "@/components/popups/StudentEnroll.vue";
 import EditStudentEnroll from "@/components/popups/EditStudentEnroll.vue";
 import DeleteStudent from "@/components/popups/DeleteStudent.vue";
+import ImportEnrollments from "@/components/popups/ImportEnrollments.vue";
 import { defineProps, watch } from "vue";
 
 const props = defineProps({
@@ -226,6 +233,7 @@ const props = defineProps({
   },
 });
 
+const emit = defineEmits(["update:totalStudents"]);
 const students = ref([]);
 const isStudentEnrollVisible = ref(false);
 const isEditStudentEnrollVisible = ref(false);
@@ -236,6 +244,13 @@ const courseID = ref("");
 const courseName = ref("");
 const studentName = ref("");
 const studentStatus = ref("");
+
+const clickTemplate = () => {
+  window.open(
+    "https://cdn.discordapp.com/attachments/1266636608971477085/1374297978688372776/instant_course_import_template.xlsx?ex=682d8a3b&is=682c38bb&hm=c81aded386a525d836106b3c7ba1b527f4bbf443e56aaa82f227bc3871cdbdf7&",
+    "_blank"
+  );
+};
 
 const studentDetails = (id) => {
   studentID.value = id;
@@ -293,7 +308,10 @@ const onClickAddStudent = () => {};
 
 const exportStudent = () => {};
 
-const onClickImportStudent = () => {};
+const isImportEnrollmentsVisible = ref(false);
+const onClickImportStudent = () => {
+  isImportEnrollmentsVisible.value = true;
+};
 
 const onClickExportStudent = () => {};
 
@@ -347,16 +365,28 @@ const getStatusText = (status) => {
   return status === "ENROLL" ? "Enroll" : "Withdraw";
 };
 
-onMounted(() => {
-  fetchEnrollments(students, course_id.value, searchQuery.value);
-});
+const fetchAndEmit = async () => {
+  await fetchEnrollments(students, course_id.value, searchQuery.value);
+  emit("update:totalStudents", students.value.length);
+};
+
+onMounted(fetchAndEmit);
 
 watch(
   () => props.refresh,
-  (newValue) => {
-    fetchEnrollments(students, course_id.value, searchQuery.value);
+  () => {
+    fetchAndEmit();
   }
 );
+
+watch(
+  students,
+  (newVal) => {
+    emit("update:totalStudents", newVal.length);
+  }
+);
+
+
 </script>
 
 <style lang="scss" scoped>

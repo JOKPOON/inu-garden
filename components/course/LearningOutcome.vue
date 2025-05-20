@@ -18,6 +18,7 @@
       </div>
       <div class="flex flex-row gap-4">
         <TemplateButton
+          @click="clickTemplate"
           class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
         >
           <span class="text-black-primary font-semibold text-base"
@@ -25,6 +26,7 @@
           >
         </TemplateButton>
         <Import
+          @click="importFile"
           class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
         >
           <span class="text-black-primary font-semibold text-base">Import</span>
@@ -531,6 +533,12 @@
     @updated="updatedSSO"
     @close="showAddSOPopup = false"
   ></AddSO>
+  <ImportLearningOutcome
+    v-if="showImportPopup"
+    :id="id"
+    @close="showImportPopup = false"
+    @updated="updated"
+  ></ImportLearningOutcome>
 </template>
 
 <script setup>
@@ -547,6 +555,7 @@ import AddSO from "@/components/popups/AddSOLO.vue";
 import DeleteCLO from "@/components/popups/DeleteCLO.vue";
 import Search from "@/components/icons/Search.vue";
 import Delete from "@/components/icons/Delete.vue";
+import ImportLearningOutcome from "@/components/popups/ImportLearningOutcome.vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { fetchCourse, fetchCourseClos, BaseURL } from "~/api/api";
@@ -563,6 +572,18 @@ const activeButton = ref("PLO");
 const selectedSPLO = ref([]);
 const selectedPO = ref([]);
 const selectedSSO = ref([]);
+
+const clickTemplate = () => {
+  window.open(
+    "https://cdn.discordapp.com/attachments/1266636608971477085/1374297978688372776/instant_course_import_template.xlsx?ex=682d8a3b&is=682c38bb&hm=c81aded386a525d836106b3c7ba1b527f4bbf443e56aaa82f227bc3871cdbdf7&",
+    "_blank"
+  );
+};
+
+const showImportPopup = ref(false);
+const importFile = () => {
+  showImportPopup.value = true;
+};
 
 const updated = async () => {
   await fetchCourseClos(clos, id.value);

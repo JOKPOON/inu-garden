@@ -25,7 +25,7 @@
         </div>
         <div class="text-base text-grey-primary text-end -mt-2">
           <span class="font-semibold text-2xl text-black-primary">{{
-            10
+           totalStudents
           }}</span>
           Students
         </div>
@@ -41,7 +41,7 @@
     </div>
   </div>
   <div v-if="activeButton === 'Student Enrollments'">
-    <StudentEnrollments :refresh="studentListUpdated" />
+    <StudentEnrollments :refresh="studentListUpdated" @update:totalStudents="totalStudents = $event"/>
   </div>
   <div v-else-if="activeButton === 'Student Results'">
     <StudentResult :courseId="id" />
@@ -64,8 +64,8 @@ import AddStudent from "@/components/popups/AddStudent.vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
-
 const { t } = useI18n();
+const totalStudents = ref(0);
 
 useHead({
   title: t("seo.title"),
