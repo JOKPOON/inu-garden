@@ -164,7 +164,7 @@
                     <ShowUser class="w-5 h-5" />
                   </button>
                   <button
-                    @click="openPopup(user.id, 'edit')"
+                    @click="openPopup(user, 'edit')"
                     class="flex items-center justify-center rounded-xl p-2 border bg-white hover:bg-black-primary hover:text-white"
                     aria-label="Edit Student"
                   >
@@ -229,7 +229,11 @@
       </button>
     </div>
   </div>
-  <AddStudent v-if="showAddStudentPopup" @close="showAddStudentPopup = false" />
+  <AddStudent
+    v-if="showAddStudentPopup"
+    @close="showAddStudentPopup = false"
+    @add="updateStudent"
+  />
   <ShowStudentDetails
     v-if="showStudentDetailsPopup"
     @close="showStudentDetailsPopup = false"
@@ -242,8 +246,9 @@
   />
   <DeleteStudentPage
     v-if="showDeleteStudentPopup"
-    @close="showDeleteStudentPopup = false"
     :Student="selectedStudent"
+    @update="updateStudent"
+    @close="showDeleteStudentPopup = false"
   />
   <ImportStudent
     v-if="showImportPopup"
@@ -370,7 +375,7 @@ const openPopup = (id, action) => {
   }
 };
 
-onMounted(async () => {
+const updateStudent = async () => {
   await fetchStudents(
     Students,
     "",
@@ -378,8 +383,12 @@ onMounted(async () => {
     "",
     "",
     itemsPerPage,
-    currentPage.value
+    currentPage.value - 1
   );
+};
+
+onMounted(async () => {
+  await fetchStudents(Students, "", "", "", "", itemsPerPage, 0);
 
   if (Array.isArray(Students.value)) {
     Students.value = {
