@@ -365,15 +365,7 @@ const openPopup = (id, action) => {
 };
 
 onMounted(async () => {
-  await fetchStudents(
-    Students,
-    "",
-    "",
-    "",
-    "",
-    itemsPerPage,
-    currentPage.value
-  );
+  await fetchStudents(Students, "", "", "", "", itemsPerPage, 0);
 
   if (Array.isArray(Students.value)) {
     Students.value = {
