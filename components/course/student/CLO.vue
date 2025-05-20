@@ -16,7 +16,7 @@
       </div>
     </div>
     <div
-      v-if="result.length > 0"
+      v-if="result"
       class="max-h-[calc(100vh-480px)] overflow-y-scroll scrollbar-set w-full"
     >
       <div
