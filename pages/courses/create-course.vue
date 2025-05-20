@@ -9,7 +9,7 @@
       </div>
       <div class="flex flex-row gap-4">
         <TemplateButton
-          @click="Template"
+          @click="clickTemplate"
           class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
         >
           <span class="text-black-primary font-semibold text-base"
@@ -17,7 +17,7 @@
           >
         </TemplateButton>
         <Import
-          @click="Import"
+          @click="ClickImport"
           class="flex items-center flex-row justify-center border border-grey-secondary rounded-xl px-4 py-3 gap-2"
         >
           <span class="text-black-primary font-semibold text-base">Import</span>
@@ -324,6 +324,11 @@
   </div>
 
   <CourseHistory v-if="isPopupVisible" @close="isPopupVisible = false" />
+  <ImportCorse 
+    v-if="isImportPopupVisible"
+    @close="isImportPopupVisible = false"
+  />
+
   <StatusPopup
     v-if="statusVisible"
     @close="statusVisible = false"
@@ -339,6 +344,7 @@ import Import from "@/components/button/ImportButton.vue";
 import History from "@/components/button/HistoryButton.vue";
 import Delete from "@/components/icons/Delete.vue";
 import CourseHistory from "@/components/popups/CourseHistory.vue";
+import ImportCorse from "@/components/popups/ImportCorse.vue";
 import { BaseURL } from "@/api/api";
 import StatusPopup from "@/components/popups/StatusPopup.vue";
 import { useRouter } from "vue-router";
@@ -378,6 +384,7 @@ const programs = ref([]);
 const courseInstructors = ref([""]);
 
 const isPopupVisible = ref(false);
+const isImportPopupVisible = ref(false);
 const statusVisible = ref(false);
 const message = ref("");
 const path = ref("");
@@ -385,6 +392,19 @@ const status = ref("");
 
 const HistoryButton = () => {
   isPopupVisible.value = true;
+  isImportPopupVisible.value = false;
+};
+
+const clickTemplate = () => {
+  window.open(
+    "https://cdn.discordapp.com/attachments/1266636608971477085/1374297978688372776/instant_course_import_template.xlsx?ex=682d8a3b&is=682c38bb&hm=c81aded386a525d836106b3c7ba1b527f4bbf443e56aaa82f227bc3871cdbdf7&",
+    "_blank"
+  );
+};
+
+const ClickImport = () => {
+  isImportPopupVisible.value = true;
+  isPopupVisible.value = false;
 };
 
 const createCourse = async () => {

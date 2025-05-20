@@ -111,16 +111,6 @@
       </div>
     </div>
   </div>
-  <div v-else class="flex items-center justify-center flex-col pt-4 mt-12">
-    <img
-      :src="BannerLogin"
-      alt="Banner Login"
-      class="w-56 max-w-md object-cover rounded-2xl mb-4"
-    />
-    <div class="text-center font-semibold text-grey-primary">
-      No Student found!
-    </div>
-  </div>
 </template>
 
 <script setup>
