@@ -250,10 +250,7 @@
     @update="updateStudent"
     @close="showDeleteStudentPopup = false"
   />
-  <ImportStudent
-    v-if="showImportPopup"
-    @close="showImportPopup = false"
-  />
+  <ImportStudent v-if="showImportPopup" @close="showImportPopup = false" />
 </template>
 
 <script setup>
@@ -404,7 +401,7 @@ onMounted(async () => {
 watch(
   () => currentPage.value,
   async (newPage) => {
-    await fetchStudents(Students, "", "", "", "", itemsPerPage, newPage);
+    await fetchStudents(Students, "", "", "", "", itemsPerPage, newPage - 1);
 
     if (Array.isArray(Students.value)) {
       Students.value = {
@@ -456,4 +453,3 @@ th {
   text-overflow: ellipsis;
 }
 </style>
-
