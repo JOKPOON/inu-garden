@@ -15,13 +15,14 @@
           </div>
         </div>
         <div
+          v-if="course"
           class="border border-grey-secondary rounded-xl p-4 max-h-[calc(100vh-300px)] max-w-[70vw] overflow-y-scroll hide-scrollbar scrollbar-set"
         >
           <div class="grid grid-cols-3 gap-4 w-full">
             <div class="col-span-2 w-full flex flex-col gap-2">
               <div class="text-base text-black-primary font-semibold">Name</div>
               <input
-                v-model="courseName"
+                v-model="course.name"
                 class="w-full border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                 type="text"
                 placeholder="Course name"
@@ -30,7 +31,7 @@
             <div class="w-full flex flex-col gap-2">
               <div class="text-base text-black-primary font-semibold">Code</div>
               <input
-                v-model="courseCode"
+                v-model="course.code"
                 class="w-full border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                 type="text"
                 placeholder="Course code"
@@ -110,7 +111,7 @@
                 Academic Year
               </div>
               <input
-                v-model="courseAcademicYear"
+                v-model="course.academic_year"
                 class="w-full border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                 type="text"
                 placeholder="Academic Year"
@@ -121,7 +122,7 @@
                 Graduate Year
               </div>
               <input
-                v-model="courseGraduateYear"
+                v-model="course.graduate_year"
                 class="w-full border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                 type="text"
                 placeholder="Graduate Year"
@@ -155,7 +156,7 @@
                 Credit
               </div>
               <input
-                v-model="courseCredit"
+                v-model="course.credit"
                 class="w-full border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                 type="text"
                 placeholder="Credit"
@@ -166,7 +167,7 @@
                 Expected Passing CLO %
               </div>
               <input
-                v-model="courseExpectedPassingCLOPercentage"
+                v-model="course.expected_passing_clo_percentage"
                 class="w-full border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
                 type="text"
                 placeholder="ExpectedPassingCLO"
@@ -178,7 +179,7 @@
               Course Instruction & Description
             </div>
             <textarea
-              v-model="courseDescription"
+              v-model="course.description"
               class="w-full border border-grey-tertiary rounded-xl p-3 outline-grey-tertiary"
               placeholder="Course Instruction & Description"
               rows="4"
@@ -198,7 +199,7 @@
                   A
                 </div>
                 <input
-                  v-model="courseGradeA"
+                  v-model="course.criteria_grade_a"
                   class="w-20 bg-transparent rounded-xl p-3 outline-none text-center"
                   type="text"
                   placeholder="80"
@@ -213,7 +214,7 @@
                   B+
                 </div>
                 <input
-                  v-model="courseGradeBPlus"
+                  v-model="course.criteria_grade_bp"
                   class="w-20 bg-transparent rounded-xl p-3 outline-none text-center"
                   type="text"
                   placeholder="75"
@@ -228,7 +229,7 @@
                   B
                 </div>
                 <input
-                  v-model="courseGradeB"
+                  v-model="course.criteria_grade_b"
                   class="w-20 bg-transparent rounded-xl p-3 outline-none text-center"
                   type="text"
                   placeholder="70"
@@ -243,7 +244,7 @@
                   C+
                 </div>
                 <input
-                  v-model="courseGradeCPlus"
+                  v-model="course.criteria_grade_cp"
                   class="w-20 bg-transparent rounded-xl p-3 outline-none text-center"
                   type="text"
                   placeholder="65"
@@ -258,7 +259,7 @@
                   C
                 </div>
                 <input
-                  v-model="courseGradeC"
+                  v-model="course.criteria_grade_c"
                   class="w-20 bg-transparent rounded-xl p-3 outline-none text-center"
                   type="text"
                   placeholder="60"
@@ -273,7 +274,7 @@
                   D+
                 </div>
                 <input
-                  v-model="courseGradeDPlus"
+                  v-model="course.criteria_grade_dp"
                   class="w-20 bg-transparent rounded-xl p-3 outline-none text-center"
                   type="text"
                   placeholder="55"
@@ -288,7 +289,7 @@
                   D
                 </div>
                 <input
-                  v-model="courseGradeD"
+                  v-model="course.criteria_grade_d"
                   class="w-20 bg-transparent rounded-xl p-3 outline-none text-center"
                   type="text"
                   placeholder="50"
@@ -320,32 +321,33 @@
 
 <script setup>
 import Delete from "@/components/icons/Delete.vue";
-import { BaseURL } from "@/api/api";
-import { fetchSerms, fetchPrograms, fetchInstructors } from "@/api/api";
+import { BaseURL, fetchCourse } from "@/api/api";
+import { fetchInstructors } from "@/api/api";
 
 const { t } = useI18n();
 
-const courseName = ref("");
-const courseCode = ref("");
-const courseSemester = ref("");
-const courseAcademicYear = ref("");
-const courseGraduateYear = ref("");
-const courseProgram = ref("");
-const courseCredit = ref(3);
-const courseDescription = ref("");
-const courseExpectedPassingCLOPercentage = ref(85.0);
-const courseGradeA = ref(80);
-const courseGradeBPlus = ref(75);
-const courseGradeB = ref(70);
-const courseGradeCPlus = ref(65);
-const courseGradeC = ref(60);
-const courseGradeDPlus = ref(55);
-const courseGradeD = ref(50);
+const props = defineProps({
+  course_id: {
+    type: Object,
+    required: true,
+  },
+  semester: {
+    type: Object,
+    required: true,
+  },
+  program: {
+    type: Object,
+    required: true,
+  },
+});
 
+const course = ref();
 const instructors = ref([]);
-const semesters = ref([]);
-const programs = ref([]);
+const semesters = ref(props.semester);
+const programs = ref(props.program);
 const courseInstructors = ref([""]);
+const courseSemester = ref("");
+const courseProgram = ref("");
 
 const router = useRouter();
 const emit = defineEmits(["close"]);
@@ -363,25 +365,25 @@ const EditCourse = async () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        name: courseName.value,
-        code: courseCode.value,
+        name: course.value.name,
+        code: course.value.code,
         lecturer_ids: courseInstructors.value,
         semester_id: courseSemester.value,
-        academic_year: courseAcademicYear.value,
-        graduate_year: courseGraduateYear.value,
+        academic_year: course.value.academic_year,
+        graduate_year: course.value.graduate_year,
         programme_id: courseProgram.value,
         expected_passing_clo_percentage:
-          courseExpectedPassingCLOPercentage.value,
+          course.value.expected_passing_clo_percentage,
         program_id: courseProgram.value,
-        credit: courseCredit.value,
-        description: courseDescription.value,
-        criteria_grade_a: courseGradeA.value,
-        criteria_grade_bp: courseGradeBPlus.value,
-        criteria_grade_b: courseGradeB.value,
-        criteria_grade_cp: courseGradeCPlus.value,
-        criteria_grade_c: courseGradeC.value,
-        criteria_grade_dp: courseGradeDPlus.value,
-        criteria_grade_d: courseGradeD.value,
+        credit: course.value.credit,
+        description: course.value.description,
+        criteria_grade_a: course.value.criteria_grade_a,
+        criteria_grade_bp: course.value.criteria_grade_bp,
+        criteria_grade_b: course.value.criteria_grade_b,
+        criteria_grade_cp: course.value.criteria_grade_cp,
+        criteria_grade_c: course.value.criteria_grade_c,
+        criteria_grade_dp: course.value.criteria_grade_dp,
+        criteria_grade_d: course.value.criteria_grade_d,
       }),
     });
 
@@ -402,11 +404,27 @@ const removeInstructor = (index) => {
   courseInstructors.value.splice(index, 1);
 };
 
+watch(course, () => {
+  courseInstructors.value = course.value.lecturers.map((instructor) => {
+    return instructor.id;
+  });
+
+  courseSemester.value = course.value.semester.id;
+  courseProgram.value = course.value.programme.id;
+});
+
 // Call API functions on component mount
-onMounted(() => {
-  fetchInstructors(instructors);
-  fetchSerms(semesters);
-  fetchPrograms(programs);
+onMounted(async () => {
+  await fetchCourse(course, props.course_id);
+  await fetchInstructors(instructors);
+
+  console.log("course", course.value);
+  console.log("instructors", instructors.value);
+  console.log("semesters", semesters.value);
+  console.log("programs", programs.value);
+  console.log("courseInstructors", courseInstructors.value);
+  console.log("courseSemester", courseSemester.value);
+  console.log("courseProgram", courseProgram.value);
 });
 
 useHead({

@@ -1,4 +1,12 @@
-const BaseURL = "http://10.35.29.114:3001/"; // Replace with your actual base URL
+let BaseURL = "http://localhost:3001/"; // default fallback
+
+if (typeof window !== "undefined" && window.location) {
+  const hostname = window.location.hostname;
+  BaseURL =
+    hostname === "localhost"
+      ? "http://localhost:3001/"
+      : `http://${hostname}:3001/`;
+}
 
 const fetchMe = async (userStore, router, loading) => {
   try {
@@ -21,7 +29,7 @@ const fetchMe = async (userStore, router, loading) => {
   loading.value = false;
 };
 
-const fetchCourses = async (courses, query, serm, program) => {
+const fetchCourses = async (courses, query = "", serm = "", program = "") => {
   try {
     const response = await fetch(
       `${BaseURL}courses?query=${query}&serm=${serm}&program=${program}`,

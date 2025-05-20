@@ -23,6 +23,7 @@
                 v-model="searchQuery"
                 class="bg-transparent border-none focus:ring-0 outline-none text-base w-40"
                 placeholder="Search..."
+                @keydown.enter="handleSearch"
               />
               <button
                 class="flex items-center justify-center bg-white rounded-xl"
@@ -38,7 +39,7 @@
                 v-model="selectedProgramOption"
                 class="bg-transparent border-none focus:ring-0 outline-none text-base pr-2 hover:cursor-pointer"
               >
-                <option value="">All Programs</option>
+                <option value="">Programs</option>
                 <option
                   v-for="option in programs"
                   :key="option.id"
@@ -55,23 +56,23 @@
                 v-model="selectedYearOption"
                 class="bg-transparent border-none focus:ring-0 outline-none text-base pr-2 hover:cursor-pointer"
               >
-                <option value="">All Years</option>
+                <option value="">Years</option>
                 <option
-                  v-for="option in yearsOptions"
-                  :key="option"
-                  :value="option"
+                  v-for="option in sermester"
+                  :key="option.id"
+                  :value="option.id"
                 >
-                  {{ option }}
+                  {{ option.semester_sequence }} / {{ option.year }}
                 </option>
               </select>
             </div>
           </div>
           <div
-            v-if="filteredCourses.length"
+            v-if="courses.length"
             class="border border-grey-secondary rounded-xl p-4 grid grid-cols-2 w-full grid-flex-media gap-4 mt-6 flex-col max-h-[calc(100vh-350px)] overflow-y-scroll scrollbar-set"
           >
             <div
-              v-for="course in filteredCourses"
+              v-for="course in courses"
               :key="course.id"
               class="bg-white border border-grey-tertiary shadow-sm rounded-xl p-6"
             >
@@ -90,11 +91,13 @@
                       class="flex items-center flex-row justify-center border border-grey-secondary text-grey-primary rounded-xl px-4 py-3 gap-2"
                     >
                       <span class="text-base">
-                        {{ course.created_at }}
+                        {{ course.semester.semester_sequence }}
+                        /
+                        {{ course.semester.year }}
                       </span>
                     </div>
                     <button
-                      @click="importCourse(course.code)"
+                      @click="importCourse(course.id)"
                       class="flex items-center justify-center relative z-50 bg-white rounded-xl p-3 border border-grey-secondary hover:bg-black-primary text-black-primary hover:text-white"
                     >
                       <Import class="w-6 h-6" />
@@ -132,10 +135,7 @@
               </div>
             </div>
           </div>
-          <div
-            v-else
-            class="flex items-center justify-center flex-col p-4"
-          >
+          <div v-else class="flex items-center justify-center flex-col p-4">
             <img
               :src="BannerLogin"
               alt="Banner Login"
@@ -156,6 +156,9 @@
     </div>
     <ImportCourseHistory
       v-if="importCourseVisible"
+      :course_id="selectedCourseOption"
+      :program="programs"
+      :semester="sermester"
       @close="importCourseVisible = false"
     />
   </teleport>
@@ -171,6 +174,7 @@ import Lecturer from "@/components/icons/Lecturer.vue";
 import ImportCourseHistory from "@/components/popups/ImportCourseHistory.vue";
 import BannerLogin from "@/components/images/BannerLogin.jpg";
 import { useRouter } from "vue-router";
+import { fetchCourses, fetchPrograms, fetchSerms } from "~/api/api";
 
 const router = useRouter();
 const emit = defineEmits(["close"]);
@@ -181,7 +185,8 @@ const overviewCourse = (code) => {
 
 const importCourseVisible = ref(false);
 
-const importCourse = (code) => {
+const importCourse = (id) => {
+  selectedCourseOption.value = id;
   importCourseVisible.value = true;
 };
 
@@ -190,16 +195,21 @@ const programs = ref([
   { id: 2, name_en: "Information Technology", year: 2021 },
   { id: 3, name_en: "Software Engineering", year: 2021 },
 ]);
-
-const yearsOptions = ref(["2021", "2022", "2023", "2024", "2025"]);
+const sermester = ref(["2021", "2022", "2023", "2024", "2025"]);
 
 const searchQuery = ref("");
-
 const selectedProgramOption = ref("");
 const selectedYearOption = ref("");
+const selectedCourseOption = ref("");
 
-const handleSearch = () => {
+const handleSearch = async () => {
   console.log("searching...");
+  await fetchCourses(
+    courses,
+    searchQuery.value,
+    selectedYearOption.value,
+    selectedProgramOption.value
+  );
 };
 
 const courses = ref([
@@ -247,20 +257,33 @@ const courses = ref([
   },
 ]);
 
-const filteredCourses = computed(() => {
-  return courses.value.filter((course) => {
-    const matchesSearchQuery = course.name
-      .toLowerCase()
-      .includes(searchQuery.value.toLowerCase());
-    const matchesProgram =
-      !selectedProgramOption.value ||
-      course.program.id === selectedProgramOption.value;
-    const matchesYear =
-      !selectedYearOption.value ||
-      course.academic_year === selectedYearOption.value;
+watch(
+  [selectedProgramOption, selectedYearOption],
+  () => {
+    fetchCourses(
+      courses,
+      searchQuery.value,
+      selectedYearOption.value,
+      selectedProgramOption.value
+    );
+  },
+  { immediate: true }
+);
 
-    return matchesSearchQuery && matchesProgram && matchesYear;
-  });
+onMounted(async () => {
+  // Fetch courses from API if needed
+  await fetchPrograms(programs);
+  await fetchSerms(sermester);
+  await fetchCourses(
+    courses,
+    searchQuery.value,
+    selectedYearOption.value,
+    selectedProgramOption.value
+  );
+
+  console.log("Courses fetched:", courses.value);
+  console.log("Programs fetched:", programs.value);
+  console.log("Serms fetched:", sermester.value);
 });
 </script>
 
