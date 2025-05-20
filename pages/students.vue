@@ -298,6 +298,18 @@ const itemsPerPage = 10;
 const Students = ref([]);
 const totalPages = ref(10);
 
+const sortKey = ref("");
+const sortOrder = ref("asc");
+
+const sortBy = (key) => {
+  if (sortKey.value === key) {
+    sortOrder.value = sortOrder.value === "asc" ? "desc" : "asc";
+  } else {
+    sortKey.value = key;
+    sortOrder.value = "asc";
+  }
+};
+
 const getStudent = async (query) => {
   await fetchStudents(Students, query);
   console.log("Searching for:", query);
@@ -352,14 +364,31 @@ onMounted(async () => {
     currentPage.value
   );
 
-  console.log("Students:", Students.value);
+  if (Array.isArray(Students.value)) {
+    Students.value = {
+      students: Students.value,
+      total: Students.value.length,
+      total_page: 1,
+    };
+  }
+
   totalPages.value = Students.value.total_page;
 });
 
 watch(
   () => currentPage.value,
   async (newPage) => {
-    await fetchStudents(Students, "", "", "", "", itemsPerPage, newPage - 1);
+    await fetchStudents(Students, "", "", "", "", itemsPerPage, newPage);
+
+    if (Array.isArray(Students.value)) {
+      Students.value = {
+        students: Students.value,
+        total: Students.value.length,
+        total_page: 1,
+      };
+    }
+
+    totalPages.value = Students.value.total_page;
   }
 );
 </script>
@@ -401,3 +430,4 @@ th {
   text-overflow: ellipsis;
 }
 </style>
+
