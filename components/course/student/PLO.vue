@@ -7,7 +7,7 @@
       <div class="flex-2">Name</div>
       <div class="flex-6 flex gap-2">
         <div
-          v-for="plo in allPLOs"
+          v-for="plo in uniquePLOs"
           :key="plo"
           class="flex-1 flex items-center justify-center"
         >
@@ -16,25 +16,39 @@
       </div>
     </div>
     <div
-      v-if="studentResults.length > 0"
+      v-if="result"
       class="max-h-[calc(100vh-480px)] overflow-y-scroll scrollbar-set w-full"
     >
       <div
-        v-for="student in studentResults"
-        :key="student.studentID"
+        v-for="student in result"
+        :key="student.student_id"
         class="flex gap-4 p-4 border-b"
       >
-        <div class="flex-1">{{ student.studentID }}</div>
-        <div class="flex-2">{{ student.studentName }}</div>
+        <div class="flex-1">{{ student.student_id }}</div>
+        <div class="flex-2">{{ student.student_name_th }}</div>
         <div class="flex-6 flex gap-2">
           <div
-            v-for="plo in allPLOs"
+            v-for="plo in uniquePLOs"
             :key="plo"
             class="flex-1 flex items-center justify-center"
           >
             <component
-              :is="student.PLO[plo] ? Include : NotInclude"
-              :class="student.PLO[plo] ? 'text-green-700' : 'text-red-700'"
+              :is="
+                student.plos?.find((plos) => {
+                  return plos.code == plo;
+                })
+                  ? Include
+                  : NotInclude
+              "
+              :class="
+                student.plos?.find((plos) => {
+                  if (plos.code == plo) {
+                    return plos.pass;
+                  }
+                })
+                  ? 'text-green-700'
+                  : 'text-red-700'
+              "
               class="w-5 h-5"
             />
           </div>
@@ -59,104 +73,21 @@ import Include from "@/components/icons/Include.vue";
 import NotInclude from "@/components/icons/NotInclude.vue";
 import BannerLogin from "@/components/images/BannerLogin.jpg";
 
-const studentResults = [
-  {
-    studentID: "64070501000",
-    studentName: "John Doe",
-    PLO: {
-      PLO1: true,
-      PLO2: true,
-      PLO3: true,
-      PLO4: true,
-      PLO5: true,
-    },
+const props = defineProps({
+  result: {
+    type: Object,
+    required: true,
   },
-  {
-    studentID: "64070501001",
-    studentName: "Jane Smith",
-    PLO: {
-      PLO1: true,
-      PLO2: true,
-      PLO4: true,
-      PLO8: true,
-      PLO9: true,
-    },
+  allCLOs: {
+    type: Array,
+    required: true,
   },
-  {
-    studentID: "64070501002",
-    studentName: "Alice Johnson",
-    PLO: {
-      PLO1: true,
-      PLO2: true,
-      PLO3: true,
-      PLO4: true,
-      PLO5: true,
-    },
-  },
-  {
-    studentID: "64070501003",
-    studentName: "Bob Brown",
-    PLO: {
-      PLO1: true,
-      PLO2: true,
-      PLO3: true,
-      PLO6: true,
-      PLO8: true,
-    },
-  },
-  {
-    studentID: "64070501004",
-    studentName: "Charlie Davis",
-    PLO: {
-      PLO1: true,
-      PLO2: true,
-      PLO3: true,
-      PLO4: true,
-      PLO5: true,
-    },
-  },
-  {
-    studentID: "64070501005",
-    studentName: "Eve Wilson",
-    PLO: {
-      PLO1: true,
-      PLO2: true,
-      PLO3: true,
-      PLO4: true,
-      PLO5: true,
-    },
-  },
-  {
-    studentID: "64070501006",
-    studentName: "Frank Thompson",
-    PLO: {
-      PLO1: true,
-      PLO2: true,
-      PLO3: true,
-      PLO4: true,
-      PLO5: true,
-    },
-  },
-  {
-    studentID: "64070501007",
-    studentName: "Grace Martinez",
-    PLO: {
-      PLO1: true,
-      PLO2: true,
-      PLO3: true,
-      PLO4: true,
-      PLO5: true,
-    },
-  },
-];
-
-const allPLOs = Array.from(
-  new Set(studentResults.flatMap((student) => Object.keys(student.PLO)))
-).sort((a, b) => {
-  const numA = parseInt(a.replace("PLO", ""), 10);
-  const numB = parseInt(b.replace("PLO", ""), 10);
-  return numA - numB;
 });
+
+const allPLOs = props.result.map((student) => {
+  return student.plos?.map((plo) => plo.code || "") || [];
+});
+const uniquePLOs = [...new Set(allPLOs.flat())];
 </script>
 
 <style lang="scss" scoped>

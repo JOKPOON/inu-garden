@@ -7,7 +7,7 @@
       <div class="flex-2">Name</div>
       <div class="flex-6 flex gap-2">
         <div
-          v-for="so in allSOs"
+          v-for="so in uniqueSOs"
           :key="so"
           class="flex-1 flex items-center justify-center"
         >
@@ -16,25 +16,39 @@
       </div>
     </div>
     <div
-      v-if="studentResults.length > 0"
+      v-if="result"
       class="max-h-[calc(100vh-480px)] overflow-y-scroll scrollbar-set w-full"
     >
       <div
-        v-for="student in studentResults"
-        :key="student.studentID"
+        v-for="student in result"
+        :key="student.student_id"
         class="flex gap-4 p-4 border-b"
       >
-        <div class="flex-1">{{ student.studentID }}</div>
-        <div class="flex-2">{{ student.studentName }}</div>
+        <div class="flex-1">{{ student.student_id }}</div>
+        <div class="flex-2">{{ student.student_name_th }}</div>
         <div class="flex-6 flex gap-2">
           <div
-            v-for="so in allSOs"
+            v-for="so in uniqueSOs"
             :key="so"
             class="flex-1 flex items-center justify-center"
           >
             <component
-              :is="student.SO[so] ? Include : NotInclude"
-              :class="student.SO[so] ? 'text-green-700' : 'text-red-700'"
+              :is="
+                student.sos?.find((sos) => {
+                  return sos.code == so;
+                })
+                  ? Include
+                  : NotInclude
+              "
+              :class="
+                student.sos?.find((sos) => {
+                  if (sos.code == so) {
+                    return sos.pass;
+                  }
+                })
+                  ? 'text-green-700'
+                  : 'text-red-700'
+              "
               class="w-5 h-5"
             />
           </div>
@@ -58,105 +72,17 @@
 import Include from "@/components/icons/Include.vue";
 import NotInclude from "@/components/icons/NotInclude.vue";
 import BannerLogin from "@/components/images/BannerLogin.jpg";
-
-const studentResults = [
-  {
-    studentID: "64070501000",
-    studentName: "John Doe",
-    SO: {
-      SO1: true,
-      SO2: true,
-      SO3: true,
-      SO4: true,
-      SO5: true,
-    },
+const props = defineProps({
+  result: {
+    type: Object,
+    required: true,
   },
-  {
-    studentID: "64070501001",
-    studentName: "Jane Smith",
-    SO: {
-      SO1: true,
-      SO2: true,
-      SO4: true,
-      SO8: true,
-      SO9: true,
-    },
-  },
-  {
-    studentID: "64070501002",
-    studentName: "Alice Johnson",
-    SO: {
-      SO1: true,
-      SO2: true,
-      SO3: true,
-      SO4: true,
-      SO5: true,
-    },
-  },
-  {
-    studentID: "64070501003",
-    studentName: "Bob Brown",
-    SO: {
-      SO1: true,
-      SO2: true,
-      SO3: true,
-      SO6: true,
-      SO8: true,
-    },
-  },
-  {
-    studentID: "64070501004",
-    studentName: "Charlie Davis",
-    SO: {
-      SO1: true,
-      SO2: true,
-      SO3: true,
-      SO4: true,
-      SO5: true,
-    },
-  },
-  {
-    studentID: "64070501005",
-    studentName: "Eve Wilson",
-    SO: {
-      SO1: true,
-      SO2: true,
-      SO3: true,
-      SO4: true,
-      SO5: true,
-    },
-  },
-  {
-    studentID: "64070501006",
-    studentName: "Frank Thompson",
-    SO: {
-      SO1: true,
-      SO2: true,
-      SO3: true,
-      SO4: true,
-      SO5: true,
-    },
-  },
-  {
-    studentID: "64070501007",
-    studentName: "Grace Martinez",
-    SO: {
-      SO1: true,
-      SO2: true,
-      SO3: true,
-      SO4: true,
-      SO5: true,
-    },
-  },
-];
-
-const allSOs = Array.from(
-  new Set(studentResults.flatMap((student) => Object.keys(student.SO)))
-).sort((a, b) => {
-  const numA = parseInt(a.replace("SO", ""), 10);
-  const numB = parseInt(b.replace("SO", ""), 10);
-  return numA - numB;
 });
+
+const allSOs = props.result.map((student) => {
+  return student.sos?.map((so) => so.code || "") || [];
+});
+const uniqueSOs = [...new Set(allSOs.flat())];
 </script>
 
 <style lang="scss" scoped>

@@ -46,13 +46,13 @@
     <CLO :result="studentResults?.result" :allCLOs="studentResults?.clos" />
   </div>
   <div v-if="activeButton === 'PLO'">
-    <PLO />
+    <PLO :result="studentResults?.result" />
   </div>
   <div v-else-if="activeButton === 'PO'">
-    <PO />
+    <PO :result="studentResults?.result" />
   </div>
   <div v-else-if="activeButton === 'SO'">
-    <SO />
+    <SO :result="studentResults?.result" />
   </div>
 </template>
 

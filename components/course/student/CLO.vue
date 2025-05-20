@@ -25,14 +25,13 @@
         class="flex gap-4 p-4 border-b"
       >
         <div class="flex-1">{{ student.student_id }}</div>
-        <div class="flex-2">{{ student.student_name_en }}</div>
+        <div class="flex-2">{{ student.student_name_th }}</div>
         <div class="flex-6 flex gap-2">
           <div
             v-for="clo in allCLOs"
             :key="clo"
             class="flex-1 flex items-center justify-center"
           >
-            <div></div>
             <component
               :is="
                 student.clos.find((clos) => {
@@ -43,7 +42,9 @@
               "
               :class="
                 student.clos.find((clos) => {
-                  return clos.pass;
+                  if (clos.code == clo) {
+                    return clos.pass;
+                  }
                 })
                   ? 'text-green-700'
                   : 'text-red-700'
