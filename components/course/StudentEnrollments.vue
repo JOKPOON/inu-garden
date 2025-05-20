@@ -203,6 +203,7 @@
 
 <script setup>
 import { ref, computed } from "vue";
+import { onMounted } from "vue";
 import TemplateButton from "@/components/button/TemplateButton.vue";
 import Import from "@/components/button/ImportButton.vue";
 import Export from "@/components/button/ExportButton.vue";
@@ -226,6 +227,7 @@ const props = defineProps({
   },
 });
 
+const emit = defineEmits(["update:totalStudents"]);
 const students = ref([]);
 const isStudentEnrollVisible = ref(false);
 const isEditStudentEnrollVisible = ref(false);
@@ -347,16 +349,28 @@ const getStatusText = (status) => {
   return status === "ENROLL" ? "Enroll" : "Withdraw";
 };
 
-onMounted(() => {
-  fetchEnrollments(students, course_id.value, searchQuery.value);
-});
+const fetchAndEmit = async () => {
+  await fetchEnrollments(students, course_id.value, searchQuery.value);
+  emit("update:totalStudents", students.value.length);
+};
+
+onMounted(fetchAndEmit);
 
 watch(
   () => props.refresh,
-  (newValue) => {
-    fetchEnrollments(students, course_id.value, searchQuery.value);
+  () => {
+    fetchAndEmit();
   }
 );
+
+watch(
+  students,
+  (newVal) => {
+    emit("update:totalStudents", newVal.length);
+  }
+);
+
+
 </script>
 
 <style lang="scss" scoped>
