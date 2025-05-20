@@ -74,11 +74,8 @@
     <!-- Table Section -->
     <div class="border border-grey-secondary rounded-2xl relative">
       <div
-        class="flex flex-col gap-4 p-4 pb-0 max-w-full max-h-[calc(100vh-380px)] overflow-auto scrollbar-set"
-        :class="{
-          'max-w-[calc(100vw-280px)]': smallNav,
-          'max-w-[calc(100vw-485px)]': !smallNav,
-        }"
+        class="flex flex-col gap-4 p-4 pb-0 max-h-[calc(100vh-380px)] overflow-auto scrollbar-set"
+        :class="smallNav ? 'w-[calc(100vw-280px)]' : 'w-[calc(100vw-485px)]'"
       >
         <table
           class="table-auto w-full h-full text-sm text-left text-grey-primary border-collapse"
@@ -164,7 +161,7 @@
                     <ShowUser class="w-5 h-5" />
                   </button>
                   <button
-                    @click="openPopup(user, 'edit')"
+                    @click="openPopup(user.id, 'edit')"
                     class="flex items-center justify-center rounded-xl p-2 border bg-white hover:bg-black-primary hover:text-white"
                     aria-label="Edit Student"
                   >
@@ -229,11 +226,7 @@
       </button>
     </div>
   </div>
-  <AddStudent
-    v-if="showAddStudentPopup"
-    @close="showAddStudentPopup = false"
-    @add="updateStudent"
-  />
+  <AddStudent v-if="showAddStudentPopup" @close="showAddStudentPopup = false" />
   <ShowStudentDetails
     v-if="showStudentDetailsPopup"
     @close="showStudentDetailsPopup = false"
@@ -246,9 +239,8 @@
   />
   <DeleteStudentPage
     v-if="showDeleteStudentPopup"
-    :Student="selectedStudent"
-    @update="updateStudent"
     @close="showDeleteStudentPopup = false"
+    :Student="selectedStudent"
   />
   <ImportStudent v-if="showImportPopup" @close="showImportPopup = false" />
 </template>
@@ -372,7 +364,7 @@ const openPopup = (id, action) => {
   }
 };
 
-const updateStudent = async () => {
+onMounted(async () => {
   await fetchStudents(
     Students,
     "",
@@ -380,12 +372,8 @@ const updateStudent = async () => {
     "",
     "",
     itemsPerPage,
-    currentPage.value - 1
+    currentPage.value
   );
-};
-
-onMounted(async () => {
-  await fetchStudents(Students, "", "", "", "", itemsPerPage, 0);
 
   if (Array.isArray(Students.value)) {
     Students.value = {
