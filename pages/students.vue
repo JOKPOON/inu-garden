@@ -75,7 +75,7 @@
     <div class="border border-grey-secondary rounded-2xl relative">
       <div
         class="flex flex-col gap-4 p-4 pb-0 max-h-[calc(100vh-380px)] overflow-auto scrollbar-set"
-        :class="smallNav ? 'w-[calc(100vw-280px)]' : 'w-[calc(100vw-485px)]'"
+        :class="smallNav ? 'w-[calc(100vw-283px)]' : 'w-[calc(100vw-488px)]'"
       >
         <table
           class="table-auto w-full h-full text-sm text-left text-grey-primary border-collapse"
