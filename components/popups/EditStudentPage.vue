@@ -13,7 +13,7 @@
           <div class="text-sm text-grey-primary mt-1">
             Editing details of
             <span class="font-normal text-grey-primary">{{
-              student.name
+              Student.name
             }}</span>
           </div>
         </div>
@@ -22,128 +22,115 @@
         >
           <!-- Editable Student Details -->
           <div class="flex flex-col items-start w-full gap-2">
-            <label class="font-normal text-grey-primary">Student ID</label>
+            <label class="font-semibold text-gray-primary">Student ID</label>
             <input
-              type="text"
-              v-model="student.studentId"
-              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl"
               disabled
-            />
-          </div>
-          <div class="flex flex-col items-start w-full gap-2">
-            <label class="font-normal text-grey-primary">Name</label>
-            <input
+              v-model="Student.id"
               type="text"
-              v-model="student.name"
-              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl"
+              placeholder="Student ID"
+              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
             />
           </div>
           <div class="flex flex-col items-start w-full gap-2">
-            <label class="font-normal text-grey-primary">Email</label>
+            <label class="font-semibold text-black-primary"
+              >First Name (Thai)</label
+            >
             <input
+              v-model="Student.first_name_th"
+              type="text"
+              placeholder="First Name (Thai)"
+              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
+            />
+          </div>
+          <div class="flex flex-col items-start w-full gap-2">
+            <label class="font-semibold text-black-primary">
+              Last Name (Thai)
+            </label>
+            <input
+              v-model="Student.last_name_th"
+              type="text"
+              placeholder="Last Name (Thai)"
+              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
+            />
+          </div>
+          <div class="flex flex-col items-start w-full gap-2">
+            <label class="font-semibold text-black-primary">
+              First Name (English)
+            </label>
+            <input
+              v-model="Student.first_name_en"
+              type="text"
+              placeholder="First Name (English)"
+              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
+            />
+          </div>
+          <div class="flex flex-col items-start w-full gap-2">
+            <label class="font-semibold text-black-primary">
+              Last Name (English)
+            </label>
+            <input
+              v-model="Student.last_name_en"
+              type="text"
+              placeholder="Last Name (English)"
+              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
+            />
+          </div>
+          <div class="flex flex-col items-start w-full gap-2">
+            <label class="font-semibold text-black-primary">Email</label>
+            <input
+              v-model="Student.email"
               type="email"
-              v-model="student.email"
-              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl"
+              placeholder="Student Email"
+              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
             />
           </div>
           <div class="flex flex-col items-start w-full gap-2">
-            <label class="font-normal text-grey-primary">Faculty</label>
-            <input
-              type="text"
-              v-model="student.faculty"
-              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl"
-            />
-          </div>
-          <div class="flex flex-col items-start w-full gap-2">
-            <label class="font-normal text-grey-primary">Department</label>
-            <input
-              type="text"
-              v-model="student.department"
-              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl"
-            />
-          </div>
-          <div class="flex flex-col items-start w-full gap-2">
-            <label class="font-normal text-grey-primary">Program</label>
-            <input
-              type="text"
-              v-model="student.program"
-              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl"
-            />
-          </div>
-          <div class="grid grid-cols-2 w-[32rem] gap-2">
-            <div class="flex flex-col items-start w-full gap-2">
-              <label class="font-normal text-grey-primary">GPAX</label>
-              <input
-                type="number"
-                step="0.01"
-                v-model="student.gpax"
-                class="w-full px-4 py-2 border border-grey-secondary rounded-xl"
-              />
-            </div>
-            <div class="flex flex-col items-start w-full gap-2">
-              <label class="font-normal text-grey-primary"
-                >High School GPAX</label
+            <label class="font-semibold text-black-primary">Department</label>
+            <select
+              v-model="Student.department_id"
+              @change="fetchPrograms(programList, Student.department_id)"
+              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none pr-2"
+            >
+              <option value="" disabled selected>Select Department</option>
+              <option
+                v-for="department in departmentList"
+                :key="department.id"
+                :value="department.id"
               >
-              <input
-                type="number"
-                step="0.01"
-                v-model="student.highSchoolGpax"
-                class="w-full px-4 py-2 border border-grey-secondary rounded-xl"
-              />
-            </div>
+                {{ department.name_th }}
+              </option>
+            </select>
           </div>
-          <div class="grid grid-cols-2 w-[32rem] gap-2">
-            <div class="flex flex-col items-start w-full gap-2">
-              <label class="font-normal text-grey-primary">Math GPAX</label>
-              <input
-                type="number"
-                step="0.01"
-                v-model="student.mathGpax"
-                class="w-full px-4 py-2 border border-grey-secondary rounded-xl"
-              />
-            </div>
-            <div class="flex flex-col items-start w-full gap-2">
-              <label class="font-normal text-grey-primary">Science GPAX</label>
-              <input
-                type="number"
-                step="0.01"
-                v-model="student.scienceGpax"
-                class="w-full px-4 py-2 border border-grey-secondary rounded-xl"
-              />
-            </div>
-            <div class="flex flex-col items-start w-full gap-2">
-              <label class="font-normal text-grey-primary">English GPAX</label>
-              <input
-                type="number"
-                step="0.01"
-                v-model="student.englishGpax"
-                class="w-full px-4 py-2 border border-grey-secondary rounded-xl"
-              />
-            </div>
-            <div class="flex flex-col items-start w-full gap-2">
-              <label class="font-normal text-grey-primary"
-                >Admission Score</label
+          <div class="flex flex-col items-start w-full gap-2">
+            <label class="font-semibold text-black-primary">Program</label>
+            <select
+              v-model="Student.programme_id"
+              :disabled="!Student.department_id || programList.length === 0"
+              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none pr-2"
+            >
+              <option value="" disabled selected>Select Program</option>
+              <option
+                v-for="program in programList"
+                :key="program.id"
+                :value="program.id"
               >
-              <input
-                type="number"
-                step="0.01"
-                v-model="student.admission"
-                class="w-full px-4 py-2 border border-grey-secondary rounded-xl"
-              />
-            </div>
+                {{ program.name_th }}
+              </option>
+            </select>
           </div>
           <div class="flex flex-col items-start w-full gap-2 mb-4">
-            <label class="font-normal text-grey-primary">School Name</label>
+            <label class="font-semibold text-black-primary">Year</label>
             <input
+              v-model="Student.year"
               type="text"
-              v-model="student.schoolName"
-              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl"
+              placeholder="Year"
+              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
             />
           </div>
 
           <!-- Editable Grade Section -->
           <div
-            v-if="student.grade"
+            v-if="Student.grade"
             class="flex flex-col items-start w-full gap-2"
           >
             <label class="font-normal text-grey-primary">Grades</label>
@@ -185,7 +172,7 @@
           </div>
 
           <div
-            v-if="student.PLO"
+            v-if="Student.PLO"
             class="flex flex-col items-start w-full gap-2"
           >
             <label class="font-normal text-grey-primary">PLO</label>
@@ -239,7 +226,7 @@
               >
             </SmallAddButton>
           </div>
-          <div v-if="student.PO" class="flex flex-col items-start w-full gap-2">
+          <div v-if="Student.PO" class="flex flex-col items-start w-full gap-2">
             <label class="font-normal text-grey-primary">PO</label>
             <div
               v-for="(po, index) in student.PO"
@@ -292,7 +279,7 @@
             </SmallAddButton>
           </div>
           <div
-            v-if="student.SO"
+            v-if="Student.SO"
             class="flex flex-col items-start w-full gap-2 mb-4"
           >
             <label class="font-normal text-grey-primary">SO</label>
@@ -374,58 +361,19 @@
 import { defineProps, defineEmits, ref, watch } from "vue";
 import SmallAddButton from "@/components/button/SmallAddButton.vue";
 import Delete from "@/components/icons/Delete.vue";
+import { fetchDepartments, fetchPrograms, BaseURL } from "~/api/api";
 
 const props = defineProps({
-  studentId: {
-    type: String,
-    required: true,
-  },
   Student: {
     type: Object,
     required: true,
   },
 });
 
+const programList = ref([]);
+const departmentList = ref([]);
+
 const emit = defineEmits(["close", "save"]);
-
-const student = ref({});
-
-const Students = ref([
-  {
-    id: 1,
-    studentId: "S001",
-    name: "Alice Johnson",
-    email: "alice.johnson@example.com",
-    faculty: "Science",
-    department: "Biology",
-    program: "Undergraduate",
-    gpax: 3.8,
-    highSchoolGpax: 3.9,
-    mathGpax: 3.7,
-    scienceGpax: 3.6,
-    englishGpax: 3.8,
-    admission: 3.85,
-    schoolName: "Greenwood High School",
-    grade: [
-      { semester: "1st/2023", gpax: 3.8 },
-      { semester: "2nd/2023", gpax: 3.9 },
-    ],
-    PLO: [
-      { code: "PLO1", desc: "Understand biology", status: 0 },
-      { code: "PLO2", desc: "Apply biology concepts", status: 1 },
-    ],
-    PO: [{ code: "PO1", desc: "Demonstrate biology knowledge", status: 0 }],
-    SO: [{ code: "SO1", desc: "Conduct biology experiments", status: 0 }],
-  },
-]);
-
-watch(
-  () => props.studentId,
-  (newId) => {
-    student.value = { ...Students.value.find((s) => s.studentId === newId) };
-  },
-  { immediate: true }
-);
 
 const addGrade = () => {
   student.value.grade.push({ semester: "", gpax: null });
@@ -459,16 +407,40 @@ const deleteSO = (index) => {
   student.value.SO.splice(index, 1);
 };
 
-const saveChanges = () => {
-  const index = Students.value.findIndex(
-    (s) => s.studentId === student.value.studentId
-  );
-  if (index !== -1) {
-    Students.value[index] = { ...student.value };
-    emit("save", student.value);
+const saveChanges = async () => {
+  try {
+    const response = await fetch(`${BaseURL}students/${props.Student.id}`, {
+      credentials: "include",
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: props.Student.id,
+        first_name_th: props.Student.first_name_th,
+        last_name_th: props.Student.last_name_th,
+        first_name_en: props.Student.first_name_en,
+        last_name_en: props.Student.last_name_en,
+        email: props.Student.email,
+        department_id: props.Student.department_id,
+        programme_id: props.Student.programme_id,
+        year: props.Student.year,
+      }),
+    });
+    if (!response.ok) throw new Error("Failed to add student");
+    emit("add");
+  } catch (error) {
+    console.error("Error adding student:", error);
   }
   emit("close");
 };
+
+onMounted(async () => {
+  await fetchDepartments(departmentList);
+  await fetchPrograms(programList, props.Student.department);
+  console.log(departmentList.value);
+  console.log(programList.value);
+});
 </script>
 
 <style scoped>

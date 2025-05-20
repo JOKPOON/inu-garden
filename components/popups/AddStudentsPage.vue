@@ -20,18 +20,53 @@
           <div class="flex flex-col items-start w-full gap-2">
             <label class="font-semibold text-black-primary">Student ID</label>
             <input
-              v-model="newStudent.studentId"
+              v-model="newStudent.id"
               type="text"
               placeholder="Student ID"
               class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
             />
           </div>
           <div class="flex flex-col items-start w-full gap-2">
-            <label class="font-semibold text-black-primary">Name</label>
+            <label class="font-semibold text-black-primary"
+              >First Name (Thai)</label
+            >
             <input
-              v-model="newStudent.name"
+              v-model="newStudent.first_name_th"
               type="text"
-              placeholder="Student Name"
+              placeholder="First Name (Thai)"
+              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
+            />
+          </div>
+          <div class="flex flex-col items-start w-full gap-2">
+            <label class="font-semibold text-black-primary">
+              Last Name (Thai)
+            </label>
+            <input
+              v-model="newStudent.last_name_th"
+              type="text"
+              placeholder="Last Name (Thai)"
+              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
+            />
+          </div>
+          <div class="flex flex-col items-start w-full gap-2">
+            <label class="font-semibold text-black-primary">
+              First Name (English)
+            </label>
+            <input
+              v-model="newStudent.first_name_en"
+              type="text"
+              placeholder="First Name (English)"
+              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
+            />
+          </div>
+          <div class="flex flex-col items-start w-full gap-2">
+            <label class="font-semibold text-black-primary">
+              Last Name (English)
+            </label>
+            <input
+              v-model="newStudent.last_name_en"
+              type="text"
+              placeholder="Last Name (English)"
               class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
             />
           </div>
@@ -46,31 +81,47 @@
           </div>
           <div class="flex flex-col items-start w-full gap-2">
             <label class="font-semibold text-black-primary">Department</label>
-            <input
-              v-model="newStudent.department"
-              type="text"
-              placeholder="Department"
-              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
-            />
+            <select
+              v-model="newStudent.department_id"
+              @change="fetchPrograms(programList, newStudent.department_id)"
+              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none pr-2"
+            >
+              <option value="" disabled selected>Select Department</option>
+              <option
+                v-for="department in departmentList"
+                :key="department.id"
+                :value="department.id"
+              >
+                {{ department.name_th }}
+              </option>
+            </select>
           </div>
           <div class="flex flex-col items-start w-full gap-2">
             <label class="font-semibold text-black-primary">Program</label>
+            <select
+              v-model="newStudent.programme_id"
+              :disabled="!newStudent.department_id || programList.length === 0"
+              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none pr-2"
+            >
+              <option value="" disabled selected>Select Program</option>
+              <option
+                v-for="program in programList"
+                :key="program.id"
+                :value="program.id"
+              >
+                {{ program.name_th }}
+              </option>
+            </select>
+          </div>
+          <div class="flex flex-col items-start w-full gap-2 mb-4">
+            <label class="font-semibold text-black-primary">Year</label>
             <input
-              v-model="newStudent.program"
+              v-model="newStudent.year"
               type="text"
-              placeholder="Program"
+              placeholder="Year"
               class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
             />
           </div>
-          <!-- <div class="flex flex-col items-start w-full gap-2 mb-4">
-            <label class="font-semibold text-black-primary">School Name</label>
-            <input
-              v-model="newStudent.schoolName"
-              type="text"
-              placeholder="School Name"
-              class="w-[32rem] px-4 py-2 border border-grey-secondary rounded-xl outline-none"
-            />
-          </div> -->
         </div>
         <div
           class="flex flex-row items-center justify-center gap-4 w-full mt-4"
@@ -96,44 +147,48 @@
 <script setup>
 import { ref } from "vue";
 import { defineEmits } from "vue";
+import { fetchDepartments, fetchPrograms, BaseURL } from "~/api/api";
 
 const emit = defineEmits(["close", "add"]);
 
 const newStudent = ref({
-  studentId: "",
-  name: "",
+  id: "",
+  first_name_th: "",
+  last_name_th: "",
+  first_name_en: "",
+  last_name_en: "",
   email: "",
-  faculty: "",
-  department: "",
-  program: "",
-  highSchoolGpax: 0,
-  gpax: 0,
-  mathGpax: 0,
-  scienceGpax: 0,
-  englishGpax: 0,
-  admissionGpax: 0,
-  schoolName: "",
+  department_id: "",
+  programme_id: "",
+  year: "",
 });
 
-const addStudent = () => {
-  emit("add", newStudent.value);
-  newStudent.value = {
-    studentId: "",
-    name: "",
-    email: "",
-    faculty: "",
-    department: "",
-    program: "",
-    gpax: 0,
-    mathGpax: 0,
-    highSchoolGpax: 0,
-    scienceGpax: 0,
-    englishGpax: 0,
-    admissionGpax: 0,
-    schoolName: "",
-  };
+const addStudent = async () => {
+  try {
+    const response = await fetch(`${BaseURL}students`, {
+      credentials: "include",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newStudent.value),
+    });
+    if (!response.ok) throw new Error("Failed to add student");
+    emit("add");
+  } catch (error) {
+    console.error("Error adding student:", error);
+  }
   emit("close");
 };
+
+const departmentList = ref([]);
+const programList = ref([]);
+onMounted(async () => {
+  await fetchDepartments(departmentList);
+  await fetchPrograms(programList, newStudent.department);
+  console.log(departmentList.value);
+  console.log(programList.value);
+});
 </script>
 
 <style scoped>
