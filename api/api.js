@@ -208,10 +208,15 @@ const fetchAssignmentGroup = async (
   }
 };
 
-const fetchAssignmentScores = async (scores, clos, assignment_id) => {
+const fetchAssignmentScores = async (
+  scores,
+  clos,
+  assignment_id = "",
+  coureseId = ""
+) => {
   try {
     const response = await fetch(
-      `${BaseURL}assignments/${assignment_id}/scores`,
+      `${BaseURL}assignments/${assignment_id}/scores?courseId=${coureseId}`,
       {
         credentials: "include",
         method: "GET",

@@ -534,12 +534,12 @@ const changeKeyToLabel = (key) => {
 };
 
 const updateClos = async () => {
-  await fetchAssignmentScores(scores, clos, assesmentsID.value);
+  await fetchAssignmentScores(scores, clos, assesmentsID.value, props.courseId);
 };
 
 const setActiveAssessment = async (assessment) => {
   activeAssessment.value = assessment.id;
-  await fetchAssignmentScores(scores, clos, assessment.id);
+  await fetchAssignmentScores(scores, clos, assessment.id, props.courseId);
 
   score_frequency.value = Array(21).fill(0);
 
