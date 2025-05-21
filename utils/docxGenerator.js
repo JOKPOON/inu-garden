@@ -86,9 +86,11 @@ const pos = {
   },
 };
 
-export async function generateDocx(data) {
+export async function generateDocx(data, pos) {
   const section = [];
 
+  console.log("data", data);
+  console.log("pos", pos);
   // Header
   section.push(
     new Paragraph({
@@ -414,7 +416,7 @@ export async function generateDocx(data) {
                 (acc, c) => acc + Object.values(c.Assignments).length,
                 0
               ),
-              children: [new Paragraph(String(poPassed))],
+              children: [new Paragraph(String(poPassed.toFixed(2) + "%"))],
             })
           );
         }
@@ -428,7 +430,7 @@ export async function generateDocx(data) {
             }),
             new TableCell({
               rowSpan: Object.values(clo.Assignments).length,
-              children: [new Paragraph(String(cloPassed))],
+              children: [new Paragraph(String(cloPassed.toFixed(2) + "%"))],
             })
           );
         }

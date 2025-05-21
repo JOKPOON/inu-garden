@@ -82,6 +82,7 @@ onMounted(async () => {
 
   if (!course.value.portfolio_data.educational_outcomes) {
     store.setEducationalOutcomes({
+      outcomes: [],
       grade_distribution: [],
     });
   }

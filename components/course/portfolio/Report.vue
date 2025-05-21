@@ -33,27 +33,30 @@ const downloadDocx = () => {
     alert("No data available to generate the report.");
     return;
   }
-  generateDocx({
-    course_name: store.details.code + " " + store.details.name,
-    // pos: store.details.pos,
-    lecturers: store.details.lecturers
-      ? store.details.lecturers
-          .map(
-            (lecturer) =>
-              lecturer.title_th_short +
-              " " +
-              lecturer.first_name_th +
-              " " +
-              lecturer.last_name_th
-          )
-          .join(", ")
-      : "",
-    implementation: store.implementationData,
-    education_outcomes: {
-      grade_distribution: store.educationalOutcomes.grade_distribution,
+  generateDocx(
+    {
+      course_name: store.details.code + " " + store.details.name,
+      // pos: store.details.pos,
+      lecturers: store.details.lecturers
+        ? store.details.lecturers
+            .map(
+              (lecturer) =>
+                lecturer.title_th_short +
+                " " +
+                lecturer.first_name_th +
+                " " +
+                lecturer.last_name_th
+            )
+            .join(", ")
+        : "",
+      implementation: store.implementationData,
+      education_outcomes: {
+        grade_distribution: store.educationalOutcomes.grade_distribution,
+      },
+      continuous_development: store.continuousDevelopment,
     },
-    continuous_development: store.continuousDevelopment,
-  });
+    store.educationalOutcomes.outcomes.pos
+  );
 };
 </script>
 

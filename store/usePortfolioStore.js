@@ -40,6 +40,7 @@ export const usePortfolioStore = defineStore("portfolio", () => {
       ...educationalOutcomes.value.outcomes,
       ...data,
     };
+    console.log("outcome:", educationalOutcomes.value.outcomes);
   }
 
   function setReportData(data) {
