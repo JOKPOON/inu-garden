@@ -702,7 +702,13 @@ const deleteClo = async (cloId) => {
 //  emit("updated",studentSelected.value.student_id,studentSelected.value.score);
 const updateAddScore = async (score) => {
   try {
+    console.log(score);
     scores.value = { ...scores.value, score };
+    setActiveAssessment(
+      assessments.value.find(
+        (a) => a.assignment_group_id === route.query.groupId
+      )
+    );
   } catch (error) {
     console.error(error);
   }
@@ -711,6 +717,9 @@ const updateAddScore = async (score) => {
 const updateEditScore = async (score) => {
   scores.value = scores.value.map((s) =>
     s.id === score.id ? { ...s, score: score.score } : s
+  );
+  setActiveAssessment(
+    assessments.value.find((a) => a.assignment_group_id === route.query.groupId)
   );
 };
 
@@ -767,6 +776,11 @@ const deleteScore = async (scoreId) => {
     if (response.ok) {
       scores.value = scores.value.filter((score) => score.id !== scoreId);
     }
+    setActiveAssessment(
+      assessments.value.find(
+        (a) => a.assignment_group_id === route.query.groupId
+      )
+    );
   } catch (error) {
     console.error(error);
   }
