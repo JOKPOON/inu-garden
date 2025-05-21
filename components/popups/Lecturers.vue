@@ -503,7 +503,9 @@
             <div class="flex flex-col gap-1 w-full mt-2">
               <div class="col-span-1 text-grey-primary text-sm">
                 Courses
-                <span class="text-yellow-primary">({{ courses.length }})</span>
+                <span v-if="courses" class="text-yellow-primary"
+                  >({{ courses.length }})</span
+                >
               </div>
               <div class="flex flex-row gap-4 mb-2">
                 <div
